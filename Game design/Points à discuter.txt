@@ -1,5 +1,5 @@
-Ce fichier contient tous les points peu clairs à préciser
+Ce fichier contient tous les points peu clairs Ã  prÃ©ciser
 
 - Les noms (de tout)
-- Les alliances du début de la grande guerre
-- Le bouclier : % ou points fixes (sachant que les points fixes apportent un élément de gameplay plus différent des points de vie que les %)
+- Les alliances du dÃ©but de la grande guerre
+- Le bouclier : % ou points fixes (sachant que les points fixes apportent un Ã©lÃ©ment de gameplay plus diffÃ©rent des points de vie que les %)

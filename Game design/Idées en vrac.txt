@@ -21,7 +21,7 @@ originel, dominés 3 civilisations (2, 3 et 4). Si la tension est toujours
 présente entre 3 et 4, 2 très pacifiste, permet une paix relative. Mais
 lorsque 1 accède au voyage spacial long courrier, cette civilisation guerrière
 attaque par surprise les 2. Leur planète ravagée, cette nation pourtant pacifiste
-s'allie avec #3 ou 4# contre 1, déclanchant une guerre inter-planétaire. Au gré des
+doit s'allier avec 3 contre 1 et 4, déclanchant une guerre inter-planétaire. Au gré des
 alliances, les colonies, puis les planètes mères deviennent inhabitables à cause de
 l'utilisation massive d'armes atomiques. Dans le système stellaire dévasté, seuls
 quelques vaisseaux ont pu se réchapper de la guerre. Voguant vers le système stellaire
@@ -29,10 +29,28 @@ le plus proche, un accord est alors signé, interdisant formellement l'utilisati
 d'atomiques. Mais après plusieurs jours de fête spaciale, les civilisations se rendent
 toutes compte d'une chose : Sky is not a home. Alors commence un gigantesque course au
 foyer, à la colonie, tout d'abord dans la planète qui parait la plus accueillante, puis
-dans tout le système, désormais nommé : Sinah. La seconde guerre commence.
+dans tout le système, désormais nommé : Sinah. La seconde guerre commence, pleine d'horreurs,
+où même les civilisations furent parfois partagées.
 
 	L'histoire
 	
 	L'histoire du personnage principal est une tragédie. Habitant d'une des planètes de
 Sinah, # nom # est un chef militaire local, d'une nation n'ayant aucun moyen d'accès à
-l'espaces. Ainsi, lors que les 1 arrivèrent, ce fut la débandade.
+l'espaces. Ainsi, lors que les 1 arrivèrent, ce fut la débandade. Toutefois, le héros parvint
+à organiser une résistance, dont il devint le chef. Hélas, malgré leur courage et la stratégie
+habile mise en place par le héros, la défaite fut inévitable, causée par les armes technologiquement
+beaucoup plus avança des 1. Mais, remarquant le mérite du chef militaire ennemi, ils lui proposèrent
+un marché : son peuple serait épargné si ils rejoignaient les rang des 1. Après avoir longuement réfléchi,
+il accepta. --> Tuto
+	Mais après plusieurs mois, montant les grades avec un rapidité stupéfiante, le héros eut connaissance
+du tragique destin de son peuple : la majorité fut massacré, les survivants, les plus forts, réduits en esclavage.
+Empli de haine, il déserta les rang des 1 pour rejoindre les 2, connus pour leur pacifisme. Reconnu comme un
+formidable adversaire, il fut accepté. --> Tuto
+	Toutefois, les 2 avait bien changé. La perte de leur planète les avait contraint au clonage, mais chaque
+clone gardait en lui une haine sauvage contre les 1, contre tout le monde. Certes, ils avaient des manières plus
+douces, mais lorque leur cruauté se montrait, elle n'en paraissait que plus affreuse. Le héros les quitta donc,
+ne se faisant plus d'illusion sur cette guerre, où aucun parti n'était juste, mais voulant laisser une chance
+aux 3 et aux 4, ils rejoint leurs rang, les uns, puis les autres --> Tuto x2
+	Enfin, profondemment dégoûté, le héros se résolut à quitter cette guerre, espérant trouver au loin un
+monde plus juste, un foyer. Mais pour cela, il faut de l'argent. Beaucoup d'argent. Grâce à sa réputation
+toujours grandissante, il se fit donc mercenaire, détournant le regard à chaque massacre. (suite quand on fera la campagne)

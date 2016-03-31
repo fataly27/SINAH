@@ -48,9 +48,54 @@ Empli de haine, il déserta les rang des 1 pour rejoindre les 2, connus pour leu
 formidable adversaire, il fut accepté. --> Tuto
 	Toutefois, les 2 avait bien changé. La perte de leur planète les avait contraint au clonage, mais chaque
 clone gardait en lui une haine sauvage contre les 1, contre tout le monde. Certes, ils avaient des manières plus
-douces, mais lorque leur cruauté se montrait, elle n'en paraissait que plus affreuse. Le héros les quitta donc,
-ne se faisant plus d'illusion sur cette guerre, où aucun parti n'était juste, mais voulant laisser une chance
-aux 3 et aux 4, ils rejoint leurs rang, les uns, puis les autres --> Tuto x2
+douces, mais ils s'étaient souvenu qu'ils avaient des armes. Lorque leur cruauté se montrait, elle n'en paraissait
+que plus affreuse. Le héros les quitta donc, ne se faisant plus d'illusion sur cette guerre, où aucun parti n'était
+juste, mais voulant laisser une chance aux 3 et aux 4, ils rejoint leurs rang, les uns, puis les autres --> Tuto x2
 	Enfin, profondemment dégoûté, le héros se résolut à quitter cette guerre, espérant trouver au loin un
 monde plus juste, un foyer. Mais pour cela, il faut de l'argent. Beaucoup d'argent. Grâce à sa réputation
 toujours grandissante, il se fit donc mercenaire, détournant le regard à chaque massacre. (suite quand on fera la campagne)
+
+	Principe et but du jeu
+	
+	Le but d'une partie est de chasser l'adversaire un prenant sa citadelle, afin de coloniser le territoire en jeu.
+Pour cela, le joueur dispose de 4 ressources : la nourriture, les cellules de photosynthèse, le métal et les cristaux du désert.
+Il en a un stock dès le début du jeu, et peut en récupérer grâce aux points de ressources. La nourriture permet de garder
+son armée en forme et en vie, et les autres permettent de former des unités. Ces unités forment des armées, limitées à 30
+points d'unité : si ce nombre est dépassé, l'armée se scinde. Ces armées peuvent certes se combattre dans la map, mais elles
+peuvent surtout attaquer des points de contrôle et des citadelles.
+
+	Carte
+	
+	La carte du monde est délimité par une falaise, plus haute à l'extérieur, qui est suivie d'une forêt dense. En outre,
+elle est composé de X(5 ?) * X(5 ?) blocs. Chaque bloc peut contenir de 1 à 3 biomes, selon l'agencement suivant :          3 1 1 1 1
+Les blocs contenant un biome contiennent un unisue point de ressource, à 100 % de la production maximale,                   1 2 1 2 1
+ceux en contenant 2 en possèdent 2, à 75 %, et possèdent en outre un point de contrôle, et ceux contenant                   1 1 3 1 1
+3 biomes en contiennent 3, à 60% (1 par biome différent). Les biomes peuvent être : une forêt, un désert,                   1 2 1 2 1
+une prairie ou une montagne. La végétation est d'une palette de rose à mauve, l'eau et la sève bleu turquoise	            1 1 1 1 3
+clair, le sable jaune-orangé et les rochers du désert orangé-rouge, les montagnes rouge-gris et la neige blanche.
+	
+	Ressources
+	
+	Les points de ressources des biomes produisent 4 ressources différentes. Les prairies produisent de la nourriture,
+utile pour nourrir l'homme, les forêts des cellules de photosynthèse, qui nourrient les machines, les déserts
+des cristaux du désert, source de magie et les montagnes du métal, arme défensive et offensive.
+	
+	Points de ressources : production et pillage
+	
+	Les points de ressources produisent des ressources. Selon le bloc, ils en produisent plus ou moins, le maximum étant
+x ressources / minute. Dans les blocs à 1 biome, il suffit de leur faire perdre tous leurs PV pour se l'approprier,
+mais dans les blocs à deux biomes et à trois, il faut s'assurer le contrôle du point de contrôle ou de la citadelle pour gagner
+le point de ressources. Dans le cas contraire, les ressources dans le point sont pillées, et leeur niveau descend d'un point.
+Les ressources sont ramasées automatiquement toutes les #minutes / 30 s#. De plus, les points de
+ressources peuvent être amélioré sur X, Y ou Z niveaux en fonction du bloc pour produire plus : +0% -> + X%...
+	
+	Points de contrôle et citadelles : formation de troupes et défense
+	Combat
+	Attaque d'une garnison
+	Or
+	Classement ELO
+	Succès
+	Spécéficités des 1
+	Spécéficités des 2
+	Spécéficités des 3
+	Spécéficités des 4

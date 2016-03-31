@@ -3,3 +3,7 @@ Ce fichier contient tous les points peu clairs à préciser
 - Les noms (de tout)
 - Les couleurs des civilisations
 - Le bouclier : % ou points fixes (sachant que les points fixes apportent un élément de gameplay plus différent des points de vie que les %)
+- Donne-t-on aussi un coût en nourriture de base pour les soldats (ça évite que le joueur grapille une armée avec 1 point de nourriture)
+- Période de ramassage des ressources, niveaux disponibles en fonction du bloc et avantages qu'ils donnent pour les points de ressources
+- Niveaux disponibles pour les points de contrôle et pour les citadelles
+- Valider ou non le mot "citadelle"

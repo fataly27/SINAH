@@ -1,10 +1,10 @@
 Je mets ici toutes les idées que j'ai en tête et qu'on a validé.
 
 	Sky is not a home est un jeu de stratégie se déroulant dans un univers
-futuriste où 4 civilisations dominent le système Sinah. La première est
-agressive, futuriste et ressemble aux hommes. La seconde, elle aussi, est
+futuriste où 4 civilisations dominent le système Sinah. La première (Ashumites) est
+agressive, futuriste et ressemble aux hommes. La seconde (Lortémidiens), elle aussi, est
 futuriste mais de façon plus avançé (exosquelettes, boucliers, clonage...).
-De plus, ils sont plutôt pacifistes. La troisième se rapproche plus de la
+De plus, ils sont plutôt pacifistes. La troisième (Zarkhs) se rapproche plus de la
 fantasy, et se base sur de la magie ancienne, avec quelques technologies
 supplémentaires (voyage spacial). Elle à la particularité de n'accorder
 aucun droit politique aux hommes, ainsi que de favoriser des gradés
@@ -17,11 +17,11 @@ même supérieur à la femme.
 	L'Histoire :
 
 	La grande Histoire débute pour l'instant en paix, dans le système stellaire
-originel, dominés 3 civilisations (2, 3 et 4). Si la tension est toujours
-présente entre 3 et 4, 2 très pacifiste, permet une paix relative. Mais
-lorsque 1 accède au voyage spacial long courrier, cette civilisation guerrière
-attaque par surprise les 2. Leur planète ravagée, cette nation pourtant pacifiste
-doit s'allier avec 3 contre 1 et 4, déclanchant une guerre inter-planétaire. Au gré des
+originel, dominés 3 civilisations (Lortémidiens, Zarkhs et 4). Si la tension est toujours
+présente entre les Zarkhs et 4, les Lortémidiens, très pacifiste, permet une paix relative. Mais
+lorsque les Ashumites accède au voyage spacial long courrier, cette civilisation guerrière
+attaque par surprise les Lortémidiens. Leur planète ravagée, cette nation pourtant pacifiste
+doit s'allier avec les Zarkhs contre les Ashumites et 4, déclanchant une guerre inter-planétaire. Au gré des
 alliances, les colonies, puis les planètes mères deviennent inhabitables à cause de
 l'utilisation massive d'armes atomiques. Dans le système stellaire dévasté, seuls
 quelques vaisseaux ont pu se réchapper de la guerre. Voguant vers le système stellaire
@@ -36,21 +36,21 @@ où même les civilisations furent parfois partagées.
 	
 	L'histoire du personnage principal est une tragédie. Habitant d'une des planètes de
 Sinah, # nom # est un chef militaire local, d'une nation n'ayant aucun moyen d'accès à
-l'espaces. Ainsi, lors que les 1 arrivèrent, ce fut la débandade. Toutefois, le héros parvint
+l'espaces. Ainsi, lors que les les Ashumites arrivèrent, ce fut la débandade. Toutefois, le héros parvint
 à organiser une résistance, dont il devint le chef. Hélas, malgré leur courage et la stratégie
 habile mise en place par le héros, la défaite fut inévitable, causée par les armes technologiquement
-beaucoup plus avança des 1. Mais, remarquant le mérite du chef militaire ennemi, ils lui proposèrent
-un marché : son peuple serait épargné si ils rejoignaient les rang des 1. Après avoir longuement réfléchi,
+beaucoup plus avancés des Ashumites. Mais, remarquant le mérite du chef militaire ennemi, ils lui proposèrent
+un marché : son peuple serait épargné si ils rejoignaient les rang des Ashumites. Après avoir longuement réfléchi,
 il accepta. --> Tuto
 	Mais après plusieurs mois, montant les grades avec un rapidité stupéfiante, le héros eut connaissance
 du tragique destin de son peuple : la majorité fut massacré, les survivants, les plus forts, réduits en esclavage.
-Empli de haine, il déserta les rang des 1 pour rejoindre les 2, connus pour leur pacifisme. Reconnu comme un
+Empli de haine, il déserta les rang des Ashumites pour rejoindre les Lortémidiens, connus pour leur pacifisme. Reconnu comme un
 formidable adversaire, il fut accepté. --> Tuto
-	Toutefois, les 2 avait bien changé. La perte de leur planète les avait contraint au clonage, mais chaque
-clone gardait en lui une haine sauvage contre les 1, contre tout le monde. Certes, ils avaient des manières plus
+	Toutefois, les Lortémidiens avait bien changé. La perte de leur planète les avait contraint au clonage, mais chaque
+clone gardait en lui une haine sauvage contre les Ashumites, contre tout le monde. Certes, ils avaient des manières plus
 douces, mais ils s'étaient souvenu qu'ils avaient des armes. Lorque leur cruauté se montrait, elle n'en paraissait
 que plus affreuse. Le héros les quitta donc, ne se faisant plus d'illusion sur cette guerre, où aucun parti n'était
-juste, mais voulant laisser une chance aux 3 et aux 4, ils rejoint leurs rang, les uns, puis les autres --> Tuto x2
+juste, mais voulant laisser une chance aux Zarkhs et aux 4, ils rejoint leurs rang, les uns, puis les autres --> Tuto x2
 	Enfin, profondemment dégoûté, le héros se résolut à quitter cette guerre, espérant trouver au loin un
 monde plus juste, un foyer. Mais pour cela, il faut de l'argent. Beaucoup d'argent. Grâce à sa réputation
 toujours grandissante, il se fit donc mercenaire, détournant le regard à chaque massacre. (suite quand on fera la campagne)
@@ -95,7 +95,7 @@ ressources peuvent être amélioré sur X, Y ou Z niveaux en fonction du bloc po
 	Or
 	Classement ELO
 	Succès
-	Spécéficités des 1
-	Spécéficités des 2
-	Spécéficités des 3
+	Spécéficités des Ashumites
+	Spécéficités des Lortémidiens
+	Spécéficités des Zarkhs
 	Spécéficités des 4

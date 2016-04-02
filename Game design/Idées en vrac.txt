@@ -8,7 +8,7 @@ De plus, ils sont plutôt pacifistes. La troisième (Zarkhs) se rapproche plus d
 fantasy, et se base sur de la magie ancienne, avec quelques technologies
 supplémentaires (voyage spacial). Elle à la particularité de n'accorder
 aucun droit politique aux hommes, ainsi que de favoriser des gradés
-féminins. La dernière se rapproche elle aussi de la fantasy, en se basant
+féminins. La dernière (Hovanion) se rapproche elle aussi de la fantasy, en se basant
 cette fois sur la foi. Elle est assez virulante par rapport à la troisième
 civilisation, car pour eux, si la femme doit être respectée car elle apporte
 la vie et que la religion instaure une certaine égalité, l'homme est tout de
@@ -17,11 +17,11 @@ même supérieur à la femme.
 	L'Histoire :
 
 	La grande Histoire débute pour l'instant en paix, dans le système stellaire
-originel, dominés 3 civilisations (Lortémidiens, Zarkhs et 4). Si la tension est toujours
-présente entre les Zarkhs et 4, les Lortémidiens, très pacifiste, permet une paix relative. Mais
+originel, dominés 3 civilisations (Lortémidiens, Zarkhs et Hovanion). Si la tension est toujours
+présente entre les Zarkhs et les Hovaniens, les Lortémidiens, très pacifiste, permet une paix relative. Mais
 lorsque les Ashumites accède au voyage spacial long courrier, cette civilisation guerrière
 attaque par surprise les Lortémidiens. Leur planète ravagée, cette nation pourtant pacifiste
-doit s'allier avec les Zarkhs contre les Ashumites et 4, déclanchant une guerre inter-planétaire. Au gré des
+doit s'allier avec les Zarkhs contre les Ashumites et les Hovaniens, déclanchant une guerre inter-planétaire. Au gré des
 alliances, les colonies, puis les planètes mères deviennent inhabitables à cause de
 l'utilisation massive d'armes atomiques. Dans le système stellaire dévasté, seuls
 quelques vaisseaux ont pu se réchapper de la guerre. Voguant vers le système stellaire
@@ -50,7 +50,7 @@ formidable adversaire, il fut accepté. --> Tuto
 clone gardait en lui une haine sauvage contre les Ashumites, contre tout le monde. Certes, ils avaient des manières plus
 douces, mais ils s'étaient souvenu qu'ils avaient des armes. Lorque leur cruauté se montrait, elle n'en paraissait
 que plus affreuse. Le héros les quitta donc, ne se faisant plus d'illusion sur cette guerre, où aucun parti n'était
-juste, mais voulant laisser une chance aux Zarkhs et aux 4, ils rejoint leurs rang, les uns, puis les autres --> Tuto x2
+juste, mais voulant laisser une chance aux Zarkhs et aux Hovaniens, il rejoint leurs rang, les uns, puis les autres --> Tuto x2
 	Enfin, profondemment dégoûté, le héros se résolut à quitter cette guerre, espérant trouver au loin un
 monde plus juste, un foyer. Mais pour cela, il faut de l'argent. Beaucoup d'argent. Grâce à sa réputation
 toujours grandissante, il se fit donc mercenaire, détournant le regard à chaque massacre. (suite quand on fera la campagne)
@@ -85,11 +85,24 @@ des cristaux du désert, source de magie et les montagnes du métal, arme défen
 	Les points de ressources produisent des ressources. Selon le bloc, ils en produisent plus ou moins, le maximum étant
 x ressources / minute. Dans les blocs à 1 biome, il suffit de leur faire perdre tous leurs PV pour se l'approprier,
 mais dans les blocs à deux biomes et à trois, il faut s'assurer le contrôle du point de contrôle ou de la citadelle pour gagner
-le point de ressources. Dans le cas contraire, les ressources dans le point sont pillées, et leeur niveau descend d'un point.
-Les ressources sont ramasées automatiquement toutes les #minutes / 30 s#. De plus, les points de
-ressources peuvent être amélioré sur X, Y ou Z niveaux en fonction du bloc pour produire plus : +0% -> + X%...
+le point de ressources : le point perd alors tous ses niveaux. Dans le cas contraire, les ressources dans le point sont pillées,
+et leur niveau descend d'un point. Les ressources sont ramasées automatiquement toutes les #minutes / 30 s#. De plus, les points de
+ressources peuvent être amélioré sur X, Y ou Z niveaux en fonction du bloc pour produire plus : +0% -> + X%... Le coût pour améliorer
+le matériel demande un peu de métal, mais surtout #des cellules et des cristaux OU des cellules ou des cristaux#.
 	
 	Points de contrôle et citadelles : formation de troupes et défense
+	
+	Le rôle des citadelles est primordial, car le joueur ne possédant plus de citadelle perdra la partie. Mais elles ont, comme
+les points de contrôle, de nombreuses autres utilités. Tout d'abord, les points de contrôles et les citadelles permettent de contrôler
+un bloc à 2 ou 3 biomes, de façon économique (voir plus haut) mais aussi de façon militaire. En effet, ils permettent de créer des armée.
+Chaque armée est composée de 30 points d'unité au maximum, et contient une ou plusieurs unités. Ces unités, spécifiques à chaque peuple,
+sont listées plus bas. Une armée à besoin en outre de temps pour s'entraîner ainsi que de ressources, dont la valeur dépendra des unités.
+Toutefois, toute unité coûtera de la nourriture. Enfin, ils permettent d'assurer au joueur un point sur lequel il peut compter s'il en
+paye le prix. En effet, grâce à beaucoup de métal et un peu #de cellules et de cristaux OU de cellules ou de cristaux#, le point de contrôle
+où la citadelle gagne un niveau (limité à X pour le point de contrôleet à Y pour la citadelle) qui permet au joueur d'y ajouter un bonus,
+pouvant être décisif dans les importantes batailles se déroulant dans ces lieux. En effet, ils peuvent être pris lorsqu'une armée ennemie bat
+la garnison. Cette garnison est une armée particulière défendant le lieu. Lors d'une prise, le niveau redescend à zéro.
+	
 	Combat
 	Attaque d'une garnison
 	Or

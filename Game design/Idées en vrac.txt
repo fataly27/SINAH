@@ -1,10 +1,10 @@
 Je mets ici toutes les idées que j'ai en tête et qu'on a validé.
 
 	Sky is not a home est un jeu de stratégie se déroulant dans un univers
-futuriste où 4 civilisations dominent le système Sinah. La première (Ashunites) est
-agressive, futuriste et ressemble aux hommes. La seconde (Lortémidiens), elle aussi, est
+futuriste où 4 civilisations dominent le système Sinah. La première (Amuh) est
+agressive, futuriste et ressemble aux hommes. La seconde (Lortémid), elle aussi, est
 futuriste mais de façon plus avançé (exosquelettes, boucliers, clonage...).
-De plus, ils sont plutôt pacifistes. La troisième (Zarkhs) se rapproche plus de la
+De plus, ils sont plutôt pacifistes. La troisième (Zarkh) se rapproche plus de la
 fantasy, et se base sur de la magie ancienne, avec quelques technologies
 supplémentaires (voyage spacial). Elle à la particularité de n'accorder
 aucun droit politique aux hommes, ainsi que de favoriser des gradés
@@ -19,9 +19,9 @@ même supérieur à la femme.
 	La grande Histoire débute pour l'instant en paix, dans le système stellaire
 originel, dominés 3 civilisations (Lortémidiens, Zarkhs et Hovanion). Si la tension est toujours
 présente entre les Zarkhs et les Hovanions, les Lortémidiens, très pacifistes, permet une paix relative. Mais
-lorsque les Ashunites accède au voyage spacial long courrier, cette civilisation guerrière
+lorsque les Amuhins accède au voyage spacial long courrier, cette civilisation guerrière
 attaque par surprise les Lortémidiens. Leur planète ravagée, cette nation pourtant pacifiste
-doit s'allier avec les Zarkhs contre les Ashunites et les Hovanions, déclanchant une guerre inter-planétaire. Au gré des
+doit s'allier avec les Zarkhs contre les Amuhins et les Hovanions, déclanchant une guerre inter-planétaire. Au gré des
 alliances, les colonies, puis les planètes mères deviennent inhabitables à cause de
 l'utilisation massive d'armes atomiques. Dans le système stellaire dévasté, seuls
 quelques vaisseaux ont pu se réchapper de la guerre. Voguant vers le système stellaire
@@ -36,18 +36,18 @@ où même les civilisations furent parfois partagées.
 	
 	L'histoire du personnage principal est une tragédie. Habitant d'une des planètes de
 Sinah, # nom # est un chef militaire local, d'une nation n'ayant aucun moyen d'accès à
-l'espaces. Ainsi, lors que les les Ashunites arrivèrent, ce fut la débandade. Toutefois, le héros parvint
+l'espaces. Ainsi, lors que les Amuhins arrivèrent, ce fut la débandade. Toutefois, le héros parvint
 à organiser une résistance, dont il devint le chef. Hélas, malgré leur courage et la stratégie
 habile mise en place par le héros, la défaite fut inévitable, causée par les armes technologiquement
-beaucoup plus avancés des Ashunites. Mais, remarquant le mérite du chef militaire ennemi, ils lui proposèrent
-un marché : son peuple serait épargné si ils rejoignaient les rang des Ashunites. Après avoir longuement réfléchi,
+beaucoup plus avancés des Amuhins. Mais, remarquant le mérite du chef militaire ennemi, ils lui proposèrent
+un marché : son peuple serait épargné si ils rejoignaient les rang des Amuhins. Après avoir longuement réfléchi,
 il accepta. --> Tuto
 	Mais après plusieurs mois, montant les grades avec un rapidité stupéfiante, le héros eut connaissance
 du tragique destin de son peuple : la majorité fut massacré, les survivants, les plus forts, réduits en esclavage.
-Empli de haine, il déserta les rang des Ashunites pour rejoindre les Lortémidiens, connus pour leur pacifisme. Reconnu comme un
+Empli de haine, il déserta les rang des Amuhins pour rejoindre les Lortémidiens, connus pour leur pacifisme. Reconnu comme un
 formidable adversaire, il fut accepté. --> Tuto
 	Toutefois, les Lortémidiens avait bien changé. La perte de leur planète les avait contraint au clonage, mais chaque
-clone gardait en lui une haine sauvage contre les Ashunites, contre tout le monde. Certes, ils avaient des manières plus
+clone gardait en lui une haine sauvage contre les Amuhins, contre tout le monde. Certes, ils avaient des manières plus
 douces, mais ils s'étaient souvenu qu'ils avaient des armes. Lorque leur cruauté se montrait, elle n'en paraissait
 que plus affreuse. Le héros les quitta donc, ne se faisant plus d'illusion sur cette guerre, où aucun parti n'était
 juste, mais voulant laisser une chance aux Zarkhs et aux Hovanions, il rejoint leurs rang, les uns, puis les autres --> Tuto x2
@@ -108,7 +108,7 @@ la garnison. Cette garnison est une armée particulière défendant le lieu. Lor
 	Or
 	Classement ELO
 	Succès
-	Spécéficités des Ashunites
+	Spécéficités des Amuhins
 	Spécéficités des Lortémidiens
 	Spécéficités des Zarkhs
 	Spécéficités des 4

@@ -2,7 +2,7 @@ Je mets ici toutes les idées que j'ai en tête et qu'on a validé.
 
 	Sky is not a home est un jeu de stratégie se déroulant dans un univers
 futuriste où 4 civilisations dominent le système Sinah. La première (Amuh) est
-agressive, futuriste et ressemble aux hommes. La seconde (Lortémid), elle aussi, est
+agressive, futuriste et ressemble aux hommes. La seconde (Lorthémid), elle aussi, est
 futuriste mais de façon plus avançé (exosquelettes, boucliers, clonage...).
 De plus, ils sont plutôt pacifistes. La troisième (Zarkh) se rapproche plus de la
 fantasy, et se base sur de la magie ancienne, avec quelques technologies
@@ -17,10 +17,10 @@ même supérieur à la femme.
 	L'Histoire :
 
 	La grande Histoire débute pour l'instant en paix, dans le système stellaire
-originel, dominés 3 civilisations (Lortémidiens, Zarkhs et Hovanion). Si la tension est toujours
-présente entre les Zarkhs et les Hovanions, les Lortémidiens, très pacifistes, permet une paix relative. Mais
+originel, dominés 3 civilisations (Lorthémidiens, Zarkhs et Hovanion). Si la tension est toujours
+présente entre les Zarkhs et les Hovanions, les Lorthémidiens, très pacifistes, permet une paix relative. Mais
 lorsque les Amuhins accède au voyage spacial long courrier, cette civilisation guerrière
-attaque par surprise les Lortémidiens. Leur planète ravagée, cette nation pourtant pacifiste
+attaque par surprise les Lorthémidiens. Leur planète ravagée, cette nation pourtant pacifiste
 doit s'allier avec les Zarkhs contre les Amuhins et les Hovanions, déclanchant une guerre inter-planétaire. Au gré des
 alliances, les colonies, puis les planètes mères deviennent inhabitables à cause de
 l'utilisation massive d'armes atomiques. Dans le système stellaire dévasté, seuls
@@ -31,6 +31,18 @@ toutes compte d'une chose : Sky is not a home. Alors commence un gigantesque cou
 foyer, à la colonie, tout d'abord dans la planète qui parait la plus accueillante, puis
 dans tout le système, désormais nommé : Sinah. La seconde guerre commence, pleine d'horreurs,
 où même les civilisations furent parfois partagées.
+
+	Le Lorthémid:
+	
+	Les Lorthémidiens sont en théorie immortels. Ils peuvent en effet vivre des siècles grâce aux nombreux
+exosquelettes dont ils sont pourvus. Lorsqu'ils meurent, leur mémoire, stockée et actualisée presque
+instantanément est récupérée lors d'un rituel, puis implanté dans un corps. Lorsqu'il faut augmenenter
+la population, on crée des mémoires vierges. La reproduction n'existe donc plus. De ce fait, les
+relations hétérosexuelles sont très mal vues, seule l'homosexualité est vue d'un bon oeil. Si cette
+civilisation était heureuse avant la guerre, observant l'univers évoluant à toute vitesse, la destruction
+de leur planète mère à mis un terme à cette paisible vie. Désormais, ils ne connaissent que la mort et la haine
+des Amuhins. Ils ont toutefois gardé des manières douces. Ils maitrisent notemment l'électricité sous toute ses
+formes # on peut alors en inventer #. Leur musique est de ce fait électro, voire 8-bits.
 
 	L'histoire
 	
@@ -44,9 +56,9 @@ un marché : son peuple serait épargné si ils rejoignaient les rang des Amuhin
 il accepta. --> Tuto
 	Mais après plusieurs mois, montant les grades avec un rapidité stupéfiante, le héros eut connaissance
 du tragique destin de son peuple : la majorité fut massacré, les survivants, les plus forts, réduits en esclavage.
-Empli de haine, il déserta les rang des Amuhins pour rejoindre les Lortémidiens, connus pour leur pacifisme. Reconnu comme un
+Empli de haine, il déserta les rang des Amuhins pour rejoindre les Lorthémidiens, connus pour leur pacifisme. Reconnu comme un
 formidable adversaire, il fut accepté. --> Tuto
-	Toutefois, les Lortémidiens avait bien changé. La perte de leur planète les avait contraint au clonage, mais chaque
+	Toutefois, les Lorthémidiens avait bien changé. La perte de leur planète les avait contraint au clonage, mais chaque
 clone gardait en lui une haine sauvage contre les Amuhins, contre tout le monde. Certes, ils avaient des manières plus
 douces, mais ils s'étaient souvenu qu'ils avaient des armes. Lorque leur cruauté se montrait, elle n'en paraissait
 que plus affreuse. Le héros les quitta donc, ne se faisant plus d'illusion sur cette guerre, où aucun parti n'était
@@ -106,9 +118,18 @@ la garnison. Cette garnison est une armée particulière défendant le lieu. Lor
 	Combat
 	Attaque d'une garnison
 	Or
+	Campagne
+	
+	La campagne est divisée en plusieurs branches, débloquées grâce à des choix, des actions particulières lors d'un combat ou de l'or.
+Ces différentes branches permettent d'explorer entièrement le background du jeu. En omettre une serait perdre une partie de la vision de
+l'univers de Sinah. Chaque branche contient des cinématiques, des choix et des phases de jeu. Lors d'une phase de jeu, le joueur se retrouve
+face à une situation prédéfinie. Il peut ainsi arriver au beau milieu d'un combat, se battre contre un adversaire déséquillibré, avoir
+certaines troupes en plus ou en moins... Ainsi, lors du premier tutoriel, le joueur arrive en plein milieu du combat, en position de faiblesse
+et avec une civilisation unique à cette phase.
+	
 	Classement ELO
 	Succès
 	Spécéficités des Amuhins
-	Spécéficités des Lortémidiens
+	Spécéficités des Lorthémidiens
 	Spécéficités des Zarkhs
 	Spécéficités des 4

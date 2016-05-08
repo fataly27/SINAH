@@ -44,6 +44,28 @@ de leur planète mère à mis un terme à cette paisible vie. Désormais, ils ne
 des Amuhins. Ils ont toutefois gardé des manières douces. Ils maitrisent notemment l'électricité sous toute ses
 formes # on peut alors en inventer #. Leur musique est de ce fait électro, voire 8-bits.
 
+	Amuh
+	
+	Les Amuhins sont les seuls à avoir détruit leur planète eux-même, à l'occasion d'une catastrophe biologique,
+le jour de la fête de la grande voctoire contre les Lorthémidiens, due à l'explosion des capsules ultra-concentrées
+en déchets toxiques, qui, mélangées aux armes biologiques stockées un peu partout dans la planète, ont ravagé cette
+dernière, et contaminé tous les habitants. Certains se sont enfui, mais il reste en eux des germes de ce mélange mortel.
+Ils ont fini, grâce à de nombreux remèdes, à affaiblir la maladie pour qu'elle ne se développe qu'en cas d'agonie.
+Toutefois, dans ce cas, la maladie parvient à contaminer les gens autour et le milieu. Les Amuhins ne peuvent donc rester
+longtemps sur une planète, et lors des guerres, contaminent leurs opposants. Les quatres civilisations ont donc été
+progressivement contaminées, seuls les Lorthémidiens, grâce à leur clonage, ont encore une faible chance, les survivants
+apportant tout de même leurs miasmes aux civils. Toutefois, les civilisations ne sont pas au courant, ce qui est normal
+car leur but est de protéger les planètes, ce qui est impossible à cause de la maladie amuhine.
+	
+	Zarkh
+	
+	Zarkh n'est exceptionnelement pas le nom de la planète mère des Zarkh, mais le nom de la planète cachée dont ils
+tirent leur magie. Au cours d'une cérémonie, certains enfant sont choisis pour un voyage sans retour sur cette planète,
+constituée d'un grand cristal qui constitue le centre de la planète, et dépasse à un endroit la croûte, pour y travailler
+toute leur vie. #Reste à déterminer comment ils sont choisis, et comment ils apportent de l'energie au grand cristal#
+	
+	Le Hovanion
+
 	L'histoire
 	
 	L'histoire du personnage principal est une tragédie. Habitant d'une des planètes de
@@ -72,9 +94,9 @@ toujours grandissante, il se fit donc mercenaire, détournant le regard à chaqu
 	Le but d'une partie est de chasser l'adversaire un prenant sa citadelle, afin de coloniser le territoire en jeu.
 Pour cela, le joueur dispose de 4 ressources : la nourriture, les cellules de photosynthèse, le métal et les cristaux du désert.
 Il en a un stock dès le début du jeu, et peut en récupérer grâce aux points de ressources. La nourriture permet de garder
-son armée en forme et en vie, et les autres permettent de former des unités. Ces unités forment des armées, limitées à 30
-points d'unité : si ce nombre est dépassé, l'armée se scinde. Ces armées peuvent certes se combattre dans la map, mais elles
-peuvent surtout attaquer des points de contrôle et des citadelles.
+son armée en forme et en vie, et les autres permettent de former des unités, néammoins, il faudra un minimum de nourriture
+pour créer une autr armée. Ces unités forment des armées, limitées à 30 points d'unité : si ce nombre est dépassé, l'armée se scinde.
+Ces armées peuvent certes se combattre dans la map, mais elles peuvent surtout attaquer des points de contrôle et des citadelles.
 
 	Carte
 	
@@ -120,7 +142,8 @@ la garnison. Cette garnison est une armée particulière défendant le lieu. Lor
 	Or
 	Campagne
 	
-	La campagne est divisée en plusieurs branches, débloquées grâce à des choix, des actions particulières lors d'un combat ou de l'or.
+	La campagne est divisée en plusieurs branches, formant une constellation de possibilité, chaque fin se trouvant sur un cercle délimitant
+l'extrémité de cette constellation. Ces branches débloquées grâce à des choix, des actions particulières lors d'un combat ou de l'or.
 Ces différentes branches permettent d'explorer entièrement le background du jeu. En omettre une serait perdre une partie de la vision de
 l'univers de Sinah. Chaque branche contient des cinématiques, des choix et des phases de jeu. Lors d'une phase de jeu, le joueur se retrouve
 face à une situation prédéfinie. Il peut ainsi arriver au beau milieu d'un combat, se battre contre un adversaire déséquillibré, avoir
@@ -129,7 +152,7 @@ et avec une civilisation unique à cette phase.
 	
 	Classement ELO
 	Succès
-	Spécéficités des Amuhins
-	Spécéficités des Lorthémidiens
-	Spécéficités des Zarkhs
-	Spécéficités des 4
+	Troupes amuhines
+	Troupes lorthémidiennes
+	Troupes zarkhs
+	Troupes hovanions

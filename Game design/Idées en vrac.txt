@@ -1,4 +1,4 @@
-Je mets ici toutes les idées que j'ai en tête et qu'on a validé.
+﻿Je mets ici toutes les idées que j'ai en tête et qu'on a validé.
 
 	Sky is not a home est un jeu de stratégie se déroulant dans un univers
 futuriste où 4 civilisations dominent le système Sinah. La première (Amuh) est
@@ -9,7 +9,7 @@ fantasy, et se base sur de la magie ancienne, avec quelques technologies
 supplémentaires (voyage spacial). Elle à la particularité de n'accorder
 aucun droit politique aux hommes, ainsi que de favoriser des gradés
 féminins. La dernière (Hovanion) se rapproche elle aussi de la fantasy, en se basant
-cette fois sur la foi. Elle est assez virulante par rapport à la troisième
+cette fois sur la foi. Elle est assez virulente par rapport à la troisième
 civilisation, car pour eux, si la femme doit être respectée car elle apporte
 la vie et que la religion instaure une certaine égalité, l'homme est tout de
 même supérieur à la femme.
@@ -26,11 +26,11 @@ alliances, les colonies, puis les planètes mères deviennent inhabitables à ca
 l'utilisation massive d'armes atomiques. Dans le système stellaire dévasté, seuls
 quelques vaisseaux ont pu se réchapper de la guerre. Voguant vers le système stellaire
 le plus proche, un accord est alors signé, interdisant formellement l'utilisation
-d'atomiques. Mais après plusieurs jours de fête spaciale, les civilisations se rendent
-toutes compte d'une chose : Sky is not a home. Alors commence un gigantesque course au
-foyer, à la colonie, tout d'abord dans la planète qui parait la plus accueillante, puis
-dans tout le système, désormais nommé : Sinah. La seconde guerre commence, pleine d'horreurs,
-où même les civilisations furent parfois partagées.
+d'atomiques. Mais après plusieurs jours de fête spatiale, les civilisations se rendent
+toutes compte d'une chose : "Sky is not a home". L'espace n'est pas un lieu sain pour vivre en paix.
+Alors commence un gigantesque course au  foyer, à la colonie, tout d'abord dans la planète qui paraît la 
+plus accueillante, puis dans tout le système, désormais nommé : Sinah. Très vite, les tensions montent, et la
+seconde guerre commence, pleine d'horreurs, où même les civilisations furent parfois partagées.
 
 	Le Lorthémid:
 	
@@ -39,10 +39,10 @@ exosquelettes dont ils sont pourvus. Lorsqu'ils meurent, leur mémoire, stockée
 instantanément est récupérée lors d'un rituel, puis implanté dans un corps. Lorsqu'il faut augmenenter
 la population, on crée des mémoires vierges. La reproduction n'existe donc plus. De ce fait, les
 relations hétérosexuelles sont très mal vues, seule l'homosexualité est vue d'un bon oeil. Si cette
-civilisation était heureuse avant la guerre, observant l'univers évoluant à toute vitesse, la destruction
+civilisation était heureuse avant la guerre, observant l'univers évoluer à toute vitesse, la destruction
 de leur planète mère à mis un terme à cette paisible vie. Désormais, ils ne connaissent que la mort et la haine
-des Amuhins. Ils ont toutefois gardé des manières douces. Ils maitrisent notemment l'électricité sous toute ses
-formes # on peut alors en inventer #. Leur musique est de ce fait électro, voire 8-bits.
+des Amuhins. Ils ont toutefois gardé des manières douces. Ils maitrisent notemment l'électricité sous toutes ses
+formes # on peut alors en inventer #. Leur musique est de ce fait électro, voire 8-bit.
 
 	Amuh
 	
@@ -70,10 +70,10 @@ toute leur vie. #Reste à déterminer comment ils sont choisis, et comment ils a
 	
 	L'histoire du personnage principal est une tragédie. Habitant d'une des planètes de
 Sinah, # nom # est un chef militaire local, d'une nation n'ayant aucun moyen d'accès à
-l'espaces. Ainsi, lors que les Amuhins arrivèrent, ce fut la débandade. Toutefois, le héros parvint
+l'espace. Aussi, lorsque les Amuhins arrivèrent, ce fut la débandade. Toutefois, le héros parvint
 à organiser une résistance, dont il devint le chef. Hélas, malgré leur courage et la stratégie
-habile mise en place par le héros, la défaite fut inévitable, causée par les armes technologiquement
-beaucoup plus avancés des Amuhins. Mais, remarquant le mérite du chef militaire ennemi, ils lui proposèrent
+habile mise en place par le héros, la défaite était inévitable, les armes des Amuhins étaient technologiquement
+beaucoup plus avancées. Mais, remarquant le mérite du chef militaire ennemi, ils lui proposèrent
 un marché : son peuple serait épargné si ils rejoignaient les rang des Amuhins. Après avoir longuement réfléchi,
 il accepta. --> Tuto
 	Mais après plusieurs mois, montant les grades avec un rapidité stupéfiante, le héros eut connaissance
@@ -83,7 +83,7 @@ formidable adversaire, il fut accepté. --> Tuto
 	Toutefois, les Lorthémidiens avait bien changé. La perte de leur planète les avait contraint au clonage, mais chaque
 clone gardait en lui une haine sauvage contre les Amuhins, contre tout le monde. Certes, ils avaient des manières plus
 douces, mais ils s'étaient souvenu qu'ils avaient des armes. Lorque leur cruauté se montrait, elle n'en paraissait
-que plus affreuse. Le héros les quitta donc, ne se faisant plus d'illusion sur cette guerre, où aucun parti n'était
+que plus affreuse. Le héros les quitta donc, ne se faisant plus d'illusions sur cette guerre, où aucun parti n'était
 juste, mais voulant laisser une chance aux Zarkhs et aux Hovanions, il rejoint leurs rang, les uns, puis les autres --> Tuto x2
 	Enfin, profondemment dégoûté, le héros se résolut à quitter cette guerre, espérant trouver au loin un
 monde plus juste, un foyer. Mais pour cela, il faut de l'argent. Beaucoup d'argent. Grâce à sa réputation
@@ -100,9 +100,9 @@ Ces armées peuvent certes se combattre dans la map, mais elles peuvent surtout 
 
 	Carte
 	
-	La carte du monde est délimité par une falaise, plus haute à l'extérieur, qui est suivie d'une forêt dense. En outre,
+	La carte du monde est délimitée par une falaise, plus haute à l'extérieur, qui est suivie d'une forêt dense. En outre,
 elle est composé de X(5 ?) * X(5 ?) blocs. Chaque bloc peut contenir de 1 à 3 biomes, selon l'agencement suivant :          3 1 1 1 1
-Les blocs contenant un biome contiennent un unisue point de ressource, à 100 % de la production maximale,                   1 2 1 2 1
+Les blocs contenant un biome contiennent un unique point de ressource, à 100 % de la production maximale,                   1 2 1 2 1
 ceux en contenant 2 en possèdent 2, à 75 %, et possèdent en outre un point de contrôle, et ceux contenant                   1 1 3 1 1
 3 biomes en contiennent 3, à 60% (1 par biome différent). Les biomes peuvent être : une forêt, un désert,                   1 2 1 2 1
 une prairie ou une montagne. La végétation est d'une palette de rose à mauve, l'eau et la sève bleu turquoise	            1 1 1 1 3
@@ -111,16 +111,16 @@ clair, le sable jaune-orangé et les rochers du désert orangé-rouge, les monta
 	Ressources
 	
 	Les points de ressources des biomes produisent 4 ressources différentes. Les prairies produisent de la nourriture,
-utile pour nourrir l'homme, les forêts des cellules de photosynthèse, qui nourrient les machines, les déserts
-des cristaux du désert, source de magie et les montagnes du métal, arme défensive et offensive.
+utile pour nourrir les troupes, les forêts des cellules de photosynthèse, qui font fonctionner les machines, les déserts
+des cristaux du désert, source de magie et les montagnes du métal, utile dans la fabrication d'armes défensives et offensives.
 	
 	Points de ressources : production et pillage
 	
 	Les points de ressources produisent des ressources. Selon le bloc, ils en produisent plus ou moins, le maximum étant
 x ressources / minute. Dans les blocs à 1 biome, il suffit de leur faire perdre tous leurs PV pour se l'approprier,
 mais dans les blocs à deux biomes et à trois, il faut s'assurer le contrôle du point de contrôle ou de la citadelle pour gagner
-le point de ressources : le point perd alors tous ses niveaux. Dans le cas contraire, les ressources dans le point sont pillées,
-et leur niveau descend d'un point. Les ressources sont ramasées automatiquement toutes les #minutes / 30 s#. De plus, les points de
+le point de ressources : le point perd alors tous ses niveaux. Dans le cas contraire [?], les ressources dans le point sont pillées,
+et leur niveau descend d'un point. Les ressources sont ramassées automatiquement toutes les #minutes / 30 s#. De plus, les points de
 ressources peuvent être amélioré sur X, Y ou Z niveaux en fonction du bloc pour produire plus : +0% -> + X%... Le coût pour améliorer
 le matériel demande un peu de métal, mais surtout #des cellules et des cristaux OU des cellules ou des cristaux#.
 	
@@ -128,26 +128,32 @@ le matériel demande un peu de métal, mais surtout #des cellules et des cristau
 	
 	Le rôle des citadelles est primordial, car le joueur ne possédant plus de citadelle perdra la partie. Mais elles ont, comme
 les points de contrôle, de nombreuses autres utilités. Tout d'abord, les points de contrôles et les citadelles permettent de contrôler
-un bloc à 2 ou 3 biomes, de façon économique (voir plus haut) mais aussi de façon militaire. En effet, ils permettent de créer des armée.
-Chaque armée est composée de 30 points d'unité au maximum, et contient une ou plusieurs unités. Ces unités, spécifiques à chaque peuple,
-sont listées plus bas. Une armée à besoin en outre de temps pour s'entraîner ainsi que de ressources, dont la valeur dépendra des unités.
-Toutefois, toute unité coûtera de la nourriture. Enfin, ils permettent d'assurer au joueur un point sur lequel il peut compter s'il en
-paye le prix. En effet, grâce à beaucoup de métal et un peu #de cellules et de cristaux OU de cellules ou de cristaux#, le point de contrôle
-où la citadelle gagne un niveau (limité à X pour le point de contrôleet à Y pour la citadelle) qui permet au joueur d'y ajouter un bonus,
-pouvant être décisif dans les importantes batailles se déroulant dans ces lieux. En effet, ils peuvent être pris lorsqu'une armée ennemie bat
-la garnison. Cette garnison est une armée particulière défendant le lieu. Lors d'une prise, le niveau redescend à zéro.
-	
+un bloc à 2 ou 3 biomes, de façon économique (voir plus haut) mais aussi de façon militaire. En effet, ils permettent de créer des 
+armées.
+Chaque armée est composée de 30 points d'unité au maximum, et contient une ou plusieurs unités. Ces unités, spécifiques à 
+chaque peuple, sont listées plus bas. Une armée a besoin en outre de temps pour s'entraîner ainsi que de ressources, dont 
+la valeur dépendra des unités. Toutefois, toute unité coûtera de la nourriture. Enfin, ils permettent d'assurer au joueur 
+un point sur lequel il peut compter s'il en paye le prix. En effet, grâce à beaucoup de métal et un peu #de cellules et de 
+cristaux OU de cellules ou de cristaux#, le point de contrôle où la citadelle gagne un niveau (limité à X pour le point de 
+contrôle et à Y pour la citadelle) qui permet au joueur d'y ajouter un bonus, pouvant être décisif dans les importantes 
+batailles se déroulant dans ces lieux. En effet, ils peuvent être pris lorsqu'une armée ennemie bat la garnison. Cette 
+garnison est une armée particulière défendant le lieu. Lors d'une prise, le niveau redescend à zéro.
+
+	Si les armées viennent à ne plus être approvisionnées en ressources essentielles à leur survie, elles vont lentement
+perdre des unités. 
+
+
 	Combat
 	Attaque d'une garnison
 	Or
 	Campagne
 	
-	La campagne est divisée en plusieurs branches, formant une constellation de possibilité, chaque fin se trouvant sur un cercle délimitant
-l'extrémité de cette constellation. Ces branches débloquées grâce à des choix, des actions particulières lors d'un combat ou de l'or.
-Ces différentes branches permettent d'explorer entièrement le background du jeu. En omettre une serait perdre une partie de la vision de
-l'univers de Sinah. Chaque branche contient des cinématiques, des choix et des phases de jeu. Lors d'une phase de jeu, le joueur se retrouve
-face à une situation prédéfinie. Il peut ainsi arriver au beau milieu d'un combat, se battre contre un adversaire déséquillibré, avoir
-certaines troupes en plus ou en moins... Ainsi, lors du premier tutoriel, le joueur arrive en plein milieu du combat, en position de faiblesse
+	La campagne est divisée en plusieurs branches, débloquées grâce à des choix, des actions particulières lors d'un
+combat ou de l'or. Ces différentes branches permettent d'explorer entièrement le background du jeu. En omettre une
+serait perdre une partie de la vision de l'univers de Sinah. Chaque branche contient des cinématiques, des choix et 
+des phases de jeu. Lors d'une phase de jeu, le joueur se retrouve face à une situation prédéfinie. Il peut ainsi 
+arriver au beau milieu d'un combat, se battre contre un adversaire déséquillibré, avoir certaines troupes en plus ou 
+en moins... Ainsi, lors du premier tutoriel, le joueur arrive en plein milieu du combat, en position de faiblesse
 et avec une civilisation unique à cette phase.
 	
 	Classement ELO
@@ -156,3 +162,7 @@ et avec une civilisation unique à cette phase.
 	Troupes lorthémidiennes
 	Troupes zarkhs
 	Troupes hovanions
+	Spécificités des Amuhins
+	Spécificités des Lorthémidiens
+	Spécificités des Zarkhs
+	Spécificités des Hovanions

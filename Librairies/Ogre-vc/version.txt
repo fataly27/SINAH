@@ -1,0 +1,4 @@
+ogre (1.9)
+  Version: 1.9.0
+  Mercurial checkout 12.03.2016
+  Last changeset: 8744:842d175c454e (Fri Mar 11 20:06:47 2016 -0300)

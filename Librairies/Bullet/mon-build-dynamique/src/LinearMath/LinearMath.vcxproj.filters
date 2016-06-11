@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btAlignedAllocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btConvexHull.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btConvexHullComputer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btGeometryUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btPolarDecomposition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btQuickprof.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btSerializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btVector3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btAabbUtil2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btAlignedAllocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btAlignedObjectArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btConvexHull.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btConvexHullComputer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btDefaultMotionState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btGeometryUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btGrahamScan2dConvexHull.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btHashMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btIDebugDraw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btMatrix3x3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btMinMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btMotionState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btPolarDecomposition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btPoolAllocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btQuadWord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btQuaternion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btQuickprof.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btRandom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btScalar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btSerializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btStackAlloc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btTransformUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\btVector3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\src\LinearMath\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{32D01338-4379-3DE6-8CDB-4B0A7B0323E8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{BC3A3C3B-87DF-3E34-88EB-296E5FD8DD62}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

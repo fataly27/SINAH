@@ -1,0 +1,7 @@
+﻿  Sfml.cpp
+  Physics.cpp
+  main.cpp
+d:\z-autres\programmation\sinah\sinah\code\core\main.cpp(12): warning C4101: 'motGraph' : variable locale non référencée
+  Graphics.cpp
+  Génération de code en cours...
+  Core.vcxproj -> D:\z-Autres\Programmation\Sinah\SINAH\Code\Debug\Core.exe

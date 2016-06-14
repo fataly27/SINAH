@@ -89,13 +89,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\Librairies\Bullet\src;..\..\Librairies\SFML-vc\include;..\..\Librairies\Ogre-vc\include;..\..\Librairies\Ogre-vc\include\OIS;..\..\Librairies\Ogre-vc\include\OGRE;..\..\Librairies\Ogre-vc\include\OGRE\Overlay</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Librairies\Bullet\src;..\..\Librairies\SFML-vc\include;..\..\Librairies\Ogre-vc\include;..\..\Librairies\Ogre-vc\include\OIS;..\..\Librairies\Ogre-vc\include\OGRE;..\..\Librairies\Ogre-vc\include\OGRE\Overlay;..\..\Librairies\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\Librairies\SFML-vc\lib;..\..\Librairies\Ogre-vc\lib\$(Configuration);..\..\Librairies\Ogre-vc\lib\$(Configuration)\opt;..\..\Librairies\Bullet\mon-build-dynamique\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Librairies\SFML-vc\lib;..\..\Librairies\Ogre-vc\lib\$(Configuration);..\..\Librairies\Ogre-vc\lib\$(Configuration)\opt;..\..\Librairies\Bullet\mon-build-dynamique\lib\$(Configuration);..\..\Librairies\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreOverlay_d.lib;OgreTerrain_d.lib;RenderSystem_GL_d.lib;%(AdditionalDependencies);opengl32.lib;sfml-system-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;BulletCollision_Debug.lib;BulletDynamics_Debug.lib;LinearMath_Debug.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -123,7 +123,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\Librairies\Bullet\src;..\..\Librairies\SFML-vc\include;..\..\Librairies\Ogre-vc\include;..\..\Librairies\Ogre-vc\include\OIS;..\..\Librairies\Ogre-vc\include\OGRE;..\..\Librairies\Ogre-vc\include\OGRE\Overlay</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Librairies\Bullet\src;..\..\Librairies\SFML-vc\include;..\..\Librairies\Ogre-vc\include;..\..\Librairies\Ogre-vc\include\OIS;..\..\Librairies\Ogre-vc\include\OGRE;..\..\Librairies\Ogre-vc\include\OGRE\Overlay;..\..\Librairies\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -131,7 +131,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\Librairies\SFML-vc\lib;..\..\Librairies\Ogre-vc\lib\$(Configuration);..\..\Librairies\Ogre-vc\lib\$(Configuration)\opt;..\..\Librairies\Bullet\mon-build-dynamique\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Librairies\SFML-vc\lib;..\..\Librairies\Ogre-vc\lib\$(Configuration);..\..\Librairies\Ogre-vc\lib\$(Configuration)\opt;..\..\Librairies\Bullet\mon-build-dynamique\lib\$(Configuration);..\..\Librairies\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OgreMain.lib;OIS.lib;OgreOverlay.lib;OgreTerrain.lib;RenderSystem_GL.lib;sfml-system.lib;sfml-window.lib;sfml-graphics.lib;%(AdditionalDependencies);opengl32.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib</AdditionalDependencies>
     </Link>
     <ProjectReference>

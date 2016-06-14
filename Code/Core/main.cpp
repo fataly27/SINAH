@@ -12,6 +12,8 @@ int main()
 	Graphics motGraph;
 	Sfml bibSfml;
 
+	motGraph.setup(reinterpret_cast<unsigned long>(bibSfml.getWindow()->getSystemHandle()));
+
 	//----------------- Go
 
 	// run the main loop

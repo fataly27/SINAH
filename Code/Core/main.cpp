@@ -13,6 +13,7 @@ int main()
 	Sfml bibSfml;
 
 	motGraph.setup(reinterpret_cast<unsigned long>(bibSfml.getWindow()->getSystemHandle()));
+	motGraph.createScene();
 
 	//----------------- Go
 
@@ -36,7 +37,7 @@ int main()
 		bibSfml.getWindow()->clear();
 
 		// draw...
-		//mRoot->renderOneFrame();
+		motGraph.getRoot()->renderOneFrame();
 
 		// end the current frame (internally swaps the front and back buffers)
 		bibSfml.getWindow()->display();

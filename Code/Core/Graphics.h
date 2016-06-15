@@ -25,9 +25,12 @@ class Graphics
 		void defineTerrain(long x, long y);
 		void initBlendMaps(Ogre::Terrain* terrain);
 		void configureTerrainDefaults(Ogre::Light* light);
+		void getTerrainImage(bool flipX, bool flipY, Ogre::Image& img);
 
 		void setCameraPosition(float x, float y, float z);
 		void setCameraLookAt(float x, float y, float z);
+
+		Ogre::Root* getRoot();
 
 	private:
 		Ogre::Root*                 mRoot;

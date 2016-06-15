@@ -1,1 +1,6 @@
-﻿  Core.vcxproj -> D:\z-Autres\Programmation\Sinah\SINAH\Code\Debug\Core.exe
+﻿  Graphics.cpp
+d:\z-autres\programmation\sinah\sinah\code\core\graphics.cpp(112): warning C4305: 'argument' : troncation de 'double' à 'Ogre::Real'
+d:\z-autres\programmation\sinah\sinah\code\core\graphics.cpp(124): warning C4305: 'argument' : troncation de 'double' à 'float'
+d:\z-autres\programmation\sinah\sinah\code\core\graphics.cpp(126): warning C4305: 'argument' : troncation de 'double' à 'const Ogre::Real'
+d:\z-autres\programmation\sinah\sinah\code\core\graphics.cpp(133): warning C4305: 'argument' : troncation de 'double' à 'float'
+  Core.vcxproj -> D:\z-Autres\Programmation\Sinah\SINAH\Code\Debug\Core.exe

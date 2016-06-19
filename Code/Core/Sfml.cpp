@@ -3,6 +3,7 @@
 Sfml::Sfml() : mWindow(0), mEvent(new sf::Event()), mWidth(1200), mHeight(700), mName("Ogre3D v1.9 and SFML v2.1")
 {
 	mWindow = new sf::RenderWindow(sf::VideoMode(mWidth, mHeight), mName, sf::Style::Default, sf::ContextSettings(32));
+	mWindow->setFramerateLimit(GeneralConstants::nbFrames);
 }
 Sfml::Sfml(int x, int y, std::string name) : mWindow(0), mEvent(new sf::Event), mWidth(1200), mHeight(700), mName("Ogre3D v1.9 and SFML v2.1")
 {

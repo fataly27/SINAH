@@ -6,6 +6,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
+#include "Constants.h"
+
 class Sfml
 {
 		public:

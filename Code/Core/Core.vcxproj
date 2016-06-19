@@ -160,15 +160,20 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Sfml.cpp" />
+    <ClCompile Include="Vecteur.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Sfml.h" />
+    <ClInclude Include="Vecteur.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

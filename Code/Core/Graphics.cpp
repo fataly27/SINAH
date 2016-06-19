@@ -28,9 +28,8 @@ Graphics::Graphics() : mRoot(0), mCamera(0), mSceneMgr(0), mWindow(0), mOverlayS
 }
 Graphics::~Graphics()
 {
-	if(mOverlaySystem) delete mOverlaySystem;
-	delete mTerrainGroup;
-	delete mTerrainGlobals;
+	if(mOverlaySystem)
+		delete mOverlaySystem;
 	delete mRoot;
 }
 
@@ -121,16 +120,16 @@ void Graphics::createScene()
 	mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 
 	// Create your scene here :)
-	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
+	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.4, 0.4, 0.4));
 
-	Ogre::Vector3 lightdir(0.55, -0.3, 0.75);
+	Ogre::Vector3 lightdir(-0.5, -0.2, -5.0);
 	lightdir.normalise();
 
 	Ogre::Light* light = mSceneMgr->createLight("TestLight");
 	light->setType(Ogre::Light::LT_DIRECTIONAL);
 	light->setDirection(lightdir);
 	light->setDiffuseColour(Ogre::ColourValue::White);
-	light->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
+	light->setSpecularColour(Ogre::ColourValue(0.7, 0.7, 0.7));
 
 	mTerrainGlobals = OGRE_NEW Ogre::TerrainGlobalOptions();
 	mTerrainGroup = OGRE_NEW Ogre::TerrainGroup(mSceneMgr, Ogre::Terrain::ALIGN_X_Z, 513, 12000.0);
@@ -156,8 +155,6 @@ void Graphics::createScene()
 	}
 
 	mTerrainGroup->freeTemporaryResources();
-
-	mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
 }
 void Graphics::getTerrainImage(bool flipX, bool flipY, Ogre::Image& img)
 {
@@ -255,4 +252,13 @@ void Graphics::configureTerrainDefaults(Ogre::Light* light)
 Ogre::Root* Graphics::getRoot()
 {
 	return mRoot;
+}
+
+void Graphics::setCameraPosition(float x, float y, float z)
+{
+	mCamera->setPosition(Ogre::Vector3(x, y, z));
+}
+void Graphics::setCameraLookAt(float x, float y, float z)
+{
+	mCamera->lookAt(Ogre::Vector3(x, y, z));
 }

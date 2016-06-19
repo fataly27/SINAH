@@ -1,6 +1,13 @@
+#include "Constants.h"
+
 #include "Physics.h"
 #include "Graphics.h"
 #include "Sfml.h"
+
+#include "Camera.h"
+#include "Vecteur.h"
+
+#include <iostream>
 
 using namespace std;
 
@@ -14,6 +21,8 @@ int main()
 
 	motGraph.setup(reinterpret_cast<unsigned long>(bibSfml.getWindow()->getSystemHandle()));
 	motGraph.createScene();
+
+	Camera MaCamera(45.0f);
 
 	//----------------- Go
 
@@ -31,7 +40,24 @@ int main()
 				// end the program
 				running = false;
 			}
+			else if (bibSfml.getEvent()->type == sf::Event::MouseWheelScrolled)
+			{
+				if (bibSfml.getEvent()->mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+					MaCamera.zoomCamera(-(bibSfml.getEvent()->mouseWheelScroll.delta));
+			}
 		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+			MaCamera.moveCamera(Vecteur(0, 0, -1));
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+			MaCamera.moveCamera(Vecteur(0, 0, 1));
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+			MaCamera.moveCamera(Vecteur(-1, 0, 0));
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+			MaCamera.moveCamera(Vecteur(1, 0, 0));
+
+		MaCamera.releaseZoom();
+		motGraph.setCameraPosition(MaCamera.getPosition().x, MaCamera.getPosition().y, MaCamera.getPosition().z);
+		motGraph.setCameraLookAt(MaCamera.getFocus().x, MaCamera.getFocus().y, MaCamera.getFocus().z);
 
 		// clear the buffers
 		bibSfml.getWindow()->clear();

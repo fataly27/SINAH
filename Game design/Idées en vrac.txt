@@ -167,11 +167,18 @@ Attaque adverse * (1 - Pourcentage de bouclier associé à l'attaque). Ces dég�
 autre sera immédiatement prise pour cible si elle est présente dans la vue de l'unité attaquante.
 	
 	Attaque d'une garnison
+	
 	Or
+	
+	A la fin d'une partie de multijoueur, les joueurs recevront tous deux de l'or, en fonction de différentes stats (victoire ou 
+non, temps de jeu, combats, forteresses prises, ressources récoltées, unités crées). Cet or permettra ensuite au joueur de débloquer 
+de nouvelles branches de l'histoire, dont les choix permettant d'y accéder nécessite de l'argent (achats, pots de vin, armes ou 
+blasons particuliers ...).
+	
 	Campagne
 	
-	La campagne est divisée en plusieurs branches, débloquées grâce à des choix, des actions particulières lors d'un
-combat ou de l'or. Ces différentes branches permettent d'explorer entièrement le background du jeu. En omettre une
+	La campagne est divisée en plusieurs branches, débloquées grâce à des choix ou des actions particulières lors d'un
+combat. Ces différentes branches permettent d'explorer entièrement le background du jeu. En omettre une
 serait perdre une partie de la vision de l'univers de Sinah. Chaque branche contient des cinématiques, des choix et 
 des phases de jeu. Lors d'une phase de jeu, le joueur se retrouve face à une situation prédéfinie. Il peut ainsi 
 arriver au beau milieu d'un combat, se battre contre un adversaire déséquillibré, avoir certaines troupes en plus ou 

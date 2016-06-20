@@ -187,6 +187,13 @@ en moins... Ainsi, lors du premier tutoriel, le joueur arrive en plein milieu du
 et avec une civilisation unique à cette phase.
 	
 	Classement ELO
+	
+	Lors de la fin d'une partie en multijoueur, les joueurs s'étant mis en mode classé au début de la partie se verront enlever ou
+ajouter des points ELO, en fonction de l'issue de la partie et de la différence de niveau entre les deux joueurs. Ce niveau correspond
+justement au points ELO. En fonction de la plage de la valeur dans laquelle se trouve les points ELO d'un joueur, celui-ci ce verra 
+obtenir un garde militaire sinah, et selon les points eux-même, un classement appelé classement ELO, dans lequel seront référencés 
+tous les joueurs, leur grade et leurs points.
+	
 	Succès
 	Troupes amuhines
 	Troupes lorthémidiennes

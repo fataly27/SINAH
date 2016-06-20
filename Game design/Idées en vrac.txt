@@ -36,12 +36,11 @@ seconde guerre commence, pleine d'horreurs, où même les civilisations furent p
 	
 	Les Lorthémidiens sont en théorie immortels. Ils peuvent en effet vivre des siècles grâce aux nombreux
 exosquelettes dont ils sont pourvus. Lorsqu'ils meurent, leur mémoire, stockée et actualisée presque
-instantanément est récupérée lors d'un rituel, puis implanté dans un corps. Lorsqu'il faut augmenenter
-la population, on crée des mémoires vierges. La reproduction n'existe donc plus. De ce fait, les
-relations hétérosexuelles sont très mal vues, seule l'homosexualité est vue d'un bon oeil. Si cette
-civilisation était heureuse avant la guerre, observant l'univers évoluer à toute vitesse, la destruction
-de leur planète mère à mis un terme à cette paisible vie. Désormais, ils ne connaissent que la mort et la haine
-des Amuhins. Ils ont toutefois gardé des manières douces. Ils maitrisent notemment l'électricité sous toutes ses
+instantanément est récupérée, puis implanté dans un corps. Lorsqu'il faut augmenenter la population, on crée des
+mémoires vierges. La reproduction n'existe donc plus. De ce fait, les relations hétérosexuelles sont très mal vues,
+seule l'homosexualité est vue d'un bon oeil. Si cette civilisation était heureuse avant la guerre, observant l'univers évoluer
+à toute vitesse, la destruction de leur planète mère à mis un terme à cette paisible vie. Désormais, ils ne connaissent que la
+mort et la haine des Amuhins. Ils ont toutefois gardé des manières douces. Ils maitrisent notemment l'électricité sous toutes ses
 formes # on peut alors en inventer #. Leur musique est de ce fait électro, voire 8-bit.
 
 	Amuh
@@ -91,61 +90,64 @@ toujours grandissante, il se fit donc mercenaire, détournant le regard à chaqu
 
 	Principe et but du jeu
 	
-	Le but d'une partie est de chasser l'adversaire un prenant sa citadelle, afin de coloniser le territoire en jeu.
+	Le but d'une partie est de chasser l'adversaire de tout ses points de contrôle, afin de coloniser le territoire en jeu.
 Pour cela, le joueur dispose de 4 ressources : la nourriture, les cellules de photosynthèse, le métal et les cristaux du désert.
 Il en a un stock dès le début du jeu, et peut en récupérer grâce aux points de ressources. La nourriture permet de garder
 son armée en forme et en vie, et les autres permettent de former des unités, néammoins, il faudra un minimum de nourriture
-pour créer une autr armée. Ces unités forment des armées, limitées à 30 points d'unité : si ce nombre est dépassé, l'armée se scinde.
-Ces armées peuvent certes se combattre dans la map, mais elles peuvent surtout attaquer des points de contrôle et des citadelles.
+pour créer une autre unitée. Ces unités peuvent certes se combattre dans la map, mais elles peuvent surtout attaquer des points
+de contrôle et des citadelles.
 
 	Carte
 	
 	La carte du monde est délimitée par une falaise, plus haute à l'extérieur, qui est suivie d'une forêt dense. En outre,
-elle est composé de X(5 ?) * X(5 ?) blocs. Chaque bloc peut contenir de 1 à 3 biomes, selon l'agencement suivant :          3 1 1 1 1
+elle est composé de 5 * 5 blocs. Chaque bloc peut contenir de 1 à 3 biomes, selon l'agencement suivant :                    3 1 1 1 1
 Les blocs contenant un biome contiennent un unique point de ressource, à 100 % de la production maximale,                   1 2 1 2 1
 ceux en contenant 2 en possèdent 2, à 75 %, et possèdent en outre un point de contrôle, et ceux contenant                   1 1 3 1 1
 3 biomes en contiennent 3, à 60% (1 par biome différent). Les biomes peuvent être : une forêt, un désert,                   1 2 1 2 1
 une prairie ou une montagne. La végétation est d'une palette de rose à mauve, l'eau et la sève bleu turquoise	            1 1 1 1 3
-clair, le sable jaune-orangé et les rochers du désert orangé-rouge, les montagnes rouge-gris et la neige blanche.
+clair, le sable jaune-orangé, les montagnes rouge-gris et la neige blanche.
 	
 	Ressources
 	
 	Les points de ressources des biomes produisent 4 ressources différentes. Les prairies produisent de la nourriture,
 utile pour nourrir les troupes, les forêts des cellules de photosynthèse, qui font fonctionner les machines, les déserts
 des cristaux du désert, source de magie et les montagnes du métal, utile dans la fabrication d'armes défensives et offensives.
+En cas de manque de nourriture, il sera impossible de créer des unités comme pour toute ressource manquante, mais le manque
+de nourriture fera également descendre la vie des armées, mal nourries (la distribution de nourriture est homogène).
 	
 	Points de ressources : production et pillage
 	
 	Les points de ressources produisent des ressources. Selon le bloc, ils en produisent plus ou moins, le maximum étant
 x ressources / minute. Dans les blocs à 1 biome, il suffit de leur faire perdre tous leurs PV pour se l'approprier,
 mais dans les blocs à deux biomes et à trois, il faut s'assurer le contrôle du point de contrôle ou de la citadelle pour gagner
-le point de ressources : le point perd alors tous ses niveaux. Dans le cas contraire [?], les ressources dans le point sont pillées,
-et leur niveau descend d'un point. Les ressources sont ramassées automatiquement toutes les #minutes / 30 s#. De plus, les points de
-ressources peuvent être amélioré sur X, Y ou Z niveaux en fonction du bloc pour produire plus : +0% -> + X%... Le coût pour améliorer
-le matériel demande un peu de métal, mais surtout #des cellules et des cristaux OU des cellules ou des cristaux#.
+le point de ressources : le point perd alors tous ses niveaux. Dans le cas contraire, les ressources dans le point sont pillées,
+pendant un temps donné, pouvant être augmenté dans l'arbre de compétence, et leur niveau descend d'un point. Les ressources sont 
+ramassées automatiquement continuellement. De plus, les points de ressources peuvent être amélioré sur X, Y ou Z niveaux en fonction
+du bloc pour produire plus : +0% -> + X%... Le coût pour améliorer le matériel demande un peu de métal, mais surtout #des cellules
+et des cristaux OU des cellules ou des cristaux#.
 	
 	Points de contrôle et citadelles : formation de troupes et défense
 	
 	Le rôle des citadelles est primordial, car le joueur ne possédant plus de citadelle perdra la partie. Mais elles ont, comme
 les points de contrôle, de nombreuses autres utilités. Tout d'abord, les points de contrôles et les citadelles permettent de contrôler
 un bloc à 2 ou 3 biomes, de façon économique (voir plus haut) mais aussi de façon militaire. En effet, ils permettent de créer des 
-armées.
-Chaque armée est composée de 30 points d'unité au maximum, et contient une ou plusieurs unités. Ces unités, spécifiques à 
-chaque peuple, sont listées plus bas. Une armée a besoin en outre de temps pour s'entraîner ainsi que de ressources, dont 
-la valeur dépendra des unités. Toutefois, toute unité coûtera de la nourriture. Enfin, ils permettent d'assurer au joueur 
-un point sur lequel il peut compter s'il en paye le prix. En effet, grâce à beaucoup de métal et un peu #de cellules et de 
-cristaux OU de cellules ou de cristaux#, le point de contrôle où la citadelle gagne un niveau (limité à X pour le point de 
-contrôle et à Y pour la citadelle) qui permet au joueur d'y ajouter un bonus, pouvant être décisif dans les importantes 
-batailles se déroulant dans ces lieux. En effet, ils peuvent être pris lorsqu'une armée ennemie bat la garnison. Cette 
-garnison est une armée particulière défendant le lieu. Lors d'une prise, le niveau redescend à zéro.
-
-	Si les armées viennent à ne plus être approvisionnées en ressources essentielles à leur survie, elles vont lentement
-perdre des unités. 
+unités.
+Ces unités, spécifiques à chaque peuple, sont listées plus bas. Une armée a besoin en outre de temps pour s'entraîner ainsi
+que de ressources, dont la valeur dépendra des unités. Toutefois, toute unité coûtera de la nourriture. Enfin, ils permettent
+d'assurer au joueur  un point sur lequel il peut compter s'il en paye le prix. En effet, grâce à beaucoup de métal et un peu
+#de cellules et de  cristaux OU de cellules ou de cristaux#, le point de contrôle où la citadelle gagne un niveau (limité à X
+pour le point de contrôle et à Y pour la citadelle) qui permet au joueur, en plus d'augmenter moyennement la vie du point de
+contrôle et sa vitesse de régénération, d'y ajouter un bonus, pouvant être décisif dans les importantes batailles se déroulant
+dans ces lieux. Lors d'une prise, le niveau redescend à zéro. Ces bonus, pouvant être des bonus de vie ou de vue pour la citadelle,
+de régénération pour les forteresses et les unités alliées et de vitesse pour ces derniers, pourront aussi grâce à des améliorations
+de l'arbre des compétences se tourner en malus également, pour les adversaires. Ces effets, limités, se produiront dans une zone elle
+aussi limitée, pouvant être améliorés. #reste à savoir où : arbre des compétences et / ou point de contrôle ?#
 
 	Positions
 	
 	Il existe différentes positions possibles pour les unités. Par défaut, les unités sont en position d'attaque : Elles attaquent
-alors automatiquement dès que cela est possible, et tentent de suivre leur cible. De plus, leur attaques sont augmentées de ?% mais leur boucliers sont diminués de ?%.
+alors automatiquement dès que cela est possible, et tentent de suivre leur cible. De plus, leur attaques sont augmentées de ?% mais
+leurs boucliers sont diminués de ?%.
 	La seconde position est la position de défense : les unités sont alors immobiles, et attquent uniquement lorsqu'elles sont
 attquées, mais gagnent un bonus de bouclier. De plus, se mettre dans cette position ou la quitter prendra un certain temps (il est 
 possible de le diminuer drastiquement dans l'arbre des compétences).
@@ -156,7 +158,8 @@ leur bouclier.
 	Enfin, la position d'invisibilité est légèrement différente : elle ne permet pas d'attaquer, fait perdre tous les boucliers,
 et n'accorde aucun bonus, mais permet à une unité de devenir invisible temporairement, voire immatérielle après une importante 
 amélioration dans l'arbre des compétences. Sinon, une adversaire pourra toujours attaquer ces unités si ils touchent une armée
-ennemie. Le temps de cette position pourra être améliorée dans l'arbre.
+ennemie. En plus du temps limité de cette position, cette dernière possède également un cool-down. Ces temps pourront être améliorés
+dans l'arbre.
 
 	Combat
 	
@@ -165,8 +168,6 @@ atteindre une distance égale à sa portée. Elle va alors attaquer l'unité la 
 joueur. Par défaut, l'unité attaque tous les types d'unités indistinctement. Les dégâts subis par l'unité attquée seront alors de
 Attaque adverse * (1 - Pourcentage de bouclier associé à l'attaque). Ces dégâts seront enlevés aux PV. Si l'unité attaquée meurt, une
 autre sera immédiatement prise pour cible si elle est présente dans la vue de l'unité attaquante.
-	
-	Attaque d'une garnison
 	
 	Or
 	

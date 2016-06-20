@@ -17,7 +17,7 @@ même supérieur à la femme.
 	L'Histoire :
 
 	La grande Histoire débute pour l'instant en paix, dans le système stellaire
-originel, dominés 3 civilisations (Lorthémidiens, Zarkhs et Hovanion). Si la tension est toujours
+originel, dominés par 3 civilisations (Lorthémidiens, Zarkhs et Hovanion). Si la tension est toujours
 présente entre les Zarkhs et les Hovanions, les Lorthémidiens, très pacifistes, permet une paix relative. Mais
 lorsque les Amuhins accède au voyage spacial long courrier, cette civilisation guerrière
 attaque par surprise les Lorthémidiens. Leur planète ravagée, cette nation pourtant pacifiste
@@ -195,6 +195,10 @@ obtenir un garde militaire sinah, et selon les points eux-même, un classement a
 tous les joueurs, leur grade et leurs points.
 	
 	Succès
+	
+	Lors d'actions particulières du joueur, sur l'interface ou dans le jeu, ou lorsqu'il atteint certains palliers, des succès 
+pourront être dévérouillés, apportant parfois des récompenses, notemment en or.
+	
 	Troupes amuhines
 	Troupes lorthémidiennes
 	Troupes zarkhs

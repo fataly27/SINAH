@@ -142,6 +142,22 @@ garnison est une armée particulière défendant le lieu. Lors d'une prise, le n
 	Si les armées viennent à ne plus être approvisionnées en ressources essentielles à leur survie, elles vont lentement
 perdre des unités. 
 
+	Positions
+	
+	Il existe différentes positions possibles pour les unités. Par défaut, les unités sont en position d'attaque : c'est
+la seule position dans laquelle les unités peuvent attaquer. Elle le font alors automatiquement dès que cela est possible, et
+tentent de suivre leur cible. De plus, leur attaques sont augmentées de ?% mais leur boucliers sont diminués de ?%. Dans toutes
+les autres position, les unités n'attqueront pas dans tout les cas.
+	La seconde position est la position de défense : les unités sont alors immobiles, mais gagnent un bonus de bouclier. De
+plus, se mettre dans cette position ou la quitter prendra un certain temps (il est possible de le diminuer drastiquement dans
+l'arbre des compétences).
+	La troisième position est la position d'alerte, dans laquelle les unités possèdent un bonus de limite de vue.
+	La quatrième est la position de déplacement, dans laquelle les unités se déplacent plus rapidement, mais perdent ?% de 
+leur bouclier.
+	Enfin, la position d'invisibilité est légèrement différente : elle ne permet pas d'attaquer, fait perdre tous les boucliers,
+et n'accorde aucun bonus, mais permet à une unité de devenir invisible temporairement, voire immatérielle après une importante 
+amélioration dans l'arbre des compétences. Sinon, une adversaire pourra toujours attaquer ces unités si ils touchent une armée
+ennemie. Le temps de cette position pourra être améliorée dans l'arbre.
 
 	Combat
 	Attaque d'une garnison

@@ -1,6 +1,0 @@
-﻿  Graphics.cpp
-Graphics.cpp(112): warning C4305: 'argument' : troncation de 'double' à 'Ogre::Real'
-  main.cpp
-  Physics.cpp
-  Sfml.cpp
-LINK : fatal error LNK1104: impossible d'ouvrir le fichier 'libboost_system-vc140-mt-1_60.lib'

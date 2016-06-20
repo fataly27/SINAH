@@ -1,1 +1,5 @@
 *.pdb
+*.db
+*.ilk
+Code/Core/Debug/
+Code/Core/Release/

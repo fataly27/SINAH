@@ -218,7 +218,7 @@ void Graphics::initBlendMaps(Ogre::Terrain* terrain)
 void Graphics::configureTerrainDefaults(Ogre::Light* light)
 {
 	mTerrainGlobals->setMaxPixelError(8);
-	mTerrainGlobals->setCompositeMapDistance(3000);
+	mTerrainGlobals->setCompositeMapDistance(6000);
 
 	mTerrainGlobals->setLightMapDirection(light->getDerivedDirection());
 	mTerrainGlobals->setCompositeMapAmbient(mSceneMgr->getAmbientLight());

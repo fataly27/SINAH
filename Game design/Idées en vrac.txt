@@ -144,13 +144,12 @@ perdre des unités.
 
 	Positions
 	
-	Il existe différentes positions possibles pour les unités. Par défaut, les unités sont en position d'attaque : c'est
-la seule position dans laquelle les unités peuvent attaquer. Elle le font alors automatiquement dès que cela est possible, et
-tentent de suivre leur cible. De plus, leur attaques sont augmentées de ?% mais leur boucliers sont diminués de ?%. Dans toutes
-les autres position, les unités n'attqueront pas dans tout les cas.
-	La seconde position est la position de défense : les unités sont alors immobiles, mais gagnent un bonus de bouclier. De
-plus, se mettre dans cette position ou la quitter prendra un certain temps (il est possible de le diminuer drastiquement dans
-l'arbre des compétences).
+	Il existe différentes positions possibles pour les unités. Par défaut, les unités sont en position d'attaque : Elles attaquent
+alors automatiquement dès que cela est possible, et tentent de suivre leur cible. De plus, leur attaques sont augmentées de ?% mais leur boucliers sont diminués de ?%.
+	La seconde position est la position de défense : les unités sont alors immobiles, et attquent uniquement lorsqu'elles sont
+attquées, mais gagnent un bonus de bouclier. De plus, se mettre dans cette position ou la quitter prendra un certain temps (il est 
+possible de le diminuer drastiquement dans l'arbre des compétences).
+	Dans toutes les positions suivantes, les unités n'attqueront pas dans tout les cas.
 	La troisième position est la position d'alerte, dans laquelle les unités possèdent un bonus de limite de vue.
 	La quatrième est la position de déplacement, dans laquelle les unités se déplacent plus rapidement, mais perdent ?% de 
 leur bouclier.
@@ -160,6 +159,13 @@ amélioration dans l'arbre des compétences. Sinon, une adversaire pourra toujou
 ennemie. Le temps de cette position pourra être améliorée dans l'arbre.
 
 	Combat
+	
+	Lorsqu'une unité est en position d'attaque et passe à vue d'une unité ennemie, elle va s'approcher de cette unités jusqu'à
+atteindre une distance égale à sa portée. Elle va alors attaquer l'unité la plus proche, selon le type d'unité indiquer par le
+joueur. Par défaut, l'unité attaque tous les types d'unités indistinctement. Les dégâts subis par l'unité attquée seront alors de
+Attaque adverse * (1 - Pourcentage de bouclier associé à l'attaque). Ces dégâts seront enlevés aux PV. Si l'unité attaquée meurt, une
+autre sera immédiatement prise pour cible si elle est présente dans la vue de l'unité attaquante.
+	
 	Attaque d'une garnison
 	Or
 	Campagne
@@ -178,7 +184,3 @@ et avec une civilisation unique à cette phase.
 	Troupes lorthémidiennes
 	Troupes zarkhs
 	Troupes hovanions
-	Spécificités des Amuhins
-	Spécificités des Lorthémidiens
-	Spécificités des Zarkhs
-	Spécificités des Hovanions

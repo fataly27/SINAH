@@ -121,10 +121,10 @@ de nourriture fera également descendre la vie des armées, mal nourries (la dis
 x ressources / minute. Dans les blocs à 1 biome, il suffit de leur faire perdre tous leurs PV pour se l'approprier,
 mais dans les blocs à deux biomes et à trois, il faut s'assurer le contrôle du point de contrôle ou de la citadelle pour gagner
 le point de ressources : le point perd alors tous ses niveaux. Dans le cas contraire, les ressources dans le point sont pillées,
-pendant un temps donné, pouvant être augmenté dans l'arbre de compétence, et leur niveau descend d'un point. Les ressources sont 
-ramassées automatiquement continuellement. De plus, les points de ressources peuvent être amélioré sur X, Y ou Z niveaux en fonction
-du bloc pour produire plus : +0% -> + X%... Le coût pour améliorer le matériel demande un peu de métal, mais surtout #des cellules
-et des cristaux OU des cellules ou des cristaux#.
+pendant un temps donné, pouvant être diminué dans l'arbre de compétence par le défenseur, et leur niveau descend d'un point. Les 
+ressources sont  ramassées automatiquement continuellement. De plus, les points de ressources peuvent être amélioré sur X, Y ou Z 
+niveaux en fonction du bloc pour produire plus : +0% -> + X%... Le coût pour améliorer le matériel demande un peu de métal, mais 
+surtout #des cellules et des cristaux OU des cellules ou des cristaux#.
 	
 	Points de contrôle et citadelles : formation de troupes et défense
 	
@@ -198,6 +198,18 @@ tous les joueurs, leur grade et leurs points.
 	
 	Lors d'actions particulières du joueur, sur l'interface ou dans le jeu, ou lorsqu'il atteint certains palliers, des succès 
 pourront être dévérouillés, apportant parfois des récompenses, notemment en or.
+
+	Arbre de compétences
+	
+	Chaque joueur possède un arbre de compétence qu'il peut modifier entre les combats, et notemment sauvegarder certaines
+configurations en fonction des races, qui possèdent des traits raciaux, ou points supplémentaires déjà attribués. Lors des campagnes,
+l'arbre de compétence sera partiellement ou totalement fixé. Les points pouvant être améliorés dans l'arbre sont nombreux et possèdent
+souvent plusieurs niveaux, mais le joueur ne dispose que de X points à donner, qu'il reçoit après le tuto, lorsqu'il accède au
+multijoueur. Ces nombreux points sont : des bonus en attaque, en vie, en bouclier, en vision, en portée, en fonction des types 
+d'unités, les influences de bonus de points de contôle (taille et taile des auras, amlus sur les adversaire), des bonus sur les
+positions de défense et d'invisiblité sur les temps (défense -> mise en place et abandon du mode de défense, invisibilité -> temps
+d'invisibilité, temps du cooldown), des bonus pour diminuer le temps de pillage par les adversaires ou pour éviter de faire perdre
+tous ses niveaux à un bâtiment lorsqu'on le prend...
 	
 	Troupes amuhines
 	Troupes lorthémidiennes

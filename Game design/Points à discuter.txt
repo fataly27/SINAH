@@ -6,4 +6,8 @@ Ce fichier contient tous les points peu clairs à préciser
 - Niveaux disponibles pour les points de contrôle et pour les citadelles
 - Valider ou non le mot "citadelle"
 - Ressources necessaires pour monter le niveau d'un point militaire et commercial
-- Revoir la mécanique centrale des armées, création de celles-ci, attaques...
+- Je me demande si une map de ce type : 3  1  2  1  1 ne serait pas mieux que celle-ci : 3  1  1  1  1. Je trouve qu'il y aurait plus de
+possibles stratégies comme ça perso...  1  1  1  1  1                                    1  2  1  2  1
+                                        2  1  3  1  2                                    1  1  3  1  1
+                                        1  1  1  1  1                                    1  2  1  2  1
+                                        1  1  2  1  3                                    1  1  1  1  3

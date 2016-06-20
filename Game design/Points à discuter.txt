@@ -8,6 +8,6 @@ Ce fichier contient tous les points peu clairs à préciser
 - Ressources necessaires pour monter le niveau d'un point militaire et commercial
 - Je me demande si une map de ce type : 3  1  2  1  1 ne serait pas mieux que celle-ci : 3  1  1  1  1. Je trouve qu'il y aurait plus de
 possibles stratégies comme ça perso...  1  1  1  1  1                                    1  2  1  2  1
-                                        2  1  3  1  2                                    1  1  3  1  1
+(Passer par les cotés, encercler...)    2  1  3  1  2                                    1  1  3  1  1
                                         1  1  1  1  1                                    1  2  1  2  1
                                         1  1  2  1  3                                    1  1  1  1  3

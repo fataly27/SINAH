@@ -156,14 +156,9 @@ void Graphics::createScene()
 
 	mTerrainGroup->freeTemporaryResources();
 }
-void Graphics::getTerrainImage(bool flipX, bool flipY, Ogre::Image& img)
+void Graphics::getTerrainImage(Ogre::Image& img)
 {
 	img.load("terrain.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-	if (flipX)
-		img.flipAroundY();
-	if (flipY)
-		img.flipAroundX();
 }
 
 void Graphics::defineTerrain(long x, long y)
@@ -176,7 +171,7 @@ void Graphics::defineTerrain(long x, long y)
 	else
 	{
 		Ogre::Image img;
-		getTerrainImage(x % 2 != 0, y % 2 != 0, img);
+		getTerrainImage(img);
 		mTerrainGroup->defineTerrain(x, y, &img);
 
 		mTerrainsImported = true;

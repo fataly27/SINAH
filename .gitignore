@@ -1,5 +1,7 @@
 *.pdb
 *.db
 *.ilk
+*.log
 Code/Core/Debug/
 Code/Core/Release/
+Code/.vc/

@@ -158,7 +158,7 @@ void Graphics::createScene()
 }
 void Graphics::getTerrainImage(Ogre::Image& img)
 {
-	img.load("terrain.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	img.load("Landscapes/Heightmaps/first-try.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 }
 
 void Graphics::defineTerrain(long x, long y)

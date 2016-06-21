@@ -4,4 +4,4 @@
 *.log
 Code/Core/Debug/
 Code/Core/Release/
-Code/.vc/
+Code/.vs/

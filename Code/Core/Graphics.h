@@ -9,7 +9,6 @@
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 #include <OgreConfigFile.h>
-#include <OgreOverlaySystem.h>
 #include <Terrain/OgreTerrain.h>
 #include <Terrain/OgreTerrainGroup.h>
 
@@ -37,7 +36,6 @@ class Graphics
 		Ogre::Camera*               mCamera;
 		Ogre::SceneManager*         mSceneMgr;
 		Ogre::RenderWindow*         mWindow;
-		Ogre::OverlaySystem*        mOverlaySystem;
 
 		Ogre::TerrainGroup*			mTerrainGroup;
 		Ogre::TerrainGlobalOptions* mTerrainGlobals;

@@ -1,6 +1,6 @@
 #include "Graphics.h"
 
-Graphics::Graphics() : mRoot(0), mCamera(0), mSceneMgr(0), mWindow(0), mOverlaySystem(0), mTerrainGroup(0), mTerrainGlobals(0), mTerrainsImported(false)
+Graphics::Graphics() : mRoot(0), mCamera(0), mSceneMgr(0), mWindow(0), mTerrainGroup(0), mTerrainGlobals(0), mTerrainsImported(false)
 {
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 	m_ResourcePath = Ogre::macBundlePath() + "/Contents/Resources/";
@@ -28,8 +28,6 @@ Graphics::Graphics() : mRoot(0), mCamera(0), mSceneMgr(0), mWindow(0), mOverlayS
 }
 Graphics::~Graphics()
 {
-	if(mOverlaySystem)
-		delete mOverlaySystem;
 	delete mRoot;
 }
 
@@ -92,9 +90,6 @@ void Graphics::setup(unsigned long systemHandle)
 
 	// Get the SceneManager, in this case a generic one
 	mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
-
-	mOverlaySystem = new Ogre::OverlaySystem();
-	mSceneMgr->addRenderQueueListener(mOverlaySystem);
 
 	// Set default mipmap level (NB some APIs ignore this)
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);

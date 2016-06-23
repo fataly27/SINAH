@@ -1,6 +1,6 @@
 #include "Vecteur.h"
 
-Vecteur::Vecteur() : x(0.0), y(0.0), z(0.0) {}
+Vecteur::Vecteur() : Vecteur(0.0f, 0.0f, 0.0f) {}
 Vecteur::Vecteur(float x, float y, float z) : x(x), y(y), z(z) {}
 Vecteur::~Vecteur() {}
 

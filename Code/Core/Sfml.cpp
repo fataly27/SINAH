@@ -1,18 +1,13 @@
 #include "Sfml.h"
 
-Sfml::Sfml() : mWidth(1200), mHeight(700), mName("Ogre3D v1.9 and SFML v2.1"),
-			   mWindow(new sf::RenderWindow(sf::VideoMode(mWidth, mHeight), mName, sf::Style::Default, sf::ContextSettings(32))), mEvent(new sf::Event)
-			  
-{
-	mWindow->setFramerateLimit(GeneralConstants::nbFrames);
-}
+Sfml::Sfml() : Sfml(1200, 700, "Ogre3D v1.9 and SFML v2.1") {}
 Sfml::Sfml(int x, int y, std::string name) : mEvent(new sf::Event), mWidth(1200), mHeight(700), mName("Ogre3D v1.9 and SFML v2.1"),
-											 mWindow(new sf::RenderWindow(sf::VideoMode(mWidth, mHeight), mName, sf::Style::Default, sf::ContextSettings(32)))
-											 
+											 mWindow(new sf::RenderWindow(sf::VideoMode(mWidth, mHeight), mName, sf::Style::Default, sf::ContextSettings(32)))							 
 {
 	setWidth(x);
 	setHeight(y);
 	setName(name);
+	mWindow->setFramerateLimit(GeneralConstants::nbFrames);
 }
 Sfml::~Sfml() {}
 

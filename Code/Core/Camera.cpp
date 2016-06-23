@@ -1,11 +1,6 @@
 #include "Camera.h"
 
-Camera::Camera() : mTicks(CameraConstants::ticksOffset), mFocus(0, 0, 0), mOrientation(0, Vecteur::absoluteValue(sin(80 * 2 * M_PI / 360)), Vecteur::absoluteValue(cos(80 * 2 * M_PI / 360)))
-{
-	mActualPosition = mOrientation * mTicks + mFocus;
-	mStartPosition = mActualPosition;
-	mStopPosition = mActualPosition;
-}
+Camera::Camera() : Camera(80.0f) {}
 Camera::Camera(float angle) : mTicks(CameraConstants::ticksOffset), mFocus(0, 0, 0), mOrientation(0, Vecteur::absoluteValue(sin(angle * 2 * M_PI / 360)), Vecteur::absoluteValue(cos(angle * 2 * M_PI / 360)))
 {
 	mActualPosition = mOrientation * mTicks + mFocus;
@@ -18,10 +13,17 @@ Camera::~Camera() {}
 
 void Camera::moveCamera(Vecteur direction)
 {
-	mActualPosition += direction * CameraConstants::speed / GeneralConstants::nbFrames * mTicks;
-	mStartPosition += direction * CameraConstants::speed / GeneralConstants::nbFrames * mTicks;
-	mStopPosition += direction * CameraConstants::speed / GeneralConstants::nbFrames * mTicks;
-	mFocus += direction * CameraConstants::speed / GeneralConstants::nbFrames * mTicks;
+	if (GeneralConstants::nbFrames <= 0)
+		throw domain_error("Le nombre de frames ne peut pas être nul ou inférieur à zéro");
+	if(mTicks <= 0)
+		throw domain_error("Le nombre de ticks de zoom ne peut pas être nul ou inférieur à zéro");
+	if (GeneralConstants::nbFrames > 0 && mTicks > 0)
+	{
+		mActualPosition += direction * CameraConstants::speed / GeneralConstants::nbFrames * mTicks;
+		mStartPosition += direction * CameraConstants::speed / GeneralConstants::nbFrames * mTicks;
+		mStopPosition += direction * CameraConstants::speed / GeneralConstants::nbFrames * mTicks;
+		mFocus += direction * CameraConstants::speed / GeneralConstants::nbFrames * mTicks;
+	}
 }
 void Camera::zoomCamera(int ticks)
 {
@@ -30,23 +32,29 @@ void Camera::zoomCamera(int ticks)
 }
 void Camera::releaseZoom()
 {
-	if (mActualPosition == mStopPosition)
-		mStartPosition = mActualPosition;
+	if(CameraConstants::nbFramesTransition <= 0)
+		throw domain_error("Le nombre de frames d'animation de zoom ne peut pas être nul ou inférieur à zéro");
 	else
 	{
-		Vecteur Itineraire(mStopPosition - mStartPosition);
-		double partieFaite((mActualPosition - mStartPosition) / Itineraire);
-
-		if (partieFaite >= 1.0)
-		{
-			mStopPosition = mActualPosition;
-			mStartPosition = mStopPosition;
-		}
+		if (mActualPosition == mStopPosition)
+			mStartPosition = mActualPosition;
 		else
 		{
-			mActualPosition += Itineraire / CameraConstants::nbFramesTransition;
+			Vecteur Itineraire(mStopPosition - mStartPosition);
+			double partieFaite((mActualPosition - mStartPosition) / Itineraire);
+
+			if (partieFaite >= 1.0)
+			{
+				mStopPosition = mActualPosition;
+				mStartPosition = mStopPosition;
+			}
+			else
+			{
+				mActualPosition += Itineraire / CameraConstants::nbFramesTransition;
+			}
 		}
 	}
+	
 }
 
 // ------------------------------------

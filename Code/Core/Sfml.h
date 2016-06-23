@@ -6,6 +6,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
+#include <memory>
+
 #include "Constants.h"
 
 class Sfml
@@ -15,8 +17,8 @@ class Sfml
 			Sfml::Sfml(int x, int y, std::string name);
 			~Sfml();
 			//------------
-			unique_ptr<sf::RenderWindow> getWindow();
-			unique_ptr<sf::Event> getEvent();
+			shared_ptr<sf::RenderWindow> getWindow();
+			shared_ptr<sf::Event> getEvent();
 
 			int getWidth();
 			int getHeight();
@@ -27,8 +29,8 @@ class Sfml
 			void setName(std::string name);
 
 		private:
-			unique_ptr<sf::RenderWindow> mWindow;
-			unique_ptr<sf::Event> mEvent;
+			shared_ptr<sf::RenderWindow> mWindow;
+			shared_ptr<sf::Event> mEvent;
 
 			int mWidth;
 			int mHeight;

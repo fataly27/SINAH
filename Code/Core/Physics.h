@@ -3,6 +3,8 @@
 
 #include <btBulletDynamicsCommon.h>
 
+#include <memory>
+
 class Physics
 {
 	public:

@@ -1,6 +1,6 @@
 #include "Graphics.h"
 
-Graphics::Graphics() : mRoot(0), mCamera(0), mSceneMgr(0), mWindow(0), mTerrainGroup(0), mTerrainGlobals(0), mTerrainsImported(false)
+Graphics::Graphics() : mRoot(nullptr), mCamera(nullptr), mSceneMgr(nullptr), mWindow(nullptr), mTerrainGroup(nullptr), mTerrainGlobals(nullptr), mTerrainsImported(false)
 {
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 	m_ResourcePath = Ogre::macBundlePath() + "/Contents/Resources/";
@@ -26,10 +26,7 @@ Graphics::Graphics() : mRoot(0), mCamera(0), mSceneMgr(0), mWindow(0), mTerrainG
 #endif
 #endif
 }
-Graphics::~Graphics()
-{
-	delete mRoot;
-}
+Graphics::~Graphics() {}
 
 void Graphics::setup(unsigned long systemHandle)
 {
@@ -110,7 +107,7 @@ void Graphics::createScene()
 	else
 		mCamera->setFarClipDistance(50000);
 
-	Ogre::Viewport* vp = mWindow->addViewport(mCamera);
+	Ogre::Viewport* vp = mWindow->addViewport(mCamera.get());
 	vp->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
 	mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 
@@ -120,14 +117,14 @@ void Graphics::createScene()
 	Ogre::Vector3 lightdir(-0.5, -0.2, -5.0);
 	lightdir.normalise();
 
-	Ogre::Light* light = mSceneMgr->createLight("TestLight");
+	shared_ptr<Ogre::Light> light (mSceneMgr->createLight("TestLight"));
 	light->setType(Ogre::Light::LT_DIRECTIONAL);
 	light->setDirection(lightdir);
 	light->setDiffuseColour(Ogre::ColourValue::White);
 	light->setSpecularColour(Ogre::ColourValue(0.7, 0.7, 0.7));
 
 	mTerrainGlobals = OGRE_NEW Ogre::TerrainGlobalOptions();
-	mTerrainGroup = OGRE_NEW Ogre::TerrainGroup(mSceneMgr, Ogre::Terrain::ALIGN_X_Z, 513, 12000.0);
+	mTerrainGroup = OGRE_NEW Ogre::TerrainGroup(mSceneMgr.get(), Ogre::Terrain::ALIGN_X_Z, 513, 12000.0);
 	mTerrainGroup->setFilenameConvention(Ogre::String("terrain"), Ogre::String("dat"));
 	mTerrainGroup->setOrigin(Ogre::Vector3::ZERO);
 
@@ -144,7 +141,7 @@ void Graphics::createScene()
 		Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
 		while (ti.hasMoreElements())
 		{
-			Ogre::Terrain* t = ti.getNext()->instance;
+			shared_ptr<Ogre::Terrain> t (ti.getNext()->instance);
 			initBlendMaps(t);
 		}
 	}
@@ -173,7 +170,7 @@ void Graphics::defineTerrain(long x, long y)
 	}
 }
 
-void Graphics::initBlendMaps(Ogre::Terrain* terrain)
+void Graphics::initBlendMaps(shared_ptr<Ogre::Terrain> terrain)
 {
 	Ogre::Real minHeight0 = 70;
 	Ogre::Real fadeDist0 = 40;
@@ -194,6 +191,7 @@ void Graphics::initBlendMaps(Ogre::Terrain* terrain)
 
 			blendMap0->convertImageToTerrainSpace(x, y, &tx, &ty);
 			Ogre::Real height = terrain->getHeightAtTerrainPosition(tx, ty);
+			
 			Ogre::Real val = (height - minHeight0) / fadeDist0;
 			val = Ogre::Math::Clamp(val, (Ogre::Real)0, (Ogre::Real)1);
 			*pBlend0++ = val;
@@ -210,7 +208,7 @@ void Graphics::initBlendMaps(Ogre::Terrain* terrain)
 	blendMap1->update();
 }
 
-void Graphics::configureTerrainDefaults(Ogre::Light* light)
+void Graphics::configureTerrainDefaults(shared_ptr<Ogre::Light> light)
 {
 	mTerrainGlobals->setMaxPixelError(8);
 	mTerrainGlobals->setCompositeMapDistance(6000);
@@ -239,7 +237,7 @@ void Graphics::configureTerrainDefaults(Ogre::Light* light)
 
 // -----------------------
 
-Ogre::Root* Graphics::getRoot()
+shared_ptr<Ogre::Root> Graphics::getRoot()
 {
 	return mRoot;
 }

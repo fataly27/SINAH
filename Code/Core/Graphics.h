@@ -12,6 +12,8 @@
 #include <Terrain/OgreTerrain.h>
 #include <Terrain/OgreTerrainGroup.h>
 
+#include <memory>
+
 class Graphics
 {
 	public:
@@ -29,21 +31,21 @@ class Graphics
 		void setCameraPosition(float x, float y, float z);
 		void setCameraLookAt(float x, float y, float z);
 
-		Ogre::Root* getRoot();
+		shared_ptr<Ogre::Root> getRoot();
 
 	private:
-		Ogre::Root*                 mRoot;
-		Ogre::Camera*               mCamera;
-		Ogre::SceneManager*         mSceneMgr;
-		Ogre::RenderWindow*         mWindow;
+		shared_ptr<Ogre::Root>                 mRoot;
+		shared_ptr<Ogre::Camera>               mCamera;
+		shared_ptr<Ogre::SceneManager>         mSceneMgr;
+		shared_ptr<Ogre::RenderWindow>         mWindow;
 
-		Ogre::TerrainGroup*			mTerrainGroup;
-		Ogre::TerrainGlobalOptions* mTerrainGlobals;
-		bool						mTerrainsImported;
+		shared_ptr<Ogre::TerrainGroup>		   mTerrainGroup;
+		shared_ptr<Ogre::TerrainGlobalOptions> mTerrainGlobals;
+		bool								   mTerrainsImported;
 
-		Ogre::String                m_ResourcePath;
-		Ogre::String                mResourcesCfg;
-		Ogre::String                mPluginsCfg;
+		Ogre::String            		       m_ResourcePath;
+		Ogre::String           			       mResourcesCfg;
+		Ogre::String          			       mPluginsCfg;
 
 };
 

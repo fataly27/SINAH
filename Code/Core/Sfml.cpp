@@ -13,11 +13,11 @@ Sfml::~Sfml() {}
 
 // -------------------------------------------
 
-unique_ptr<sf::RenderWindow> Sfml::getWindow()
+std::shared_ptr<sf::RenderWindow> Sfml::getWindow()
 {
 	return mWindow;
 }
-unique_ptr<sf::Event> Sfml::getEvent()
+std::shared_ptr<sf::Event> Sfml::getEvent()
 {
 	return mEvent;
 }

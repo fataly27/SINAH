@@ -24,28 +24,28 @@ class Graphics
 		void createScene();
 
 		void defineTerrain(long x, long y);
-		void initBlendMaps(Ogre::Terrain* terrain);
-		void configureTerrainDefaults(Ogre::Light* light);
+		void initBlendMaps(std::shared_ptr<Ogre::Terrain> terrain);
+		void configureTerrainDefaults(std::shared_ptr<Ogre::Light> light);
 		void getTerrainImage(Ogre::Image& img);
 
 		void setCameraPosition(float x, float y, float z);
 		void setCameraLookAt(float x, float y, float z);
 
-		shared_ptr<Ogre::Root> getRoot();
+		std::shared_ptr<Ogre::Root> getRoot();
 
 	private:
-		shared_ptr<Ogre::Root>                 mRoot;
-		shared_ptr<Ogre::Camera>               mCamera;
-		shared_ptr<Ogre::SceneManager>         mSceneMgr;
-		shared_ptr<Ogre::RenderWindow>         mWindow;
+		std::shared_ptr<Ogre::Root>                 mRoot;
+		std::shared_ptr<Ogre::Camera>               mCamera;
+		std::shared_ptr<Ogre::SceneManager>         mSceneMgr;
+		std::shared_ptr<Ogre::RenderWindow>         mWindow;
 
-		shared_ptr<Ogre::TerrainGroup>		   mTerrainGroup;
-		shared_ptr<Ogre::TerrainGlobalOptions> mTerrainGlobals;
-		bool								   mTerrainsImported;
+		std::shared_ptr<Ogre::TerrainGroup>         mTerrainGroup;
+		std::shared_ptr<Ogre::TerrainGlobalOptions> mTerrainGlobals;
+		bool                                        mTerrainsImported;
 
-		Ogre::String            		       m_ResourcePath;
-		Ogre::String           			       mResourcesCfg;
-		Ogre::String          			       mPluginsCfg;
+		Ogre::String                                mResourcePath;
+		Ogre::String                                mResourcesCfg;
+		Ogre::String                                mPluginsCfg;
 
 };
 

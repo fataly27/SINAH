@@ -14,9 +14,9 @@ Camera::~Camera() {}
 void Camera::moveCamera(Vecteur direction)
 {
 	if (GeneralConstants::nbFrames <= 0)
-		throw domain_error("Le nombre de frames ne peut pas être nul ou inférieur à zéro");
+		throw std::domain_error("Le nombre de frames ne peut pas être nul ou inférieur à zéro");
 	if(mTicks <= 0)
-		throw domain_error("Le nombre de ticks de zoom ne peut pas être nul ou inférieur à zéro");
+		throw std::domain_error("Le nombre de ticks de zoom ne peut pas être nul ou inférieur à zéro");
 	if (GeneralConstants::nbFrames > 0 && mTicks > 0)
 	{
 		mActualPosition += direction * CameraConstants::speed / GeneralConstants::nbFrames * mTicks;
@@ -33,7 +33,7 @@ void Camera::zoomCamera(int ticks)
 void Camera::releaseZoom()
 {
 	if(CameraConstants::nbFramesTransition <= 0)
-		throw domain_error("Le nombre de frames d'animation de zoom ne peut pas être nul ou inférieur à zéro");
+		throw std::domain_error("Le nombre de frames d'animation de zoom ne peut pas être nul ou inférieur à zéro");
 	else
 	{
 		if (mActualPosition == mStopPosition)

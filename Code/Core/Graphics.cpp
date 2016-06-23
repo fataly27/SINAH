@@ -3,23 +3,23 @@
 Graphics::Graphics() : mRoot(nullptr), mCamera(nullptr), mSceneMgr(nullptr), mWindow(nullptr), mTerrainGroup(nullptr), mTerrainGlobals(nullptr), mTerrainsImported(false)
 {
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-	m_ResourcePath = Ogre::macBundlePath() + "/Contents/Resources/";
+	mResourcePath = Ogre::macBundlePath() + "/Contents/Resources/";
 #else
-	m_ResourcePath = "";
+	mResourcePath = "";
 #endif
 
 #ifdef _DEBUG
 #ifndef OGRE_STATIC_LIB
-	mResourcesCfg = m_ResourcePath + "resources_d.cfg";
-	mPluginsCfg = m_ResourcePath + "plugins_d.cfg";
+	mResourcesCfg = mResourcePath + "resources_d.cfg";
+	mPluginsCfg = mResourcePath + "plugins_d.cfg";
 #else
 	mResourcesCfg = "resources_d.cfg";
 	mPluginsCfg = "plugins_d.cfg";
 #endif
 #else
 #ifndef OGRE_STATIC_LIB
-	mResourcesCfg = m_ResourcePath + "resources.cfg";
-	mPluginsCfg = m_ResourcePath + "plugins.cfg";
+	mResourcesCfg = mResourcePath + "resources.cfg";
+	mPluginsCfg = mResourcePath + "plugins.cfg";
 #else
 	mResourcesCfg = "resources.cfg";
 	mPluginsCfg = "plugins.cfg";
@@ -30,7 +30,7 @@ Graphics::~Graphics() {}
 
 void Graphics::setup(unsigned long systemHandle)
 {
-	mRoot = new Ogre::Root(mPluginsCfg);
+	mRoot.reset(new Ogre::Root(mPluginsCfg));
 
 	// Load resource paths from config file
 	Ogre::ConfigFile cf;
@@ -81,12 +81,12 @@ void Graphics::setup(unsigned long systemHandle)
 		misc["currentGLContext"] = String("True");
 #endif
 		// Create a render window | Note: Window Title and Size are not important here.
-		mWindow = mRoot->createRenderWindow("Ogre Window", 800, 600, false, &misc);
+		mWindow.reset(mRoot->createRenderWindow("Ogre Window", 800, 600, false, &misc));
 		mWindow->setVisible(true);
 	}
 
 	// Get the SceneManager, in this case a generic one
-	mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
+	mSceneMgr.reset(mRoot->createSceneManager(Ogre::ST_GENERIC));
 
 	// Set default mipmap level (NB some APIs ignore this)
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
@@ -96,7 +96,7 @@ void Graphics::setup(unsigned long systemHandle)
 
 void Graphics::createScene()
 {
-	mCamera = mSceneMgr->createCamera("PlayerCam");
+	mCamera.reset(mSceneMgr->createCamera("PlayerCam"));
 
 	mCamera->setPosition(Ogre::Vector3(1683, 50, 2116));
 	mCamera->lookAt(Ogre::Vector3(1963, 50, 1660));
@@ -117,14 +117,14 @@ void Graphics::createScene()
 	Ogre::Vector3 lightdir(-0.5, -0.2, -5.0);
 	lightdir.normalise();
 
-	shared_ptr<Ogre::Light> light (mSceneMgr->createLight("TestLight"));
+	std::shared_ptr<Ogre::Light> light (mSceneMgr->createLight("TestLight"));
 	light->setType(Ogre::Light::LT_DIRECTIONAL);
 	light->setDirection(lightdir);
 	light->setDiffuseColour(Ogre::ColourValue::White);
 	light->setSpecularColour(Ogre::ColourValue(0.7, 0.7, 0.7));
 
-	mTerrainGlobals = OGRE_NEW Ogre::TerrainGlobalOptions();
-	mTerrainGroup = OGRE_NEW Ogre::TerrainGroup(mSceneMgr.get(), Ogre::Terrain::ALIGN_X_Z, 513, 12000.0);
+	mTerrainGlobals.reset(OGRE_NEW Ogre::TerrainGlobalOptions());
+	mTerrainGroup.reset(OGRE_NEW Ogre::TerrainGroup(mSceneMgr.get(), Ogre::Terrain::ALIGN_X_Z, 513, 12000.0));
 	mTerrainGroup->setFilenameConvention(Ogre::String("terrain"), Ogre::String("dat"));
 	mTerrainGroup->setOrigin(Ogre::Vector3::ZERO);
 
@@ -141,7 +141,7 @@ void Graphics::createScene()
 		Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
 		while (ti.hasMoreElements())
 		{
-			shared_ptr<Ogre::Terrain> t (ti.getNext()->instance);
+			std::shared_ptr<Ogre::Terrain> t (ti.getNext()->instance);
 			initBlendMaps(t);
 		}
 	}
@@ -170,7 +170,7 @@ void Graphics::defineTerrain(long x, long y)
 	}
 }
 
-void Graphics::initBlendMaps(shared_ptr<Ogre::Terrain> terrain)
+void Graphics::initBlendMaps(std::shared_ptr<Ogre::Terrain> terrain)
 {
 	Ogre::Real minHeight0 = 70;
 	Ogre::Real fadeDist0 = 40;
@@ -208,7 +208,7 @@ void Graphics::initBlendMaps(shared_ptr<Ogre::Terrain> terrain)
 	blendMap1->update();
 }
 
-void Graphics::configureTerrainDefaults(shared_ptr<Ogre::Light> light)
+void Graphics::configureTerrainDefaults(std::shared_ptr<Ogre::Light> light)
 {
 	mTerrainGlobals->setMaxPixelError(8);
 	mTerrainGlobals->setCompositeMapDistance(6000);
@@ -237,7 +237,7 @@ void Graphics::configureTerrainDefaults(shared_ptr<Ogre::Light> light)
 
 // -----------------------
 
-shared_ptr<Ogre::Root> Graphics::getRoot()
+std::shared_ptr<Ogre::Root> Graphics::getRoot()
 {
 	return mRoot;
 }

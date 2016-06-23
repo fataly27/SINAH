@@ -17,8 +17,8 @@ class Sfml
 			Sfml::Sfml(int x, int y, std::string name);
 			~Sfml();
 			//------------
-			shared_ptr<sf::RenderWindow> getWindow();
-			shared_ptr<sf::Event> getEvent();
+			std::shared_ptr<sf::RenderWindow> getWindow();
+			std::shared_ptr<sf::Event> getEvent();
 
 			int getWidth();
 			int getHeight();
@@ -29,8 +29,8 @@ class Sfml
 			void setName(std::string name);
 
 		private:
-			shared_ptr<sf::RenderWindow> mWindow;
-			shared_ptr<sf::Event> mEvent;
+			std::shared_ptr<sf::RenderWindow> mWindow;
+			std::shared_ptr<sf::Event> mEvent;
 
 			int mWidth;
 			int mHeight;

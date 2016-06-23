@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\bestfitobb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\ConvexBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\cd_wavefront.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\fitsphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\meshvolume.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\raytri.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\vlookup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\bestfit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\cd_hull.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\ConvexDecomposition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\concavity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\float_math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\planetri.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\splitplane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\ConvexDecomposition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\cd_vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\concavity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\bestfitobb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\ConvexBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\cd_wavefront.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\fitsphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\meshvolume.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\raytri.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\vlookup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\bestfit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\cd_hull.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\ConvexDecomposition\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{32D01338-4379-3DE6-8CDB-4B0A7B0323E8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{BC3A3C3B-87DF-3E34-88EB-296E5FD8DD62}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

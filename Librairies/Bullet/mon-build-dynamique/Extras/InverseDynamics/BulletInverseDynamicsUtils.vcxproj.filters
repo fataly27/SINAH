@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\InverseDynamics\CoilCreator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\InverseDynamics\MultiBodyTreeCreator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\InverseDynamics\btMultiBodyTreeCreator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\InverseDynamics\DillCreator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\InverseDynamics\MultiBodyTreeDebugGraph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\InverseDynamics\invdyn_bullet_comparison.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\InverseDynamics\IDRandomUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\InverseDynamics\SimpleTreeCreator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\InverseDynamics\MultiBodyNameMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\InverseDynamics\User2InternalIndex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\z-Autres\Programmation\Sinah\SINAH\Librairies\Bullet\Extras\InverseDynamics\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{32D01338-4379-3DE6-8CDB-4B0A7B0323E8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

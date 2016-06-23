@@ -1,30 +1,28 @@
 #include "Sfml.h"
 
-Sfml::Sfml() : mWindow(0), mEvent(new sf::Event()), mWidth(1200), mHeight(700), mName("Ogre3D v1.9 and SFML v2.1")
+Sfml::Sfml() : mWidth(1200), mHeight(700), mName("Ogre3D v1.9 and SFML v2.1"),
+			   mWindow(new sf::RenderWindow(sf::VideoMode(mWidth, mHeight), mName, sf::Style::Default, sf::ContextSettings(32))), mEvent(new sf::Event)
+			  
 {
-	mWindow = new sf::RenderWindow(sf::VideoMode(mWidth, mHeight), mName, sf::Style::Default, sf::ContextSettings(32));
 	mWindow->setFramerateLimit(GeneralConstants::nbFrames);
 }
-Sfml::Sfml(int x, int y, std::string name) : mWindow(0), mEvent(new sf::Event), mWidth(1200), mHeight(700), mName("Ogre3D v1.9 and SFML v2.1")
+Sfml::Sfml(int x, int y, std::string name) : mEvent(new sf::Event), mWidth(1200), mHeight(700), mName("Ogre3D v1.9 and SFML v2.1"),
+											 mWindow(new sf::RenderWindow(sf::VideoMode(mWidth, mHeight), mName, sf::Style::Default, sf::ContextSettings(32)))
+											 
 {
-	mWindow = new sf::RenderWindow(sf::VideoMode(mWidth, mHeight), mName, sf::Style::Default, sf::ContextSettings(32));
 	setWidth(x);
 	setHeight(y);
 	setName(name);
 }
-Sfml::~Sfml()
-{
-	delete mWindow;
-	delete mEvent;
-}
+Sfml::~Sfml() {}
 
 // -------------------------------------------
 
-sf::RenderWindow* Sfml::getWindow()
+unique_ptr<sf::RenderWindow> Sfml::getWindow()
 {
 	return mWindow;
 }
-sf::Event* Sfml::getEvent()
+unique_ptr<sf::Event> Sfml::getEvent()
 {
 	return mEvent;
 }

@@ -15,8 +15,8 @@ class Sfml
 			Sfml::Sfml(int x, int y, std::string name);
 			~Sfml();
 			//------------
-			sf::RenderWindow* getWindow();
-			sf::Event* getEvent();
+			unique_ptr<sf::RenderWindow> getWindow();
+			unique_ptr<sf::Event> getEvent();
 
 			int getWidth();
 			int getHeight();
@@ -27,8 +27,8 @@ class Sfml
 			void setName(std::string name);
 
 		private:
-			sf::RenderWindow* mWindow;
-			sf::Event* mEvent;
+			unique_ptr<sf::RenderWindow> mWindow;
+			unique_ptr<sf::Event> mEvent;
 
 			int mWidth;
 			int mHeight;

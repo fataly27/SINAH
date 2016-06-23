@@ -10,11 +10,11 @@ class Physics
 		~Physics();
 
 	private:
-		btDefaultCollisionConfiguration* m_collisionConfiguration;
-		btCollisionDispatcher* m_dispatcher;
-		btBroadphaseInterface* m_broadphase;
-		btSequentialImpulseConstraintSolver* m_solver;
-		btDiscreteDynamicsWorld* m_dynamicsWorld;
+		unique_ptr<btDefaultCollisionConfiguration> m_collisionConfiguration;
+		unique_ptr<btCollisionDispatcher> m_dispatcher;
+		unique_ptr<btBroadphaseInterface> m_broadphase;
+		unique_ptr<btSequentialImpulseConstraintSolver> m_solver;
+		unique_ptr<btDiscreteDynamicsWorld> m_dynamicsWorld;
 };
 
 #endif // PHYSICS_H_

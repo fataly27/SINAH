@@ -160,19 +160,28 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BiomeX1.cpp" />
+    <ClCompile Include="BiomeX2.cpp" />
+    <ClCompile Include="BiomeX3.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Sfml.cpp" />
     <ClCompile Include="Vecteur.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BiomeX1.h" />
+    <ClInclude Include="BiomeX2.h" />
+    <ClInclude Include="BiomeX3.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Sfml.h" />
+    <ClInclude Include="Terrain.h" />
     <ClInclude Include="Vecteur.h" />
     <ClInclude Include="Includes.h" />
   </ItemGroup>

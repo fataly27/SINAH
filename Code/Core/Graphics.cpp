@@ -1,4 +1,4 @@
-#include "Includes.h"
+#include "Graphics.h"
 
 Graphics::Graphics() : mRoot(nullptr), mCamera(nullptr), mSceneMgr(nullptr), mWindow(nullptr), mTerrainGroup(nullptr), mTerrainGlobals(nullptr), mTerrainsImported(false)
 {
@@ -94,6 +94,43 @@ void Graphics::setup(unsigned long systemHandle)
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
+void Graphics::createTerrain(std::array<std::array<std::shared_ptr<Terrain>, 5>, 5>& map)
+{
+	Ogre::Vector3 lightdir(-0.5, -0.2, -5.0);
+	lightdir.normalise();
+
+	std::shared_ptr<Ogre::Light> light (mSceneMgr->createLight("TestLight"));
+	light->setType(Ogre::Light::LT_DIRECTIONAL);
+	light->setDirection(lightdir);
+	light->setDiffuseColour(Ogre::ColourValue::White);
+	light->setSpecularColour(Ogre::ColourValue(0.7, 0.7, 0.7));
+
+	mTerrainGlobals.reset(OGRE_NEW Ogre::TerrainGlobalOptions());
+	mTerrainGroup.reset(OGRE_NEW Ogre::TerrainGroup(mSceneMgr.get(), Ogre::Terrain::ALIGN_X_Z, 513, 12000.0));
+	mTerrainGroup->setFilenameConvention(Ogre::String("terrain"), Ogre::String("dat"));
+	mTerrainGroup->setOrigin(Ogre::Vector3::ZERO);
+
+	configureTerrainDefaults(light);
+
+	for (long x = 0; x < 5; ++x)
+		for (long y = 0; y < 5; ++y)
+			defineTerrain(x, y, map[x][y].getUrl());
+
+	mTerrainGroup->loadAllTerrains(true);
+
+	if (mTerrainsImported)
+	{
+		Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
+		while (ti.hasMoreElements())
+		{
+			std::shared_ptr<Ogre::Terrain> t (ti.getNext()->instance);
+			initBlendMaps(t);
+		}
+	}
+
+	mTerrainGroup->freeTemporaryResources();
+}
+
 void Graphics::createScene()
 {
 	mCamera.reset(mSceneMgr->createCamera("PlayerCam"));
@@ -113,47 +150,13 @@ void Graphics::createScene()
 
 	// Create your scene here :)
 	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.4, 0.4, 0.4));
-
-	Ogre::Vector3 lightdir(-0.5, -0.2, -5.0);
-	lightdir.normalise();
-
-	std::shared_ptr<Ogre::Light> light (mSceneMgr->createLight("TestLight"));
-	light->setType(Ogre::Light::LT_DIRECTIONAL);
-	light->setDirection(lightdir);
-	light->setDiffuseColour(Ogre::ColourValue::White);
-	light->setSpecularColour(Ogre::ColourValue(0.7, 0.7, 0.7));
-
-	mTerrainGlobals.reset(OGRE_NEW Ogre::TerrainGlobalOptions());
-	mTerrainGroup.reset(OGRE_NEW Ogre::TerrainGroup(mSceneMgr.get(), Ogre::Terrain::ALIGN_X_Z, 513, 12000.0));
-	mTerrainGroup->setFilenameConvention(Ogre::String("terrain"), Ogre::String("dat"));
-	mTerrainGroup->setOrigin(Ogre::Vector3::ZERO);
-
-	configureTerrainDefaults(light);
-
-	for (long x = 0; x <= 0; ++x)
-		for (long y = 0; y <= 0; ++y)
-			defineTerrain(x, y);
-
-	mTerrainGroup->loadAllTerrains(true);
-
-	if (mTerrainsImported)
-	{
-		Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
-		while (ti.hasMoreElements())
-		{
-			std::shared_ptr<Ogre::Terrain> t (ti.getNext()->instance);
-			initBlendMaps(t);
-		}
-	}
-
-	mTerrainGroup->freeTemporaryResources();
 }
-void Graphics::getTerrainImage(Ogre::Image& img)
+void Graphics::getTerrainImage(Ogre::Image& img, std::string& path)
 {
-	img.load("Landscapes/Heightmaps/first-try.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	img.load(path, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 }
 
-void Graphics::defineTerrain(long x, long y)
+void Graphics::defineTerrain(long x, long y, std::string& path)
 {
 	Ogre::String filename = mTerrainGroup->generateFilename(x, y);
 	bool exists = Ogre::ResourceGroupManager::getSingleton().resourceExists(mTerrainGroup->getResourceGroup(), filename);
@@ -163,7 +166,7 @@ void Graphics::defineTerrain(long x, long y)
 	else
 	{
 		Ogre::Image img;
-		getTerrainImage(img);
+		getTerrainImage(img, );
 		mTerrainGroup->defineTerrain(x, y, &img);
 
 		mTerrainsImported = true;

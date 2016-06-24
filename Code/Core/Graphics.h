@@ -12,12 +12,13 @@ class Graphics
 		~Graphics();
 
 		void setup(unsigned long systemHandle);
+		void createTerrain(std::shared_ptr<std::array<std::array<std::shared_ptr<Terrain>, 5>, 5>>& map);
 		void createScene();
 
-		void defineTerrain(long x, long y);
+		void defineTerrain(long x, long y, std::string& path);
 		void initBlendMaps(std::shared_ptr<Ogre::Terrain> terrain);
 		void configureTerrainDefaults(std::shared_ptr<Ogre::Light> light);
-		void getTerrainImage(Ogre::Image& img);
+		void getTerrainImage(Ogre::Image& img, std::string& path);
 
 		void setCameraPosition(float x, float y, float z);
 		void setCameraLookAt(float x, float y, float z);

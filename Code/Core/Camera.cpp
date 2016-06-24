@@ -1,4 +1,4 @@
-#include "Includes.h"
+#include "Camera.h"
 
 Camera::Camera() : Camera(80.0f) {}
 Camera::Camera(float angle) : mTicks(CameraConstants::ticksOffset), mFocus(0, 0, 0), mOrientation(0, Vecteur::absoluteValue(sin(angle * 2 * M_PI / 360)), Vecteur::absoluteValue(cos(angle * 2 * M_PI / 360)))

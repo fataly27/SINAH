@@ -1,17 +1,7 @@
 #ifndef MAP_H_
 #define MAP_H_
 
-#include <array>
-#include <vector>
-#include <random>
-#include <algorithm>
-#include <chrono>
-#include <memory>
-
-#include "Constants.h"
-#include "BiomeX1.h"
-#include "BiomeX2.h"
-#include "BiomeX3.h"
+#include "Includes.h"
 
 class Map
 {

@@ -1,13 +1,7 @@
 #ifndef TERRAIN_H_
 #define TERRAIN_H_
 
-#include <array>
-#include <vector>
-#include <random>
-#include <algorithm>
-#include <chrono>
-#include <memory>
-#include <string>
+#include "Includes.h"
 
 class Terrain
 {

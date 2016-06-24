@@ -1,4 +1,4 @@
-#include "Includes.h"
+#include "Vecteur.h"
 
 Vecteur::Vecteur() : Vecteur(0.0f, 0.0f, 0.0f) {}
 Vecteur::Vecteur(float x, float y, float z) : x(x), y(y), z(z) {}

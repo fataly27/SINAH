@@ -1,10 +1,7 @@
 #ifndef CAMERA_H_
 #define CAMERA_H_
 
-#include "Vecteur.h"
-#include "Constants.h"
-#include <cmath>
-#include <iostream>
+#include "Includes.h"
 
 #define M_PI  3.14159265358979323846
 

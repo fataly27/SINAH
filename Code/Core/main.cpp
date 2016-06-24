@@ -1,14 +1,4 @@
-#include "Constants.h"
-
-#include "Physics.h"
-#include "Graphics.h"
-#include "Sfml.h"
-
-#include "Camera.h"
-#include "Vecteur.h"
-
-#include <iostream>
-#include <memory>
+#include "Includes.h"
 
 using namespace std;
 

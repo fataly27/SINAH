@@ -1,9 +1,7 @@
 #ifndef PHYSICS_H_
 #define PHYSICS_H_
 
-#include <btBulletDynamicsCommon.h>
-
-#include <memory>
+#include "Includes.h"
 
 class Physics
 {

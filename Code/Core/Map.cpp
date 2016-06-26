@@ -27,27 +27,30 @@ bool Map::generateProceduralMap()
 	int j = 0;
 	for (std::array<std::shared_ptr<Terrain>, 5>& tableauBiomes : mMap)
 	{
+		j = 0;
 		for (std::shared_ptr<Terrain>& biome : tableauBiomes)
 		{
 			if (i == 0 && j == 0 || i == 2 && j == 2 || i == 4 && j == 4)
 			{
-				biome = std::unique_ptr<BiomeX3>(new BiomeX3(biomes[2].back()));
+				biome.reset(new BiomeX3(biomes[2].back()));
 				biomes[2].pop_back();
 			}
 			else if (i == 2 && j == 0 || i == 0 && j == 2 || i == 2 && j == 4 || i == 4 && j == 2)
 			{
-				biome = std::unique_ptr<BiomeX2>(new BiomeX2(biomes[1].back()));
+				biome.reset(new BiomeX2(biomes[1].back()));
 				biomes[1].pop_back();
 			}	
 			else
 			{
-				biome = std::unique_ptr<BiomeX1>(new BiomeX1(biomes[0].back()));
+				biome.reset(new BiomeX1(biomes[0].back()));
 				biomes[0].pop_back();
 			}
 			j++;
 		}
 		i++;
 	}
+
+	return true;
 }
 std::vector<int> Map::generateOneTerrain(int nbBiomes, std::array<int, 4>& nbTypeBiome)
 {
@@ -61,10 +64,10 @@ std::vector<int> Map::generateOneTerrain(int nbBiomes, std::array<int, 4>& nbTyp
 		int choix = possibilites.back();
 		possibilites.pop_back();
 
-		if (nbTypeBiome[nbBiomes - 1] < TerrainConstants::nbTypeBiomeMax[nbBiomes - 1])
+		if (nbTypeBiome[choix - 1] < TerrainConstants::nbTypeBiomeMax[choix - 1])
 		{
 			resultats.push_back(choix);
-			nbTypeBiome[nbBiomes - 1] ++;
+			nbTypeBiome[choix - 1]++;
 			i--;
 		}
 		else if (possibilites.empty())

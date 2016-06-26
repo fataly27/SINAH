@@ -1,9 +1,24 @@
 #ifndef GRAPHICS_H_
 #define GRAPHICS_H_
 
-#include "Includes.h"
+//Includes Ogre 1.9
+#include <OgreCamera.h>
+#include <OgreEntity.h>
+#include <OgreLogManager.h>
+#include <OgreRoot.h>
+#include <OgreViewport.h>
+#include <OgreSceneManager.h>
+#include <OgreRenderWindow.h>
+#include <OgreConfigFile.h>
+#include <Terrain/OgreTerrain.h>
+#include <Terrain/OgreTerrainGroup.h>
 
+#include <string>
 #include <memory>
+
+#include "Terrain.h"
+
+#include "Constants.h"
 
 class Graphics
 {
@@ -12,12 +27,12 @@ class Graphics
 		~Graphics();
 
 		void setup(unsigned long systemHandle);
-		void createTerrain(std::shared_ptr<std::array<std::array<std::shared_ptr<Terrain>, 5>, 5>>& map);
+		void createTerrain(std::array<std::array<std::shared_ptr<Terrain>, 5>, 5>& map);
 		void createScene();
 
 		void defineTerrain(long x, long y, std::string& path);
-		void initBlendMaps(std::shared_ptr<Ogre::Terrain> terrain);
-		void configureTerrainDefaults(std::shared_ptr<Ogre::Light> light);
+		void initBlendMaps(Ogre::Terrain* terrain);
+		void configureTerrainDefaults(Ogre::Light* light);
 		void getTerrainImage(Ogre::Image& img, std::string& path);
 
 		void setCameraPosition(float x, float y, float z);

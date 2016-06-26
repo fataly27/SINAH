@@ -183,7 +183,6 @@
     <ClInclude Include="Sfml.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="Vecteur.h" />
-    <ClInclude Include="Includes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

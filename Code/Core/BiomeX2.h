@@ -1,7 +1,15 @@
 #ifndef BIOMEX2_H_
 #define BIOMEX2_H_
 
-#include "Includes.h"
+#include <vector>
+#include <string>
+#include <random>
+#include <algorithm>
+#include <chrono>
+
+#include "Terrain.h"
+
+#include "Constants.h"
 
 class BiomeX2 : public Terrain
 {

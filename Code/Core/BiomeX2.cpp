@@ -9,7 +9,7 @@ BiomeX2::BiomeX2(std::vector<int> liste)
 	std::uniform_int_distribution<int> distribution(1, 3);
 	int version = distribution(engine);
 
-	mUrl = "Landscapes/HeightMaps/1Biome/" + std::to_string(liste[0]) + "-" + std::to_string(liste[1]) + "/" + std::to_string(version) + ".png";
+	mUrl = "Landscapes/HeightMaps/2Biomes/" + std::to_string(liste[0]) + "-" + std::to_string(liste[1]) + "/" + std::to_string(version) + ".png";
 }
 BiomeX2::~BiomeX2() {}
 

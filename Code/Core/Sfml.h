@@ -1,7 +1,15 @@
 #ifndef SFML_H_
 #define SFML_H_
 
-#include "Includes.h"
+//Includes SFML 2.3
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+
+#include <string>
+#include <memory>
+
+#include "Constants.h"
 
 class Sfml
 {

@@ -1,7 +1,9 @@
 #ifndef TERRAIN_H_
 #define TERRAIN_H_
 
-#include "Includes.h"
+#include <string>
+
+#include "Constants.h"
 
 class Terrain
 {

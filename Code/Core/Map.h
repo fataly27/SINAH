@@ -1,7 +1,19 @@
 #ifndef MAP_H_
 #define MAP_H_
 
-#include "Includes.h"
+#include <random>
+#include <algorithm>
+#include <chrono>
+#include <array>
+#include <vector>
+#include <memory>
+
+#include "Terrain.h"
+#include "BiomeX1.h"
+#include "BiomeX2.h"
+#include "BiomeX3.h"
+
+#include "Constants.h"
 
 class Map
 {

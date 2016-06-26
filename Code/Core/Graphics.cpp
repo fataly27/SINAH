@@ -99,7 +99,7 @@ void Graphics::createTerrain(std::array<std::array<std::shared_ptr<Terrain>, 5>,
 	Ogre::Vector3 lightdir(-0.5, -0.2, -5.0);
 	lightdir.normalise();
 
-	std::shared_ptr<Ogre::Light> light (mSceneMgr->createLight("TestLight"));
+	Ogre::Light* light = mSceneMgr->createLight("TestLight");
 	light->setType(Ogre::Light::LT_DIRECTIONAL);
 	light->setDirection(lightdir);
 	light->setDiffuseColour(Ogre::ColourValue::White);
@@ -112,9 +112,9 @@ void Graphics::createTerrain(std::array<std::array<std::shared_ptr<Terrain>, 5>,
 
 	configureTerrainDefaults(light);
 
-	for (long x = 0; x < 5; ++x)
-		for (long y = 0; y < 5; ++y)
-			defineTerrain(x, y, map[x][y].getUrl());
+	for (long x = 0; x < 5; x++)
+		for (long y = 0; y < 5; y++)
+			defineTerrain(x, y, map[x][y]->getUrl());
 
 	mTerrainGroup->loadAllTerrains(true);
 
@@ -123,7 +123,7 @@ void Graphics::createTerrain(std::array<std::array<std::shared_ptr<Terrain>, 5>,
 		Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
 		while (ti.hasMoreElements())
 		{
-			std::shared_ptr<Ogre::Terrain> t (ti.getNext()->instance);
+			Ogre::Terrain* t = ti.getNext()->instance;
 			initBlendMaps(t);
 		}
 	}
@@ -142,7 +142,7 @@ void Graphics::createScene()
 	if (mRoot->getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
 		mCamera->setFarClipDistance(0);
 	else
-		mCamera->setFarClipDistance(50000);
+		mCamera->setFarClipDistance(1000000);
 
 	Ogre::Viewport* vp = mWindow->addViewport(mCamera.get());
 	vp->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
@@ -153,7 +153,7 @@ void Graphics::createScene()
 }
 void Graphics::getTerrainImage(Ogre::Image& img, std::string& path)
 {
-	img.load(path, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	img.load("Landscapes/Heightmaps/first-try.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 }
 
 void Graphics::defineTerrain(long x, long y, std::string& path)
@@ -166,14 +166,14 @@ void Graphics::defineTerrain(long x, long y, std::string& path)
 	else
 	{
 		Ogre::Image img;
-		getTerrainImage(img, );
+		getTerrainImage(img, path);
 		mTerrainGroup->defineTerrain(x, y, &img);
 
 		mTerrainsImported = true;
 	}
 }
 
-void Graphics::initBlendMaps(std::shared_ptr<Ogre::Terrain> terrain)
+void Graphics::initBlendMaps(Ogre::Terrain* terrain)
 {
 	Ogre::Real minHeight0 = 70;
 	Ogre::Real fadeDist0 = 40;
@@ -205,16 +205,16 @@ void Graphics::initBlendMaps(std::shared_ptr<Ogre::Terrain> terrain)
 		}
 	}
 
-	blendMap0->dirty();
 	blendMap1->dirty();
-	blendMap0->update();
+	blendMap0->dirty();
 	blendMap1->update();
+	blendMap0->update();
 }
 
-void Graphics::configureTerrainDefaults(std::shared_ptr<Ogre::Light> light)
+void Graphics::configureTerrainDefaults(Ogre::Light* light)
 {
 	mTerrainGlobals->setMaxPixelError(8);
-	mTerrainGlobals->setCompositeMapDistance(6000);
+	mTerrainGlobals->setCompositeMapDistance(40000);
 
 	mTerrainGlobals->setLightMapDirection(light->getDerivedDirection());
 	mTerrainGlobals->setCompositeMapAmbient(mSceneMgr->getAmbientLight());

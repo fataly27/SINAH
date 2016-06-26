@@ -5,12 +5,12 @@
 
 namespace CameraConstants
 {
-	const int ticksOffset = 1100;
+	const int ticksOffset = 4000;
 	const int minTicks = 0;
-	const int maxTicks = 1000;
-	const float speed = 0.3;
-	const float sensisivity = 60;
-	const int nbFramesTransition = 15;
+	const int maxTicks = 8000;
+	const float speed = 1.5;
+	const float sensisivity = 700;
+	const int nbFramesTransition = 16;
 }
 namespace GeneralConstants
 {

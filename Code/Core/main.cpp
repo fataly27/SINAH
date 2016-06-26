@@ -1,4 +1,12 @@
-#include "Includes.h"
+#include <string>
+#include <iostream>
+
+#include "Graphics.h"
+#include "Sfml.h"
+#include "Physics.h"
+
+#include "Camera.h"
+#include "Map.h"
 
 using namespace std;
 

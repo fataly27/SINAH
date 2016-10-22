@@ -130,10 +130,10 @@ de nourriture fera également descendre la vie des armées, mal nourries (la dis
 x ressources / minute. Dans les blocs à 1 biome, il suffit de leur faire perdre tous leurs PV pour se l'approprier,
 mais dans les blocs à deux biomes et à trois, il faut s'assurer le contrôle du point de contrôle ou de la citadelle pour gagner
 le point de ressources : le point perd alors tous ses niveaux. Dans le cas contraire, les ressources dans le point sont pillées,
-pendant jusqu'à que le point se soit complètement soigné, le temps nécessaire pouvant être diminué dans l'arbre de compétence par le défenseur, et leur niveau descend d'un point. Les 
-ressources sont  ramassées automatiquement continuellement. De plus, les points de ressources peuvent être amélioré sur X, Y ou Z 
-niveaux en fonction du bloc pour produire plus : +0% -> + X%... Le coût pour améliorer le matériel demande un peu de métal, mais 
-surtout #des cellules et des cristaux OU des cellules ou des cristaux#.
+pendant jusqu'à que le point se soit complètement soigné, le temps nécessaire pouvant être diminué dans l'arbre de compétence par
+le défenseur, et leur niveau descend d'un point. Les ressources sont  ramassées automatiquement continuellement. De plus, les points
+de ressources peuvent être amélioré sur X, Y ou Z niveaux en fonction du bloc pour produire plus : +0% -> + X%... Le coût pour
+améliorer le matériel demande un peu de métal, mais  surtout #des cellules et des cristaux OU des cellules ou des cristaux#.
 	
 	Points de contrôle et citadelles : formation de troupes et défense
 	
@@ -155,8 +155,9 @@ aussi limitée, pouvant être améliorés. #reste à savoir où : arbre des comp
 	Positions
 	
 	Il existe différentes positions possibles pour les unités. Par défaut, les unités sont en position d'attaque : Elles attaquent
-alors automatiquement dès que cela est possible, et tentent de suivre leur cible. De plus, leur attaques sont augmentées de ?% mais
-leurs boucliers sont diminués de ?%.
+alors automatiquement dès que cela est possible, et tentent de suivre leur cible, que l'on peut attribuer grâce au bouton droit dès que
+la cible est visible. Dans le cas où elle ne l'est plus, la troupe ira jusqu'au dernier endroit où elle a été vue. De plus, leur attaques
+sont augmentées de ?% mais leurs boucliers sont diminués de ?%.
 	La seconde position est la position de défense : les unités sont alors immobiles, et attquent uniquement lorsqu'elles sont
 attquées, mais gagnent un bonus de bouclier. De plus, se mettre dans cette position ou la quitter prendra un certain temps (il est 
 possible de le diminuer drastiquement dans l'arbre des compétences).

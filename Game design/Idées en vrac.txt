@@ -4,7 +4,7 @@
 futuriste où 4 civilisations dominent le système Sinah. La première (Amuh) est
 agressive, futuriste et ressemble aux hommes. La seconde (Lorthémid), elle aussi, est
 futuriste mais de façon plus avançé (exosquelettes, boucliers, clonage...).
-De plus, ils sont plutôt pacifistes. La troisième (Zarkh) se rapproche plus de la
+De plus, ils sont plutôt pacifistes. La troisième (Zhark) se rapproche plus de la
 fantasy, et se base sur de la magie ancienne, avec quelques technologies
 supplémentaires (voyage spacial). Elle à la particularité de n'accorder
 aucun droit politique aux hommes, ainsi que de favoriser des gradés
@@ -17,11 +17,11 @@ même supérieur à la femme.
 	L'Histoire :
 
 	La grande Histoire débute pour l'instant en paix, dans le système stellaire
-originel, dominés par 3 civilisations (Lorthémidiens, Zarkhs et Hovanion). Si la tension est toujours
-présente entre les Zarkhs et les Hovanions, les Lorthémidiens, très pacifistes, permet une paix relative. Mais
+originel, dominés par 3 civilisations (Lorthémidiens, Zharks et Hovanion). Si la tension est toujours
+présente entre les Zharks et les Hovanions, les Lorthémidiens, très pacifistes, permet une paix relative. Mais
 lorsque les Amuhins accède au voyage spacial long courrier, cette civilisation guerrière
 attaque par surprise les Lorthémidiens. Leur planète ravagée, cette nation pourtant pacifiste
-doit s'allier avec les Zarkhs contre les Amuhins et les Hovanions, déclanchant une guerre inter-planétaire. Au gré des
+doit s'allier avec les Zharks contre les Amuhins et les Hovanions, déclanchant une guerre inter-planétaire. Au gré des
 alliances, les colonies, puis les planètes mères deviennent inhabitables à cause de
 l'utilisation massive d'armes atomiques. Dans le système stellaire dévasté, seuls
 quelques vaisseaux ont pu se réchapper de la guerre. Voguant vers le système stellaire
@@ -56,23 +56,23 @@ progressivement contaminées, seuls les Lorthémidiens, grâce à leur clonage, 
 apportant tout de même leurs miasmes aux civils. Toutefois, les civilisations ne sont pas au courant, ce qui est normal
 car leur but est de protéger les planètes, ce qui est impossible à cause de la maladie amuhine.
 	
-	Zarkh
+	Zhark
 	
-	Zarkh n'est exceptionnelement pas le nom de la planète mère des Zarkh, mais le nom de la planète cachée dont ils
+	Zhark n'est exceptionnelement pas le nom de la planète mère des Zhark, mais le nom de la planète cachée dont ils
 tirent leur magie. Au cours d'une cérémonie, certains enfant sont choisis pour un voyage sans retour sur cette planète,
 constituée d'un grand cristal qui constitue le centre de la planète, et dépasse à un endroit la croûte, pour y travailler
 toute leur vie. #Reste à déterminer comment ils sont choisis, et comment ils apportent de l'energie au grand cristal#
-Le rang social est extrêmement important chez les Zarkhs, et se manifeste par une alimentation différente qui change leur
+Le rang social est extrêmement important chez les Zharks, et se manifeste par une alimentation différente qui change leur
 apparence physique.
 	
 	Le Hovanion
 
 	Les Hovanions sont des religieux convaincus, mais ne sont pas pacifistes pour autant. Leur foi leur octroie quelques
-sorts basiques -> dégâts mais surtout défense magique. Ils utilisent néanmoins des armes. Ayant étés bannis par les Zarkhs
+sorts basiques -> dégâts mais surtout défense magique. Ils utilisent néanmoins des armes. Ayant étés bannis par les Zharks
 pour leur foi qui contredisait le culte du Grand Cristal, ils en gardent une haine féroce pour ces derniers, et ont bâti
-une société patriarcale en réaction à la société matriarcale des Zarkhs. Ils s'organisent autour d'un progression sprituelle,
+une société patriarcale en réaction à la société matriarcale des Zharks. Ils s'organisent autour d'un progression sprituelle,
 où les plus hauts placés ont eu suffisamment de foi pour ingérer des drogues de plus en plus mortelles. Cela induit une égalité
-à la naissance là encore à l'opposé des Zarkhs.
+à la naissance là encore à l'opposé des Zharks.
 
 	L'histoire
 	
@@ -92,7 +92,7 @@ formidable adversaire, il fut accepté. --> Tuto
 clone gardait en lui une haine sauvage contre les Amuhins, contre tout le monde. Certes, ils avaient des manières plus
 douces, mais ils s'étaient souvenu qu'ils avaient des armes. Lorque leur cruauté se montrait, elle n'en paraissait
 que plus affreuse. Le héros les quitta donc, ne se faisant plus d'illusions sur cette guerre, où aucun parti n'était
-juste, mais voulant laisser une chance aux Zarkhs et aux Hovanions, il rejoint leurs rang, les uns, puis les autres --> Tuto x2
+juste, mais voulant laisser une chance aux Zharks et aux Hovanions, il rejoint leurs rang, les uns, puis les autres --> Tuto x2
 	Enfin, profondemment dégoûté, le héros se résolut à quitter cette guerre, espérant trouver au loin un
 monde plus juste, un foyer. Mais pour cela, il faut de l'argent. Beaucoup d'argent. Grâce à sa réputation
 toujours grandissante, il se fit donc mercenaire, détournant le regard à chaque massacre. (suite quand on fera la campagne)
@@ -158,8 +158,8 @@ aussi limitée, pouvant être améliorés. #reste à savoir où : arbre des comp
 alors automatiquement dès que cela est possible, et tentent de suivre leur cible, que l'on peut attribuer grâce au bouton droit dès que
 la cible est visible. Dans le cas où elle ne l'est plus, la troupe ira jusqu'au dernier endroit où elle a été vue. De plus, leur attaques
 sont augmentées de ?% mais leurs boucliers sont diminués de ?%.
-	La seconde position est la position de défense : les unités sont alors immobiles, et attquent uniquement lorsqu'elles sont
-attquées, mais gagnent un bonus de bouclier. De plus, se mettre dans cette position ou la quitter prendra un certain temps (il est 
+	La seconde position est la position de défense : les unités sont alors immobiles, et attaquent uniquement lorsqu'elles sont
+attaquées, mais gagnent un bonus de bouclier. De plus, se mettre dans cette position ou la quitter prendra un certain temps (il est 
 possible de le diminuer drastiquement dans l'arbre des compétences).
 	Dans toutes les positions suivantes, les unités n'attqueront pas dans tout les cas.
 	La troisième position est la position d'alerte, dans laquelle les unités possèdent un bonus de limite de vue.
@@ -216,12 +216,12 @@ configurations en fonction des races, qui possèdent des traits raciaux, ou poin
 l'arbre de compétence sera partiellement ou totalement fixé. Les points pouvant être améliorés dans l'arbre sont nombreux et possèdent
 souvent plusieurs niveaux, mais le joueur ne dispose que de X points à donner, qu'il reçoit après le tuto, lorsqu'il accède au
 multijoueur. Ces nombreux points sont : des bonus en attaque, en vie, en bouclier, en vision, en portée, en fonction des types 
-d'unités, les influences de bonus de points de contôle (taille et taile des auras, amlus sur les adversaire), des bonus sur les
+d'unités, les influences de bonus de points de contôle (taille et taile des auras, malus sur les adversaire), des bonus sur les
 positions de défense et d'invisiblité sur les temps (défense -> mise en place et abandon du mode de défense, invisibilité -> temps
 d'invisibilité, temps du cooldown), des bonus pour diminuer le temps de pillage par les adversaires ou pour éviter de faire perdre
 tous ses niveaux à un bâtiment lorsqu'on le prend...
 	
 	Troupes amuhines
 	Troupes lorthémidiennes
-	Troupes zarkhs
+	Troupes zharks
 	Troupes hovanions

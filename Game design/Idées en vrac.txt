@@ -174,8 +174,8 @@ dans l'arbre.
 	Combat
 	
 	Lorsqu'une unité est en position d'attaque et passe à vue d'une unité ennemie, elle va s'approcher de cette unités jusqu'à
-atteindre une distance égale à sa portée. Elle va alors attaquer l'unité la plus proche, selon le type d'unité indiquer par le
-joueur. Par défaut, l'unité attaque tous les types d'unités indistinctement. Les dégâts subis par l'unité attquée seront alors de
+atteindre une distance égale à sa portée. Elle va alors attaquer l'unité la plus proche, selon le type d'unité indiqué par le
+joueur. Par défaut, l'unité attaque tous les types d'unités indistinctement. Les dégâts subis par l'unité attaquée seront alors de
 Attaque adverse * (1 - Pourcentage de bouclier associé à l'attaque). Ces dégâts seront enlevés aux PV. Si l'unité attaquée meurt, une
 autre sera immédiatement prise pour cible si elle est présente dans la vue de l'unité attaquante.
 	

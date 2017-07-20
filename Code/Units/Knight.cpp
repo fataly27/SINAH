@@ -63,7 +63,11 @@ AKnight::AKnight() : Super()
 	SelectionMark->SetWorldScale3D(FVector(2.f, 0.3f, 0.3f));
 }
 
-void AKnight::Tick(float DeltaTime)
+float AKnight::GetSize()
 {
-	Super::Tick(DeltaTime);
+	return 20.f;
+}
+int AKnight::GetLifeBarWidth()
+{
+	return 500;
 }

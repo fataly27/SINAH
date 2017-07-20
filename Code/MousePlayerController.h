@@ -92,5 +92,5 @@ class SINAH_API AMousePlayerController : public APlayerController
 		FUpdateTextureRegion2D* TextureRegions;
 		TArray<FColor> TextureData;
 		const int32 MidTextureSize = 512;
-		const float MidTerrainSize = 15750.f;
+		const float MidTerrainSize = 31700.f;
 };

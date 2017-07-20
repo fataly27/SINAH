@@ -5,18 +5,47 @@
 
 
 // Sets default values
-ABuilding::ABuilding() : IsVisibleForOpponent(true)
+ABuilding::ABuilding() : IsVisibleForOpponent(true), ImBlue(true)
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	DefaultMaxLife = 500;
+	DefaultHeal = 5;
+	DefaultFieldOfSight = 10;
+
+	ActualMaxLife = DefaultMaxLife;
+	CurrentLife = ActualMaxLife;
+	ActualHeal = DefaultHeal;
+	ActualFieldOfSight = DefaultFieldOfSight;
+
+	LevelMax = 3;
+	CurrentLevel = 0;
+
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
+	SelectionMark = CreateDefaultSubobject<UDecalComponent>(TEXT("SelectionMark"));
+	SelectionMark->SetupAttachment(RootComponent);
+
+	SelectionMark->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
+	SelectionMark->SetWorldScale3D(FVector(1.f, 5.f, 5.f));
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> RedCircleAsset(TEXT("/Game/Materials/RedCircle.RedCircle"));
+	RedCircle = RedCircleAsset.Object;
+	static ConstructorHelpers::FObjectFinder<UMaterial> BlueCircleAsset(TEXT("/Game/Materials/BlueCircle.BlueCircle"));
+	BlueCircle = BlueCircleAsset.Object;
+
+	BuildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
+	BuildingMesh->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void ABuilding::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	Unselect();
+	AmIBlue(ImBlue);
 }
 
 // Called every frame
@@ -24,6 +53,11 @@ void ABuilding::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	TimeSinceLastAttack += DeltaTime;
+	TimeSinceLastHeal += DeltaTime;
+
+	if (TimeSinceLastAttack >= 10.f && TimeSinceLastHeal >= 1.f && Role == ROLE_Authority)
+		Heal();
 }
 
 //Selection
@@ -60,13 +94,70 @@ bool ABuilding::TellIfImBlue()
 //Attack
 void ABuilding::ReceiveDamages(float Physic, float Magic)
 {
+	Server_ReceiveDamages(Physic, Magic);
+}
 
+void ABuilding::Server_ReceiveDamages_Implementation(float Physic, float Magic)
+{
+	CurrentLife -= Physic;
+	CurrentLife -= Magic;
+	TimeSinceLastAttack = 0.f;
+
+	if (CurrentLife <= 0.f)
+		SetLevel(0);
+}
+bool ABuilding::Server_ReceiveDamages_Validate(float Physic, float Magic)
+{
+	return true;
+}
+
+//Heal
+void ABuilding::Heal()
+{
+	if (Role == ROLE_Authority)
+	{
+		CurrentLife += ActualHeal;
+
+		if (CurrentLife > ActualMaxLife)
+			CurrentLife = ActualMaxLife;
+
+		TimeSinceLastHeal = 0.f;
+	}
+}
+
+//LevelUp
+void ABuilding::Server_LevelUp_Implementation()
+{
+	SetLevel(CurrentLevel + 1);
+}
+bool ABuilding::Server_LevelUp_Validate()
+{
+	return true;
+}
+void ABuilding::SetLevel(unsigned int Level)
+{
+	if (Role == ROLE_Authority)
+	{
+		CurrentLevel = Level;
+		if (CurrentLevel > LevelMax)
+			CurrentLevel = LevelMax;
+
+		ActualMaxLife = DefaultMaxLife * FGenericPlatformMath::Sqrt(CurrentLevel);
+		CurrentLife = ActualMaxLife;
+		ActualHeal = DefaultHeal * FGenericPlatformMath::Sqrt(CurrentLevel);
+
+		if (CurrentLevel == 0)
+		{
+			ActualFieldOfSight = 0.f;
+			Unselect();
+		}
+	}
 }
 
 //Dying
 bool ABuilding::IsPendingKill()
 {
-	return IsPendingKillPending();
+	return false;
 }
 
 //Statistics Getters
@@ -84,11 +175,19 @@ float ABuilding::GetFieldOfSight()
 }
 float ABuilding::GetHalfHeight()
 {
-	return 50.f;
+	return 1300.f;
+}
+int ABuilding::GetLifeBarWidth()
+{
+	return 2000;
 }
 float ABuilding::GetHeal()
 {
 	return ActualHeal;
+}
+float ABuilding::GetSize()
+{
+	return 0.f;
 }
 
 //Visibility

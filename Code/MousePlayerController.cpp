@@ -437,7 +437,7 @@ void AMousePlayerController::FogOfWar()
 		}
 	}
 
-	SetFogOfWarTexture(BlueActors, BlueActors);
+	SetFogOfWarTexture(BlueActors, RedActors);
 }
 void AMousePlayerController::SetFogOfWarTexture(TArray<TScriptInterface<IGameElementInterface>> BlueUnits, TArray<TScriptInterface<IGameElementInterface>> RedUnits)
 {

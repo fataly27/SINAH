@@ -198,6 +198,14 @@ float AUnit::GetHalfHeight()
 {
 	return GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 }
+int AUnit::GetLifeBarWidth()
+{
+	return 0;
+}
+float AUnit::GetSize()
+{
+	return 0.f;
+}
 
 //Destinations
 void AUnit::AddDestination(FVector Destination, FRotator Rotation)

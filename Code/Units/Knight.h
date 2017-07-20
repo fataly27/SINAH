@@ -16,5 +16,6 @@ class SINAH_API AKnight : public AUnit
 	public:
 		AKnight();
 
-		virtual void Tick(float DeltaSeconds) override;
+		virtual float GetSize() override;
+		virtual int GetLifeBarWidth() override;
 };

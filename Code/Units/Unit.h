@@ -82,6 +82,8 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		virtual int GetCurrentLife() override;
 		virtual float GetFieldOfSight() override;
 		virtual float GetHalfHeight() override;
+		virtual int GetLifeBarWidth() override;
+		virtual float GetSize() override;
 		virtual int GetPhysicAttack();
 		virtual int GetMagicAttack();
 		virtual int GetPhysicDefense();

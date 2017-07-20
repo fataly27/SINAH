@@ -10,73 +10,100 @@ UCLASS(abstract)
 class SINAH_API ABuilding : public AActor, public IGameElementInterface
 {
 	GENERATED_BODY()
-	
-	public:	
-		// Sets default values for this actor's properties
-		ABuilding();
-		// Called every frame
-		virtual void Tick(float DeltaTime) override;
 
-		//Selection
-		virtual void Select() override;
-		virtual void Unselect() override;
-		virtual bool IsSelected() override;
+public:
+	// Sets default values for this actor's properties
+	ABuilding();
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
-		//Color
-		virtual void AmIBlue(bool color) override;
-		virtual bool TellIfImBlue() override;
+	//Selection
+	virtual void Select() override;
+	virtual void Unselect() override;
+	virtual bool IsSelected() override;
 
-		//Attack
-		virtual void ReceiveDamages(float Physic, float Magic) override;
+	//Color
+	virtual void AmIBlue(bool color) override;
+	virtual bool TellIfImBlue() override;
 
-		//Dying
-		virtual bool IsPendingKill();
+	//Attack
+	virtual void ReceiveDamages(float Physic, float Magic) override;
+	UFUNCTION(Server, Reliable, WithValidation)
+		virtual void Server_ReceiveDamages(float Physic, float Magic);
 
-		//Statistics Getters
-		virtual int GetMaxLife() override;
-		virtual int GetCurrentLife() override;
-		virtual float GetFieldOfSight() override;
-		virtual float GetHalfHeight() override;
-		virtual float GetHeal();
+	//Heal
+	virtual void Heal();
 
-		//Visibility
-		virtual bool GetOpponentVisibility() override;
-		virtual FVector GetLocation();
+	//Level
+	UFUNCTION(Server, Reliable, WithValidation)
+		virtual void Server_LevelUp();
+	virtual void SetLevel(unsigned int Level);
 
-		//Replication
-		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
+	//Dying
+	virtual bool IsPendingKill();
 
-	protected:
-		// Called when the game starts or when spawned
-		virtual void BeginPlay() override;
+	//Statistics Getters
+	virtual int GetMaxLife() override;
+	virtual int GetCurrentLife() override;
+	virtual float GetFieldOfSight() override;
+	virtual float GetHalfHeight() override;
+	virtual int GetLifeBarWidth() override;
+	virtual float GetSize() override;
+	virtual float GetHeal();
 
-		//Statistics
-		UPROPERTY(Replicated)
-			int CurrentLife;
+	//Visibility
+	virtual bool GetOpponentVisibility() override;
+	virtual FVector GetLocation();
 
-		UPROPERTY(EditAnywhere)
-			int DefaultMaxLife;
-		UPROPERTY(EditAnywhere)
-			int DefaultHeal;
-		UPROPERTY(EditAnywhere)
-			float DefaultFieldOfSight;
+	//Replication
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
 
-		UPROPERTY(Replicated)
-			int ActualMaxLife;
-		UPROPERTY(Replicated)
-			int ActualHeal;
-		UPROPERTY(Replicated)
-			float ActualFieldOfSight;
+protected:
 
-		UPROPERTY(Replicated)
-			bool IsVisibleForOpponent;
+	UStaticMeshComponent* BuildingMesh;
+	UStaticMesh* StaticBlueMesh;
+	UStaticMesh* StaticRedMesh;
 
-		//Selection
-		bool Selected;
-		UPROPERTY(EditAnywhere)
-			bool ImBlue;
-		UPROPERTY(EditAnywhere)
-			UDecalComponent* SelectionMark;
-		UMaterial* RedCircle;
-		UMaterial* BlueCircle;
+	//Level
+	unsigned int LevelMax;
+	unsigned int CurrentLevel;
+	TArray<int> CostInFood;
+	TArray<int> CostInCells;
+	TArray<int> CostInMetal;
+	TArray<int> CostInCristals;
+
+	//Statistics
+	UPROPERTY(Replicated)
+		int CurrentLife;
+
+	UPROPERTY(EditAnywhere)
+		int DefaultMaxLife;
+	UPROPERTY(EditAnywhere)
+		int DefaultHeal;
+	UPROPERTY(EditAnywhere)
+		float DefaultFieldOfSight;
+
+	UPROPERTY(Replicated)
+		int ActualMaxLife;
+	UPROPERTY(Replicated)
+		int ActualHeal;
+	UPROPERTY(Replicated)
+		float ActualFieldOfSight;
+
+	UPROPERTY(Replicated)
+		bool IsVisibleForOpponent;
+
+	float TimeSinceLastAttack;
+	float TimeSinceLastHeal;
+
+	//Selection
+	bool Selected;
+	UPROPERTY(EditAnywhere)
+		bool ImBlue;
+	UPROPERTY(EditAnywhere)
+		UDecalComponent* SelectionMark;
+	UMaterial* RedCircle;
+	UMaterial* BlueCircle;
 };

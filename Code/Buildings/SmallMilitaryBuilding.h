@@ -6,14 +6,15 @@
 #include "SmallMilitaryBuilding.generated.h"
 
 /**
- * 
- */
+*
+*/
 UCLASS()
 class SINAH_API ASmallMilitaryBuilding : public AMilitaryBuilding
 {
 	GENERATED_BODY()
-	
-	
-	
-	
+
+public:
+	ASmallMilitaryBuilding();
+
+	virtual float GetSize();
 };

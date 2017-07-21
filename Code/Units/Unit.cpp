@@ -113,15 +113,27 @@ void AUnit::Tick( float DeltaTime )
 		BoxSpecialTargets = NewBoxSpecialTargets;
 		if(OpponentDied)
 			Cast<AUnitController>(GetController())->BeginMove();
+
+		if (SpecialTargets.IsValidIndex(0))
+			FaceRotation(FRotationMatrix::MakeFromX(SpecialTargets[0]->GetLocation() - GetLocation()).Rotator());
+		else if (Destinations.IsValidIndex(0))
+			FaceRotation(FRotationMatrix::MakeFromX(Destinations[0] - GetLocation()).Rotator());
+		else if (OpponentsInSight.IsValidIndex(0))
+			FaceRotation(FRotationMatrix::MakeFromX(OpponentsInSight[0]->GetLocation() - GetLocation()).Rotator());
+
+		SpecialTargetsActors.Empty();
+		for (int i(0); i < SpecialTargets.Num(); i++)
+		{
+			SpecialTargetsActors.Add(Cast<AActor>(SpecialTargets[i].GetObject()));
+		}
+
+		BoxSpecialTargetsActors.Empty();
+		for (int i(0); i < BoxSpecialTargets.Num(); i++)
+		{
+			BoxSpecialTargetsActors.Add(Cast<AActor>(BoxSpecialTargets[i].GetObject()));
+		}
 	}
 	ChangeLoopingAnimation();
-
-	if(SpecialTargets.IsValidIndex(0))
-		FaceRotation(FRotationMatrix::MakeFromX(SpecialTargets[0]->GetLocation() - GetLocation()).Rotator());
-	else if (Destinations.IsValidIndex(0))
-		FaceRotation(FRotationMatrix::MakeFromX(Destinations[0] - GetLocation()).Rotator());
-	else if (OpponentsInSight.IsValidIndex(0))
-		FaceRotation(FRotationMatrix::MakeFromX(OpponentsInSight[0]->GetLocation() - GetLocation()).Rotator());
 }
 
 //Selection and color
@@ -210,7 +222,7 @@ float AUnit::GetSize()
 //Destinations
 void AUnit::AddDestination(FVector Destination, FRotator Rotation)
 {
-	if (CurrentMode != Modes::Defense)
+	if (CurrentMode != Modes::Defense && Role == ROLE_Authority)
 	{
 		FNavLocation CorrectDestination;
 		FVector Extent = FVector(3500.f, 3500.f, 400.f);
@@ -218,7 +230,7 @@ void AUnit::AddDestination(FVector Destination, FRotator Rotation)
 		{
 			DesiredRotation = Rotation;
 			Destinations.Add(CorrectDestination.Location);
-			if (!Destinations.IsValidIndex(1) && !GetSpecialTargets().IsValidIndex(0))
+			if (!Destinations.IsValidIndex(1) && !SpecialTargets.IsValidIndex(0) && !BoxSpecialTargets.IsValidIndex(0))
 			{
 				Cast<AUnitController>(GetController())->BeginMove();
 			}
@@ -227,12 +239,16 @@ void AUnit::AddDestination(FVector Destination, FRotator Rotation)
 }
 void AUnit::ClearOneDestination()
 {
-	Destinations.RemoveAt(0);
+	if (Role == ROLE_Authority)
+		Destinations.RemoveAt(0);
 }
 void AUnit::ClearDestinations()
 {
-	Destinations.Empty();
-	Multicast_SetIsMoving(Action::Idle);
+	if (Role == ROLE_Authority)
+	{
+		Destinations.Empty();
+		Multicast_SetIsMoving(Action::Idle);
+	}
 }
 TArray<FVector> AUnit::GetDestinations()
 {
@@ -240,7 +256,8 @@ TArray<FVector> AUnit::GetDestinations()
 }
 void AUnit::Rotate()
 {
-	FaceRotation(DesiredRotation);
+	if (Role == ROLE_Authority)
+		FaceRotation(DesiredRotation);
 }
 FVector AUnit::GetLocationAfterAllMoves()
 {
@@ -253,42 +270,60 @@ FVector AUnit::GetLocationAfterAllMoves()
 //Target
 void AUnit::AddSpecialTargets()
 {
-	for (int i(0); i < BoxSpecialTargets.Num(); i++)
-		SpecialTargets.AddUnique(BoxSpecialTargets[i]);
-	BoxSpecialTargets.Empty();
+	if (Role == ROLE_Authority)
+	{
+		for (int i(0); i < BoxSpecialTargets.Num(); i++)
+			SpecialTargets.AddUnique(BoxSpecialTargets[i]);
+		BoxSpecialTargets.Empty();
+	}
 }
 void AUnit::SetBoxSpecialTargets(TArray<TScriptInterface<IGameElementInterface>> NewTargets)
 {
-	// Removing doubles
-	TArray<TScriptInterface<IGameElementInterface>> CleanedNewTargets;
-	for (int i(0); i < NewTargets.Num(); i++)
+	if (Role == ROLE_Authority)
 	{
-		if (!SpecialTargets.Contains(NewTargets[i]) && NewTargets[i]->TellIfImBlue() != TellIfImBlue() && NewTargets[i]->GetOpponentVisibility())
-			CleanedNewTargets.Add(NewTargets[i]);
-	}
-	BoxSpecialTargets = CleanedNewTargets;
-	if(CurrentMode != Modes::Attack && CurrentMode != Modes::Defense && WantedMode != Modes::Attack && WantedMode != Modes::Defense && NewTargets.Num() != 0)
-		Server_ChangeMode(Modes::Attack);
+		// Removing doubles
+		TArray<TScriptInterface<IGameElementInterface>> CleanedNewTargets;
+		for (int i(0); i < NewTargets.Num(); i++)
+		{
+			if (!SpecialTargets.Contains(NewTargets[i]) && NewTargets[i]->TellIfImBlue() != TellIfImBlue() && NewTargets[i]->GetOpponentVisibility())
+				CleanedNewTargets.Add(NewTargets[i]);
+		}
+		BoxSpecialTargets = CleanedNewTargets;
+		if (CurrentMode != Modes::Attack && CurrentMode != Modes::Defense && WantedMode != Modes::Attack && WantedMode != Modes::Defense && NewTargets.Num() != 0)
+			Server_ChangeMode(Modes::Attack);
 
-	if(BoxSpecialTargets.IsValidIndex(0))
-		Multicast_SetIsMoving(Action::Idle);
+		if (BoxSpecialTargets.IsValidIndex(0))
+			Multicast_SetIsMoving(Action::Idle);
+	}
 }
 void AUnit::ClearSpecialTargets()
 {
-	SpecialTargets.Empty();
+	if (Role == ROLE_Authority)
+		SpecialTargets.Empty();
 }
 TArray<TScriptInterface<IGameElementInterface>> AUnit::GetSpecialTargets()
 {
+	TArray<AActor*> ArrayBeforeSending;
 	TArray<TScriptInterface<IGameElementInterface>> ArrayToSend;
-	ArrayToSend.Append(SpecialTargets);
-	for (int i(0); i < BoxSpecialTargets.Num(); i++)
-		ArrayToSend.AddUnique(BoxSpecialTargets[i]);
+
+	ArrayBeforeSending.Append(SpecialTargetsActors);
+	for (int i(0); i < BoxSpecialTargetsActors.Num(); i++)
+		ArrayBeforeSending.AddUnique(BoxSpecialTargetsActors[i]);
+
+	for (int i(0); i < ArrayBeforeSending.Num(); i++)
+	{
+		TScriptInterface<IGameElementInterface> NewInterface;
+		NewInterface.SetInterface(Cast<IGameElementInterface>(ArrayBeforeSending[i]));
+		NewInterface.SetObject(ArrayBeforeSending[i]);
+
+		ArrayToSend.Add(NewInterface);
+	}
 
 	return ArrayToSend;
 }
 void AUnit::SetOpponentsInSight(TArray<TScriptInterface<IGameElementInterface>> Opponents)
 {
-	if(CurrentMode == Modes::Attack || CurrentMode == Modes::Defense)
+	if (Role == ROLE_Authority && (CurrentMode == Modes::Attack || CurrentMode == Modes::Defense))
 		OpponentsInSight = Opponents;
 }
 TArray<TScriptInterface<IGameElementInterface>> AUnit::GetOpponentsInSight()
@@ -297,41 +332,34 @@ TArray<TScriptInterface<IGameElementInterface>> AUnit::GetOpponentsInSight()
 }
 void AUnit::ClearOpponentsInSight()
 {
-	OpponentsInSight.Empty();
+	if (Role == ROLE_Authority)
+		OpponentsInSight.Empty();
 }
 
 //Attack
-void AUnit::Server_Attack_Implementation(const TScriptInterface<IGameElementInterface>& Target)
+void AUnit::Attack(const TScriptInterface<IGameElementInterface>& Target)
 {
-	Target->ReceiveDamages(GetPhysicAttack(), GetMagicAttack());
-}
-bool AUnit::Server_Attack_Validate(const TScriptInterface<IGameElementInterface>& Target)
-{
-	return CurrentMode == Modes::Attack || CurrentMode == Modes::Defense;
-}
-void AUnit::Server_ReceiveDamages_Implementation(float Physic, float Magic)
-{
-	float PhysicDamage = Physic - GetPhysicDefense();
-	float MagicDamage = Magic - GetMagicDefense();
-
-	if (PhysicDamage <= 0 && Physic > 0)
-		PhysicDamage = 1.f;
-	if (MagicDamage <= 0 && Magic > 0)
-		MagicDamage = 1.f;
-
-	CurrentLife -= PhysicDamage;
-	CurrentLife -= MagicDamage;
-
-	if (CurrentLife <= 0.f)
-		Destroy();
-}
-bool AUnit::Server_ReceiveDamages_Validate(float Physic, float Magic)
-{
-	return true;
+	if (Role == ROLE_Authority && (CurrentMode == Modes::Attack || CurrentMode == Modes::Defense))
+		Target->ReceiveDamages(GetPhysicAttack(), GetMagicAttack());
 }
 void AUnit::ReceiveDamages(float Physic, float Magic)
 {
-	Server_ReceiveDamages(Physic, Magic);
+	if (Role == ROLE_Authority)
+	{
+		float PhysicDamage = Physic - GetPhysicDefense();
+		float MagicDamage = Magic - GetMagicDefense();
+
+		if (PhysicDamage <= 0 && Physic > 0)
+			PhysicDamage = 1.f;
+		if (MagicDamage <= 0 && Magic > 0)
+			MagicDamage = 1.f;
+
+		CurrentLife -= PhysicDamage;
+		CurrentLife -= MagicDamage;
+
+		if (CurrentLife <= 0.f)
+			Destroy();
+	}
 }
 
 //Dying
@@ -538,8 +566,8 @@ FVector AUnit::GetLocation()
 //Replication
 void AUnit::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
-	DOREPLIFETIME_CONDITION(AUnit, SpecialTargets, COND_Custom);
-	DOREPLIFETIME_CONDITION(AUnit, BoxSpecialTargets, COND_Custom);
+	DOREPLIFETIME_CONDITION(AUnit, SpecialTargetsActors, COND_Custom);
+	DOREPLIFETIME_CONDITION(AUnit, BoxSpecialTargetsActors, COND_Custom);
 	DOREPLIFETIME_CONDITION(AUnit, Destinations, COND_Custom);
 	DOREPLIFETIME_CONDITION(AUnit, ReplicatedMovement, COND_Custom);
 
@@ -560,8 +588,8 @@ void AUnit::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetime
 void AUnit::PreReplication(IRepChangedPropertyTracker &ChangedPropertyTracker)
 {
 	Super::PreReplication(ChangedPropertyTracker);
-	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, SpecialTargets, !ImBlue);
-	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, BoxSpecialTargets, !ImBlue);
+	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, SpecialTargetsActors, !ImBlue);
+	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, BoxSpecialTargetsActors, !ImBlue);
 	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, Destinations, !ImBlue);
 	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, ReplicatedMovement, !ImBlue || IsVisibleForOpponent);
 }

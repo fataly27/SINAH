@@ -353,7 +353,15 @@ void AMousePlayerController::UpdateBoxTargeting(TArray<TScriptInterface<IGameEle
 				if (Role == ROLE_Authority)
 					CurrentUnit->SetBoxSpecialTargets(NewTargets);
 				else
-					Server_SetBoxSpecialTargets(CurrentUnit, NewTargets);
+				{
+					TArray<AActor*> UpdatedNewTargets;
+					for (int j(0); j < NewTargets.Num(); j++)
+					{
+						UpdatedNewTargets.Add(Cast<AActor>(NewTargets[j].GetObject()));
+					}
+
+					Server_SetBoxSpecialTargets(CurrentUnit, UpdatedNewTargets);
+				}
 				if (IsFinal)
 				{
 					if (Role == ROLE_Authority)
@@ -625,11 +633,21 @@ bool AMousePlayerController::Server_AddSpecialTargets_Validate(AUnit *Unit)
 {
 	return !Unit->TellIfImBlue();
 }
-void AMousePlayerController::Server_SetBoxSpecialTargets_Implementation(AUnit *Unit, const TArray<TScriptInterface<IGameElementInterface>> &NewTargets)
+void AMousePlayerController::Server_SetBoxSpecialTargets_Implementation(AUnit *Unit, const TArray<AActor*> &NewTargets)
 {
-	Unit->SetBoxSpecialTargets(NewTargets);
+	TArray<TScriptInterface<IGameElementInterface>> UpdatedNewTargets;
+	for (int i(0); i < NewTargets.Num(); i++)
+	{
+		TScriptInterface<IGameElementInterface> NewInterface;
+		NewInterface.SetInterface(Cast<IGameElementInterface>(NewTargets[i]));
+		NewInterface.SetObject(NewTargets[i]);
+
+		UpdatedNewTargets.Add(NewInterface);
+	}
+
+	Unit->SetBoxSpecialTargets(UpdatedNewTargets);
 }
-bool AMousePlayerController::Server_SetBoxSpecialTargets_Validate(AUnit *Unit, const TArray<TScriptInterface<IGameElementInterface>> &NewTargets)
+bool AMousePlayerController::Server_SetBoxSpecialTargets_Validate(AUnit *Unit, const TArray<AActor*> &NewTargets)
 {
 	return !Unit->TellIfImBlue();
 }

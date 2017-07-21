@@ -94,21 +94,15 @@ bool ABuilding::TellIfImBlue()
 //Attack
 void ABuilding::ReceiveDamages(float Physic, float Magic)
 {
-	Server_ReceiveDamages(Physic, Magic);
-}
+	if (Role == ROLE_Authority)
+	{
+		CurrentLife -= Physic;
+		CurrentLife -= Magic;
+		TimeSinceLastAttack = 0.f;
 
-void ABuilding::Server_ReceiveDamages_Implementation(float Physic, float Magic)
-{
-	CurrentLife -= Physic;
-	CurrentLife -= Magic;
-	TimeSinceLastAttack = 0.f;
-
-	if (CurrentLife <= 0.f)
-		SetLevel(0);
-}
-bool ABuilding::Server_ReceiveDamages_Validate(float Physic, float Magic)
-{
-	return true;
+		if (CurrentLife <= 0.f)
+			SetLevel(0);
+	}
 }
 
 //Heal

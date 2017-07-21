@@ -30,8 +30,6 @@ public:
 
 	//Attack
 	virtual void ReceiveDamages(float Physic, float Magic) override;
-	UFUNCTION(Server, Reliable, WithValidation)
-		virtual void Server_ReceiveDamages(float Physic, float Magic);
 
 	//Heal
 	virtual void Heal();

@@ -68,10 +68,7 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		virtual void ClearOpponentsInSight();
 
 		//Attack
-		UFUNCTION(Server, Reliable, WithValidation)
-			virtual void Server_Attack(const TScriptInterface<IGameElementInterface>& Target);
-		UFUNCTION(Server, Reliable, WithValidation)
-			virtual void Server_ReceiveDamages(float Physic, float Magic);
+		virtual void Attack(const TScriptInterface<IGameElementInterface>& Target);
 		virtual void ReceiveDamages(float Physic, float Magic) override;
 
 		//Dying
@@ -178,9 +175,11 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 
 		//Target
 		UPROPERTY(Replicated)
-			TArray<TScriptInterface<IGameElementInterface>> SpecialTargets;
+			TArray<AActor*> SpecialTargetsActors;
 		UPROPERTY(Replicated)
-			TArray<TScriptInterface<IGameElementInterface>> BoxSpecialTargets;
+			TArray<AActor*> BoxSpecialTargetsActors;
+		TArray<TScriptInterface<IGameElementInterface>> SpecialTargets;
+		TArray<TScriptInterface<IGameElementInterface>> BoxSpecialTargets;
 
 		TArray<TScriptInterface<IGameElementInterface>> OpponentsInSight;
 		

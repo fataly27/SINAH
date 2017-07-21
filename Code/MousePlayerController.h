@@ -67,7 +67,7 @@ class SINAH_API AMousePlayerController : public APlayerController
 		UFUNCTION(Server, Reliable, WithValidation)
 			void Server_AddSpecialTargets(AUnit *Unit);
 		UFUNCTION(Server, Reliable, WithValidation)
-			void Server_SetBoxSpecialTargets(AUnit *Unit, const TArray<TScriptInterface<IGameElementInterface>> &NewTargets);
+			void Server_SetBoxSpecialTargets(AUnit *Unit, const TArray<AActor*> &NewTargets);
 		UFUNCTION(Server, Reliable, WithValidation)
 			void Server_ClearSpecialTargets(AUnit *Unit);
 

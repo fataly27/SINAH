@@ -36,7 +36,7 @@ void AUnitController::Tick(float DeltaSeconds)
 		if (Distance <= Cast<AUnit>(GetPawn())->GetRange() * 100)
 		{
 			Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(Action::Attacking);
-			Cast<AUnit>(GetPawn())->Server_Attack(ClosestTarget);
+			Cast<AUnit>(GetPawn())->Attack(ClosestTarget);
 		}
 		else if (ClosestTarget != LastTarget || GetMoveStatus() != EPathFollowingStatus::Moving)
 		{

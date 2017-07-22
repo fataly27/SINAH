@@ -30,5 +30,5 @@ ASmallMilitaryBuilding::ASmallMilitaryBuilding() : Super()
 
 float ASmallMilitaryBuilding::GetSize()
 {
-	return 500.f;
+	return 590.f;
 }

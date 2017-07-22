@@ -13,7 +13,6 @@ AKnight::AKnight() : Super()
 	DefaultSpeed = 3.5f;
 	DefaultFieldOfSight = 15.f;
 	DefaultRange = 2.f;
-	DefaultReactionTime = 0.8f;
 
 	ActualMaxLife = DefaultMaxLife;
 	CurrentLife = ActualMaxLife;
@@ -24,7 +23,6 @@ AKnight::AKnight() : Super()
 	ActualSpeed = DefaultSpeed;
 	ActualFieldOfSight = DefaultFieldOfSight;
 	ActualRange = DefaultRange;
-	ActualReactionTime = DefaultReactionTime;
 
 	CostInFood = 50;
 	CostInCells = 0;
@@ -65,7 +63,7 @@ AKnight::AKnight() : Super()
 
 float AKnight::GetSize()
 {
-	return 20.f;
+	return 40.f;
 }
 int AKnight::GetLifeBarWidth()
 {

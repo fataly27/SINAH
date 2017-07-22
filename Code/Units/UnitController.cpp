@@ -3,7 +3,7 @@
 #include "Sinah.h"
 #include "UnitController.h"
 
-AUnitController::AUnitController() : Super(), {}
+AUnitController::AUnitController() : Super() {}
 
 void AUnitController::Tick(float DeltaSeconds)
 {
@@ -30,15 +30,16 @@ void AUnitController::Tick(float DeltaSeconds)
 			}
 		}
 
-		if (Distance <= Cast<AUnit>(GetPawn())->GetRange() * 100)
+		if (Distance <= Cast<AUnit>(GetPawn())->GetRange() * 100 + ClosestTarget->GetSize())
 		{
+			StopMovement();
 			Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(Action::Attacking);
 			Cast<AUnit>(GetPawn())->Attack(ClosestTarget);
 		}
 		else if (ClosestTarget != LastTarget || GetMoveStatus() != EPathFollowingStatus::Moving)
 		{
 			StopMovement();
-			MoveToActor(Cast<AActor>(ClosestTarget.GetObject()), Cast<AUnit>(GetPawn())->GetRange() * 100, false, true, false);
+			MoveToActor(Cast<AActor>(ClosestTarget.GetObject()), Cast<AUnit>(GetPawn())->GetRange() * 100 + ClosestTarget->GetSize(), false, true, false);
 			Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(Action::Moving);
 		}
 		LastTarget = ClosestTarget;

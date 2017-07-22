@@ -200,10 +200,6 @@ float AUnit::GetRange()
 {
 	return ActualRange;
 }
-float AUnit::GetReactionTime()
-{
-	return ActualReactionTime;
-}
 float AUnit::GetHalfHeight()
 {
 	return GetCapsuleComponent()->GetScaledCapsuleHalfHeight();

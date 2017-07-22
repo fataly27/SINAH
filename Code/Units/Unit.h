@@ -87,7 +87,6 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		virtual int GetMagicDefense();
 		virtual float GetSpeed();
 		virtual float GetRange();
-		virtual float GetReactionTime();
 
 		//Modes and animation
 		virtual void SetMode();

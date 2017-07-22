@@ -56,7 +56,7 @@ void ABuilding::Tick(float DeltaTime)
 	TimeSinceLastAttack += DeltaTime;
 	TimeSinceLastHeal += DeltaTime;
 
-	if (TimeSinceLastAttack >= 10.f && TimeSinceLastHeal >= 1.f && Role == ROLE_Authority)
+	if (TimeSinceLastAttack >= 10.f && TimeSinceLastHeal >= 0.5f && Role == ROLE_Authority && CurrentLevel != 0)
 		Heal();
 }
 
@@ -107,7 +107,16 @@ void ABuilding::ReceiveDamages(float Physic, float Magic)
 		TimeSinceLastAttack = 0.f;
 
 		if (CurrentLife <= 0.f)
-			SetLevel(0);
+		{
+			if (CurrentLevel == 0)
+			{
+				// Need to see who attacked ! --> Code need to be changed
+			}
+			else
+				AmIBlue(!TellIfImBlue());
+				
+			SetLevel(1);
+		}
 	}
 }
 
@@ -188,6 +197,10 @@ float ABuilding::GetHeal()
 float ABuilding::GetSize()
 {
 	return 0.f;
+}
+int ABuilding::GetLevel()
+{
+	return CurrentLevel;
 }
 
 //Visibility

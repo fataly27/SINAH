@@ -50,6 +50,7 @@ public:
 	virtual int GetLifeBarWidth() override;
 	virtual float GetSize() override;
 	virtual float GetHeal();
+	virtual int GetLevel();
 
 	//Visibility
 	virtual bool GetOpponentVisibility() override;

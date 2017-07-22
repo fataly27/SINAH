@@ -4,6 +4,15 @@
 
 #include "GameElementInterface.generated.h"
 
+
+UENUM(BlueprintType)
+	enum class Side : uint8
+	{
+		Blue,
+		Red,
+		Neutral
+	};
+
 // This class does not need to be modified.
 UINTERFACE()
 class UGameElementInterface : public UInterface

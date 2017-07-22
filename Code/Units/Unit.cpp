@@ -21,7 +21,6 @@ AUnit::AUnit() : ImBlue(true), Selected(false), CurrentAction(Action::Idle), IsV
 	DefaultSpeed = 3.5f;
 	DefaultFieldOfSight = 10.f;
 	DefaultRange = 5.f;
-	DefaultReactionTime = 1.f;
 
 	ActualMaxLife = DefaultMaxLife;
 	CurrentLife = ActualMaxLife;
@@ -32,7 +31,6 @@ AUnit::AUnit() : ImBlue(true), Selected(false), CurrentAction(Action::Idle), IsV
 	ActualSpeed = DefaultSpeed;
 	ActualFieldOfSight = DefaultFieldOfSight;
 	ActualRange = DefaultRange;
-	ActualReactionTime = DefaultReactionTime;
 
 	CostInFood = 30;
 	CostInCells = 5;

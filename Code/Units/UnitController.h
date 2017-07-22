@@ -26,5 +26,4 @@ class SINAH_API AUnitController : public AAIController
 
 	protected:
 		TScriptInterface<IGameElementInterface> LastTarget;
-		float TimeSinceLastAction;
 };

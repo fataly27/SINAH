@@ -130,8 +130,6 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 			float ActualFieldOfSight;
 		UPROPERTY(Replicated)
 			float ActualRange;
-		UPROPERTY(Replicated)
-			float ActualReactionTime;
 
 		UPROPERTY(Replicated)
 			bool IsVisibleForOpponent;
@@ -152,8 +150,6 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 			float DefaultFieldOfSight;
 		UPROPERTY(EditAnywhere)
 			float DefaultRange;
-		UPROPERTY(Replicated)
-			float DefaultReactionTime;
 
 		UPROPERTY(EditAnywhere)
 			int CostInFood;

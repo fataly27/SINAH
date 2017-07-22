@@ -3,19 +3,16 @@
 #include "Sinah.h"
 #include "UnitController.h"
 
-AUnitController::AUnitController() : Super(), TimeSinceLastAction(0.f) {}
+AUnitController::AUnitController() : Super(), {}
 
 void AUnitController::Tick(float DeltaSeconds)
 {
-	TimeSinceLastAction += DeltaSeconds;
-	if (TimeSinceLastAction >= Cast<AUnit>(GetPawn())->GetReactionTime() && !Cast<AUnit>(GetPawn())->GetDestinations().IsValidIndex(0) && !Cast<AUnit>(GetPawn())->GetOpponentsInSight().IsValidIndex(0) && !Cast<AUnit>(GetPawn())->GetSpecialTargets().IsValidIndex(0))
+	if (!Cast<AUnit>(GetPawn())->GetDestinations().IsValidIndex(0) && !Cast<AUnit>(GetPawn())->GetOpponentsInSight().IsValidIndex(0) && !Cast<AUnit>(GetPawn())->GetSpecialTargets().IsValidIndex(0))
 	{
-		TimeSinceLastAction = 0.f;
 		Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(Action::Idle);
 	}
-	else if (TimeSinceLastAction >= Cast<AUnit>(GetPawn())->GetReactionTime() && (Cast<AUnit>(GetPawn())->GetSpecialTargets().IsValidIndex(0) || (Cast<AUnit>(GetPawn())->GetOpponentsInSight().IsValidIndex(0)) && !Cast<AUnit>(GetPawn())->GetDestinations().IsValidIndex(0)))
+	else if ((Cast<AUnit>(GetPawn())->GetSpecialTargets().IsValidIndex(0) || (Cast<AUnit>(GetPawn())->GetOpponentsInSight().IsValidIndex(0)) && !Cast<AUnit>(GetPawn())->GetDestinations().IsValidIndex(0)))
 	{
-		TimeSinceLastAction = 0.f;
 		TArray<TScriptInterface<IGameElementInterface>> EffectiveTargets;
 		if (Cast<AUnit>(GetPawn())->GetSpecialTargets().IsValidIndex(0))
 			EffectiveTargets = Cast<AUnit>(GetPawn())->GetSpecialTargets();

@@ -312,17 +312,46 @@ void AMousePlayerController::UpdateBoxSelection(TArray<TScriptInterface<IGameEle
 
 	for (int i(0); i < NewSelection.Num(); i++)
 	{
-		if (NewSelection[i]->TellIfImBlue() == PlayerIsBlue)
+		//Si le nouvel acteur sélectionné est une unité
+		if (Cast<AActor>(NewSelection[i].GetObject())->IsA(AUnit::StaticClass()))
 		{
-			if (ActorsSelected.IsValidIndex(0) && ActorsSelected.Top()->TellIfImBlue() != PlayerIsBlue)
+			// Si le premier acteur sélectionné est un bâtiment, on le supprime de la sélection
+			if (ActorsSelected.IsValidIndex(0) && Cast<AActor>(ActorsSelected.Top().GetObject())->IsA(ABuilding::StaticClass()))
 			{
 				ActorsSelected[0]->Unselect();
 				ActorsSelected.RemoveAt(0);
 			}
-			else if(FinalSelection.IsValidIndex(0) && FinalSelection.Top()->TellIfImBlue() != PlayerIsBlue)
+			else if (FinalSelection.IsValidIndex(0) && Cast<AActor>(FinalSelection.Top().GetObject())->IsA(ABuilding::StaticClass()))
 				FinalSelection.RemoveAt(0);
-			FinalSelection.Add(NewSelection[i]);
+
+			//Si la nouvelle unité sélectionnée est alliée
+			if (NewSelection[i]->TellIfImBlue() == PlayerIsBlue)
+			{
+				// Si le premier acteur sélectionné est une unité ennemie, on le supprime de la sélection
+				if (ActorsSelected.IsValidIndex(0) && ActorsSelected.Top()->TellIfImBlue() != PlayerIsBlue)
+				{
+					ActorsSelected[0]->Unselect();
+					ActorsSelected.RemoveAt(0);
+				}
+				else if (FinalSelection.IsValidIndex(0) && FinalSelection.Top()->TellIfImBlue() != PlayerIsBlue)
+					FinalSelection.RemoveAt(0);
+
+				//On ajoute la nouvelle unité
+				FinalSelection.Add(NewSelection[i]);
+			}
+			//Si la nouvelle unité sélectionnée est ennemie, l'ancienne sélection doit être vide pour que cette unité soit sélectionnée
+			else if (FinalSelection.Num() == 0)
+			{
+				if (AllSelectedBefore.IsValidIndex(0))
+				{
+					if (AllSelectedBefore[0] == NewSelection[i])
+						FinalSelection.Add(NewSelection[i]);
+				}
+				else
+					FinalSelection.Add(NewSelection[i]);
+			}
 		}
+		//Si le nouvel acteur sélectionné est un bâtiment, l'ancienne sélection doit être vide pour que ce bâtiment soit sélectionné
 		else if (FinalSelection.Num() == 0)
 		{
 			if (AllSelectedBefore.IsValidIndex(0))
@@ -614,7 +643,7 @@ void AMousePlayerController::Server_AddDestination_Implementation(AUnit *Unit, F
 }
 bool AMousePlayerController::Server_AddDestination_Validate(AUnit *Unit, FVector Destination, FRotator Rotation)
 {
-	return !Unit->TellIfImBlue();
+	return Unit != NULL && !Unit->TellIfImBlue() && !Unit->IsPendingKill();
 }
 void AMousePlayerController::Server_ClearDestinations_Implementation(AUnit *Unit)
 {
@@ -622,7 +651,7 @@ void AMousePlayerController::Server_ClearDestinations_Implementation(AUnit *Unit
 }
 bool AMousePlayerController::Server_ClearDestinations_Validate(AUnit *Unit)
 {
-	return !Unit->TellIfImBlue();
+	return Unit != NULL && !Unit->TellIfImBlue() && !Unit->IsPendingKill();
 }
 
 void AMousePlayerController::Server_AddSpecialTargets_Implementation(AUnit *Unit)
@@ -631,7 +660,7 @@ void AMousePlayerController::Server_AddSpecialTargets_Implementation(AUnit *Unit
 }
 bool AMousePlayerController::Server_AddSpecialTargets_Validate(AUnit *Unit)
 {
-	return !Unit->TellIfImBlue();
+	return Unit != NULL && !Unit->TellIfImBlue() && !Unit->IsPendingKill();
 }
 void AMousePlayerController::Server_SetBoxSpecialTargets_Implementation(AUnit *Unit, const TArray<AActor*> &NewTargets)
 {
@@ -649,7 +678,7 @@ void AMousePlayerController::Server_SetBoxSpecialTargets_Implementation(AUnit *U
 }
 bool AMousePlayerController::Server_SetBoxSpecialTargets_Validate(AUnit *Unit, const TArray<AActor*> &NewTargets)
 {
-	return !Unit->TellIfImBlue();
+	return Unit != NULL && !Unit->TellIfImBlue() && !Unit->IsPendingKill();
 }
 void AMousePlayerController::Server_ClearSpecialTargets_Implementation(AUnit *Unit)
 {
@@ -657,5 +686,5 @@ void AMousePlayerController::Server_ClearSpecialTargets_Implementation(AUnit *Un
 }
 bool AMousePlayerController::Server_ClearSpecialTargets_Validate(AUnit *Unit)
 {
-	return !Unit->TellIfImBlue();
+	return Unit != NULL && !Unit->TellIfImBlue() && !Unit->IsPendingKill();
 }

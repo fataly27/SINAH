@@ -82,9 +82,15 @@ void ABuilding::AmIBlue(bool color)
 	ImBlue = color;
 
 	if (ImBlue)
+	{
 		SelectionMark->SetMaterial(0, BlueCircle);
+		BuildingMesh->SetStaticMesh(StaticBlueMesh);
+	}
 	else
+	{
 		SelectionMark->SetMaterial(0, RedCircle);
+		BuildingMesh->SetStaticMesh(StaticRedMesh);
+	}
 }
 bool ABuilding::TellIfImBlue()
 {

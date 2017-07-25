@@ -25,14 +25,14 @@ void APlayerHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
-	IsPlayerBlue(true);
+	SetPlayerSide(Side::Blue);
 }
 
 void APlayerHUD::DrawHUD()
 {
 	if (BoxDisplayed == TypeBox::Select)
 	{
-		if (PlayerIsBlue)
+		if (PlayerSide == Side::Blue)
 		{
 			DrawLine(StartMousePos.X, StartMousePos.Y, StartMousePos.X, CurrentMousePos.Y, FColor(80, 80, 255));
 			DrawLine(StartMousePos.X, StartMousePos.Y, CurrentMousePos.X, StartMousePos.Y, FColor(80, 80, 255));
@@ -41,7 +41,7 @@ void APlayerHUD::DrawHUD()
 
 			DrawRect(FLinearColor(0, 0, 1, 0.15f), StartMousePos.X, StartMousePos.Y, CurrentMousePos.X - StartMousePos.X, CurrentMousePos.Y - StartMousePos.Y);
 		}
-		else
+		else if (PlayerSide == Side::Red)
 		{
 			DrawLine(StartMousePos.X, StartMousePos.Y, StartMousePos.X, CurrentMousePos.Y, FColor(255, 80, 80));
 			DrawLine(StartMousePos.X, StartMousePos.Y, CurrentMousePos.X, StartMousePos.Y, FColor(255, 80, 80));
@@ -59,22 +59,20 @@ void APlayerHUD::DrawHUD()
 
 		ActorsBeingSelected.Empty();
 		for (int i = 0; i < Units.Num(); i++)
-		{
 			ActorsBeingSelected.Add(TScriptInterface<IGameElementInterface>(Units[i]));
-		}
 		for (int i = 0; i < Buildings.Num(); i++)
 			ActorsBeingSelected.Add(TScriptInterface<IGameElementInterface>(Buildings[i]));
 	}
 	else if (BoxDisplayed == TypeBox::Target)
 	{
-		if (PlayerIsBlue)
+		if (PlayerSide == Side::Blue)
 		{
 			DrawLine(StartMousePos.X, StartMousePos.Y, StartMousePos.X, CurrentMousePos.Y, FColor(150, 150, 255), 2.f);
 			DrawLine(StartMousePos.X, StartMousePos.Y, CurrentMousePos.X, StartMousePos.Y, FColor(150, 150, 255), 2.f);
 			DrawLine(CurrentMousePos.X, CurrentMousePos.Y, CurrentMousePos.X, StartMousePos.Y, FColor(150, 150, 255), 2.f);
 			DrawLine(CurrentMousePos.X, CurrentMousePos.Y, StartMousePos.X, CurrentMousePos.Y, FColor(150, 150, 255), 2.f);
 		}
-		else
+		else if (PlayerSide == Side::Red)
 		{
 			DrawLine(StartMousePos.X, StartMousePos.Y, StartMousePos.X, CurrentMousePos.Y, FColor(255, 150, 150), 2.f);
 			DrawLine(StartMousePos.X, StartMousePos.Y, CurrentMousePos.X, StartMousePos.Y, FColor(255, 150, 150), 2.f);
@@ -105,15 +103,20 @@ void APlayerHUD::DrawHUD()
 			float WidthOfRect = 500.f / CurrentZoom;
 			float Offset = 100.f / CurrentZoom + 1.f;
 
-			if (ActorsSelected[i]->TellIfImBlue())
+			if (ActorsSelected[i]->GetSide() == Side::Blue)
 			{
 				DrawRect(FLinearColor(0, 0, 1, 0.25f), TopPosition.X - WidthOfRect / 2, TopPosition.Y - Offset - HeightOfRects, WidthOfRect, HeightOfRects);
 				DrawRect(FLinearColor(0, 0, 1, 0.75f), TopPosition.X - WidthOfRect / 2, TopPosition.Y - Offset - HeightOfRects, WidthOfRect * Percent, HeightOfRects);
 			}
-			else
+			else if (ActorsSelected[i]->GetSide() == Side::Red)
 			{
 				DrawRect(FLinearColor(1, 0, 0, 0.25f), TopPosition.X - WidthOfRect / 2, TopPosition.Y - Offset - HeightOfRects, WidthOfRect, HeightOfRects);
 				DrawRect(FLinearColor(1, 0, 0, 0.75f), TopPosition.X - WidthOfRect / 2, TopPosition.Y - Offset - HeightOfRects, WidthOfRect * Percent, HeightOfRects);
+			}
+			else
+			{
+				DrawRect(FLinearColor(0.5f, 0.5f, 0.5f, 0.25f), TopPosition.X - WidthOfRect / 2, TopPosition.Y - Offset - HeightOfRects, WidthOfRect, HeightOfRects);
+				DrawRect(FLinearColor(0.5f, 0.5f, 0.5f, 0.75f), TopPosition.X - WidthOfRect / 2, TopPosition.Y - Offset - HeightOfRects, WidthOfRect * Percent, HeightOfRects);
 			}
 		}
 	}
@@ -123,15 +126,15 @@ void APlayerHUD::DrawHUD()
 		for (int i(0); i < ActorsSelected.Num(); i++)
 		{
 			AUnit* CurrentUnit = Cast<AUnit>(ActorsSelected[i].GetObject());
-			if (CurrentUnit->TellIfImBlue() == PlayerIsBlue && CurrentUnit->GetMode() != Modes::Defense)
+			if (CurrentUnit->GetSide() == PlayerSide && CurrentUnit->GetMode() != Modes::Defense)
 			{
 				TArray<FVector> Destinations = CurrentUnit->GetDestinations();
 				for (int j(0); j < Destinations.Num(); j++)
 				{
 					FVector2D PositionOnScreen(Project(Destinations[j]));
-					if (PlayerIsBlue)
+					if (PlayerSide == Side::Blue)
 						DrawTextureSimple(BlueDestinationTexture, PositionOnScreen.X - BlueDestinationTexture->GetSurfaceWidth() / 2, PositionOnScreen.Y - BlueDestinationTexture->GetSurfaceHeight() / 2);
-					else
+					else if (PlayerSide == Side::Red)
 						DrawTextureSimple(RedDestinationTexture, PositionOnScreen.X - RedDestinationTexture->GetSurfaceWidth() / 2, PositionOnScreen.Y - RedDestinationTexture->GetSurfaceHeight() / 2);
 				}
 			}
@@ -142,7 +145,7 @@ void APlayerHUD::DrawHUD()
 		for (int i(0); i < ActorsSelected.Num(); i++)
 		{
 			AUnit* CurrentUnit = Cast<AUnit>(ActorsSelected[i].GetObject());
-			if (CurrentUnit->TellIfImBlue() == PlayerIsBlue)
+			if (CurrentUnit->GetSide() == PlayerSide)
 			{
 				TArray<TScriptInterface<IGameElementInterface>> TargetsOfActor = CurrentUnit->GetSpecialTargets();
 				for (int j(0); j < TargetsOfActor.Num(); j++)
@@ -162,16 +165,16 @@ void APlayerHUD::DrawHUD()
 			float Offset = 100.f / CurrentZoom + 1.f;
 			if (NumberOfOccurences[i] == ActorsSelected.Num())
 			{
-				if (PlayerIsBlue)
+				if (PlayerSide == Side::Blue)
 					DrawTextureSimple(BlueTargetTexture, TopPosition.X - BlueTargetTexture->GetSurfaceWidth() * Scale / 2, TopPosition.Y - Offset - BlueTargetTexture->GetSurfaceHeight() * Scale / 2, Scale);
-				else
+				else if (PlayerSide == Side::Red)
 					DrawTextureSimple(RedTargetTexture, TopPosition.X - RedTargetTexture->GetSurfaceWidth() * Scale / 2, TopPosition.Y - Offset - RedTargetTexture->GetSurfaceHeight() * Scale / 2, Scale);
 			}
 			else
 			{
-				if (PlayerIsBlue)
+				if (PlayerSide == Side::Blue)
 					DrawTextureSimple(BlueTargetTextureLight, TopPosition.X - BlueTargetTextureLight->GetSurfaceWidth() * Scale / 2, TopPosition.Y - Offset - BlueTargetTextureLight->GetSurfaceHeight() * Scale / 2, Scale);
-				else
+				else if (PlayerSide == Side::Red)
 					DrawTextureSimple(RedTargetTextureLight, TopPosition.X - RedTargetTextureLight->GetSurfaceWidth() * Scale / 2, TopPosition.Y - Offset - RedTargetTextureLight->GetSurfaceHeight() * Scale / 2, Scale);
 			}
 		}
@@ -190,9 +193,9 @@ void APlayerHUD::ShouldDisplayBox(TypeBox Display)
 {
 	BoxDisplayed = Display;
 }
-void APlayerHUD::IsPlayerBlue(bool color)
+void APlayerHUD::SetPlayerSide(Side NewSide)
 {
-	PlayerIsBlue = color;
+	PlayerSide = NewSide;
 }
 bool APlayerHUD::IsBoxTiny()
 {

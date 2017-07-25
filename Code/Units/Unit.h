@@ -46,9 +46,11 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		virtual void Unselect() override;
 		virtual bool IsSelected() override;
 
-		//Color
-		virtual void AmIBlue(bool color) override;
-		virtual bool TellIfImBlue() override;
+		//Side
+		virtual Side GetSide() override;
+		virtual void SetSide(Side NewSide) override;
+		UFUNCTION(NetMulticast, Reliable)
+			virtual void Multicast_SetSide(Side NewSide);
 
 		//Destinations
 		virtual void AddDestination(FVector Destination, FRotator Rotation);
@@ -69,7 +71,7 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 
 		//Attack
 		virtual void Attack(const TScriptInterface<IGameElementInterface>& Target);
-		virtual void ReceiveDamages(float Physic, float Magic) override;
+		virtual void ReceiveDamages(float Physic, float Magic, Side AttackingSide) override;
 
 		//Dying
 		virtual bool IsPendingKill();
@@ -161,12 +163,13 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 
 		//Selection
 		UPROPERTY(EditAnywhere)
-			bool ImBlue;
+			Side MySide;
 		bool Selected;
 		UPROPERTY(EditAnywhere)
 			UDecalComponent* SelectionMark;
 		UMaterial* RedCircle;
 		UMaterial* BlueCircle;
+		UMaterial* NeutralCircle;
 
 		//Target
 		UPROPERTY(Replicated)

@@ -5,8 +5,10 @@
 
 
 // Sets default values
-AUnit::AUnit() : ImBlue(true), Selected(false), CurrentAction(Action::Idle), IsVisibleForOpponent(false)
+AUnit::AUnit() : MySide(Side::Neutral), Selected(false), CurrentAction(Action::Idle), IsVisibleForOpponent(false)
 {
+	bReplicates = true;
+
 	SetActorScale3D(FVector(0.7f));
 
 	InvisibleLimitedTime = 15.f;
@@ -56,6 +58,8 @@ AUnit::AUnit() : ImBlue(true), Selected(false), CurrentAction(Action::Idle), IsV
 	RedCircle = RedCircleAsset.Object;
 	static ConstructorHelpers::FObjectFinder<UMaterial> BlueCircleAsset(TEXT("/Game/Materials/BlueCircle.BlueCircle"));
 	BlueCircle = BlueCircleAsset.Object;
+	static ConstructorHelpers::FObjectFinder<UMaterial> NeutralCircleAsset(TEXT("/Game/Materials/BlueCircle.BlueCircle"));
+	NeutralCircle = NeutralCircleAsset.Object;
 }
 
 // Called when the game starts or when spawned
@@ -63,10 +67,10 @@ void AUnit::BeginPlay()
 {
 	Super::BeginPlay();
 	Unselect();
-	AmIBlue(ImBlue);
 	WantedMode = Modes::Attack;
+	SetSide(MySide);
 
-	if (ImBlue != (Role == ROLE_Authority))
+	if ((MySide == Side::Blue && Role != ROLE_Authority) || (MySide == Side::Red && Role == ROLE_Authority))
 		SetActorHiddenInGame(!IsVisibleForOpponent);
 }
 
@@ -93,7 +97,7 @@ void AUnit::Tick( float DeltaTime )
 		TArray<TScriptInterface<IGameElementInterface>> NewSpecialTargets;
 		for (int i = 0; i < SpecialTargets.Num(); i++)
 		{
-			if (SpecialTargets[i]->GetOpponentVisibility() && !SpecialTargets[i]->IsPendingKill())
+			if (SpecialTargets[i]->GetOpponentVisibility() && !SpecialTargets[i]->IsPendingKill() && SpecialTargets[i]->GetSide() != GetSide())
 				NewSpecialTargets.Add(SpecialTargets[i]);
 			else if (SpecialTargets[i]->IsPendingKill())
 				OpponentDied = true;
@@ -103,7 +107,7 @@ void AUnit::Tick( float DeltaTime )
 		TArray<TScriptInterface<IGameElementInterface>> NewBoxSpecialTargets;
 		for (int i = 0; i < BoxSpecialTargets.Num(); i++)
 		{
-			if (BoxSpecialTargets[i]->GetOpponentVisibility() && !BoxSpecialTargets[i]->IsPendingKill())
+			if (BoxSpecialTargets[i]->GetOpponentVisibility() && !BoxSpecialTargets[i]->IsPendingKill() && SpecialTargets[i]->GetSide() != GetSide())
 				NewBoxSpecialTargets.Add(BoxSpecialTargets[i]);
 			else if (BoxSpecialTargets[i]->IsPendingKill())
 				OpponentDied = true;
@@ -134,7 +138,7 @@ void AUnit::Tick( float DeltaTime )
 	ChangeLoopingAnimation();
 }
 
-//Selection and color
+//Selection and side
 void AUnit::Select()
 {
 	Selected = true;
@@ -149,18 +153,25 @@ bool AUnit::IsSelected()
 {
 	return Selected;
 }
-void AUnit::AmIBlue(bool color)
+void AUnit::SetSide(Side NewSide)
 {
-	ImBlue = color;
-
-	if (ImBlue)
-		SelectionMark->SetMaterial(0, BlueCircle);
-	else
-		SelectionMark->SetMaterial(0, RedCircle);
+	Multicast_SetSide(NewSide);
 }
-bool AUnit::TellIfImBlue()
+void AUnit::Multicast_SetSide_Implementation(Side NewSide)
 {
-	return ImBlue;
+	Unselect();
+	MySide = NewSide;
+
+	if (MySide == Side::Blue)
+		SelectionMark->SetMaterial(0, BlueCircle);
+	else if (MySide == Side::Red)
+		SelectionMark->SetMaterial(0, RedCircle);
+	else
+		SelectionMark->SetMaterial(0, NeutralCircle);
+}
+Side AUnit::GetSide()
+{
+	return MySide;
 }
 
 //Statistics
@@ -279,7 +290,7 @@ void AUnit::SetBoxSpecialTargets(TArray<TScriptInterface<IGameElementInterface>>
 		TArray<TScriptInterface<IGameElementInterface>> CleanedNewTargets;
 		for (int i(0); i < NewTargets.Num(); i++)
 		{
-			if (!SpecialTargets.Contains(NewTargets[i]) && NewTargets[i]->TellIfImBlue() != TellIfImBlue() && NewTargets[i]->GetOpponentVisibility())
+			if (!SpecialTargets.Contains(NewTargets[i]) && NewTargets[i]->GetSide() != GetSide() && NewTargets[i]->GetOpponentVisibility())
 				CleanedNewTargets.Add(NewTargets[i]);
 		}
 		BoxSpecialTargets = CleanedNewTargets;
@@ -334,11 +345,11 @@ void AUnit::ClearOpponentsInSight()
 void AUnit::Attack(const TScriptInterface<IGameElementInterface>& Target)
 {
 	if (Role == ROLE_Authority && (CurrentMode == Modes::Attack || CurrentMode == Modes::Defense))
-		Target->ReceiveDamages(GetPhysicAttack(), GetMagicAttack());
+		Target->ReceiveDamages(GetPhysicAttack(), GetMagicAttack(), MySide);
 }
-void AUnit::ReceiveDamages(float Physic, float Magic)
+void AUnit::ReceiveDamages(float Physic, float Magic, Side AttackingSide)
 {
-	if (Role == ROLE_Authority)
+	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
 		float PhysicDamage = Physic - GetPhysicDefense();
 		float MagicDamage = Magic - GetMagicDefense();
@@ -532,7 +543,7 @@ bool AUnit::GetOpponentVisibility()
 void AUnit::Multicast_SetHidden_Implementation(bool Hidden, FVector Position, FRotator Rotation, bool TurnIntoGhost)
 {
 	IsVisibleForOpponent = !Hidden;
-	if (ImBlue == (Role == ROLE_Authority))
+	if ((MySide == Side::Blue && Role == ROLE_Authority) || (MySide == Side::Red && Role != ROLE_Authority))
 	{
 		if (TurnIntoGhost)
 		{
@@ -582,8 +593,8 @@ void AUnit::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetime
 void AUnit::PreReplication(IRepChangedPropertyTracker &ChangedPropertyTracker)
 {
 	Super::PreReplication(ChangedPropertyTracker);
-	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, SpecialTargetsActors, !ImBlue);
-	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, BoxSpecialTargetsActors, !ImBlue);
-	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, Destinations, !ImBlue);
-	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, ReplicatedMovement, !ImBlue || IsVisibleForOpponent);
+	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, SpecialTargetsActors, MySide == Side::Red);
+	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, BoxSpecialTargetsActors, MySide == Side::Red);
+	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, Destinations, MySide == Side::Red);
+	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, ReplicatedMovement, MySide == Side::Red || IsVisibleForOpponent);
 }

@@ -17,7 +17,11 @@ AMousePlayerController::AMousePlayerController()
 void AMousePlayerController::BeginPlay()
 {
 	HUD = Cast<APlayerHUD>(GetHUD());
-	PlayerIsBlue = Role == ROLE_Authority;
+
+	if (Role == ROLE_Authority)
+		PlayerSide = Side::Blue;
+	else
+		PlayerSide = Side::Red;
 
 	if (HUD)
 	{
@@ -61,7 +65,7 @@ void AMousePlayerController::Tick(float DeltaTime)
 		TArray<TScriptInterface<IGameElementInterface>> AllActorsSelected;
 		for (int i = 0; i < ActorsSelected.Num(); i++)
 		{
-			if ((ActorsSelected[i]->TellIfImBlue() == PlayerIsBlue || ActorsSelected[i]->GetOpponentVisibility()) && !ActorsSelected[i]->IsPendingKill())
+			if ((ActorsSelected[i]->GetSide() == PlayerSide || ActorsSelected[i]->GetOpponentVisibility()) && !ActorsSelected[i]->IsPendingKill())
 				AllActorsSelected.Add(ActorsSelected[i]);
 			else
 				ActorsSelected[i]->Unselect();
@@ -71,7 +75,7 @@ void AMousePlayerController::Tick(float DeltaTime)
 		TArray<TScriptInterface<IGameElementInterface>> NewActorsSelectedByBox;
 		for (int i = 0; i < ActorsSelectedByCurrentBox.Num(); i++)
 		{
-			if ((ActorsSelectedByCurrentBox[i]->TellIfImBlue() == PlayerIsBlue || ActorsSelectedByCurrentBox[i]->GetOpponentVisibility()) && !ActorsSelectedByCurrentBox[i]->IsPendingKill())
+			if ((ActorsSelectedByCurrentBox[i]->GetSide() == PlayerSide || ActorsSelectedByCurrentBox[i]->GetOpponentVisibility()) && !ActorsSelectedByCurrentBox[i]->IsPendingKill())
 				NewActorsSelectedByBox.Add(ActorsSelectedByCurrentBox[i]);
 			else
 				ActorsSelectedByCurrentBox[i]->Unselect();
@@ -144,7 +148,7 @@ void AMousePlayerController::StartAddSelect()
 		StartMousePos.Y = LocationY;
 
 		HUD->SetStartMousePos(StartMousePos);
-		HUD->IsPlayerBlue(PlayerIsBlue);
+		HUD->SetPlayerSide(PlayerSide);
 		HUD->ShouldDisplayBox(TypeBox::Select);
 
 		BoxDisplayed = TypeBox::Select;
@@ -173,14 +177,14 @@ void AMousePlayerController::StartDirect()
 		for (int i(0); i < ActorsSelected.Num(); i++)
 		{
 			AUnit* CurrentUnit = Cast<AUnit>(ActorsSelected[i].GetObject());
-			if (CurrentUnit->TellIfImBlue() == PlayerIsBlue)
+			if (CurrentUnit->GetSide() == PlayerSide)
 			{
-				if (PlayerIsBlue)
+				if (PlayerSide == Side::Blue)
 				{
 					CurrentUnit->ClearDestinations();
 					CurrentUnit->ClearSpecialTargets();
 				}
-				else
+				else if (PlayerSide == Side::Red)
 				{
 					Server_ClearDestinations(CurrentUnit);
 					Server_ClearSpecialTargets(CurrentUnit);
@@ -202,7 +206,7 @@ void AMousePlayerController::StartAddDirect()
 		StartMousePos.Y = LocationY;
 
 		HUD->SetStartMousePos(StartMousePos);
-		HUD->IsPlayerBlue(PlayerIsBlue);
+		HUD->SetPlayerSide(PlayerSide);
 		HUD->ShouldDisplayBox(TypeBox::Target);
 
 		BoxDisplayed = TypeBox::Target;
@@ -233,7 +237,7 @@ void AMousePlayerController::AddDirect()
 				for (int i(0); i < ActorsSelected.Num(); i++)
 				{
 					AUnit* CurrentUnit = Cast<AUnit>(ActorsSelected[i].GetObject());
-					if (CurrentUnit->TellIfImBlue() == PlayerIsBlue && CurrentUnit->GetMode() != Modes::Defense)
+					if (CurrentUnit->GetSide() == PlayerSide && CurrentUnit->GetMode() != Modes::Defense)
 					{
 						Units.Add(CurrentUnit);
 						Direction += HitResult.ImpactPoint - CurrentUnit->GetLocationAfterAllMoves();
@@ -263,9 +267,9 @@ void AMousePlayerController::AddDirect()
 
 					for (int j(0); j < NumberColumns; j++)
 					{
-						if (PlayerIsBlue)
+						if (PlayerSide == Side::Blue)
 							Units[k]->AddDestination(HitResult.ImpactPoint + FVector(Position.GetRotated(Rotation.Yaw), 0.f), Rotation);
-						else
+						else if (PlayerSide == Side::Red)
 							Server_AddDestination(Units[k], HitResult.ImpactPoint + FVector(Position.GetRotated(Rotation.Yaw), 0.f), Rotation);
 
 						Position.Y -= 250.f;
@@ -325,15 +329,15 @@ void AMousePlayerController::UpdateBoxSelection(TArray<TScriptInterface<IGameEle
 				FinalSelection.RemoveAt(0);
 
 			//Si la nouvelle unité sélectionnée est alliée
-			if (NewSelection[i]->TellIfImBlue() == PlayerIsBlue)
+			if (NewSelection[i]->GetSide() == PlayerSide)
 			{
 				// Si le premier acteur sélectionné est une unité ennemie, on le supprime de la sélection
-				if (ActorsSelected.IsValidIndex(0) && ActorsSelected.Top()->TellIfImBlue() != PlayerIsBlue)
+				if (ActorsSelected.IsValidIndex(0) && ActorsSelected.Top()->GetSide() != PlayerSide)
 				{
 					ActorsSelected[0]->Unselect();
 					ActorsSelected.RemoveAt(0);
 				}
-				else if (FinalSelection.IsValidIndex(0) && FinalSelection.Top()->TellIfImBlue() != PlayerIsBlue)
+				else if (FinalSelection.IsValidIndex(0) && FinalSelection.Top()->GetSide() != PlayerSide)
 					FinalSelection.RemoveAt(0);
 
 				//On ajoute la nouvelle unité
@@ -377,7 +381,7 @@ void AMousePlayerController::UpdateBoxTargeting(TArray<TScriptInterface<IGameEle
 		for (int i(0); i < ActorsSelected.Num(); i++)
 		{
 			AUnit* CurrentUnit = Cast<AUnit>(ActorsSelected[i].GetObject());
-			if (CurrentUnit->TellIfImBlue() == PlayerIsBlue)
+			if (CurrentUnit->GetSide() == PlayerSide)
 			{
 				if (Role == ROLE_Authority)
 					CurrentUnit->SetBoxSpecialTargets(NewTargets);
@@ -407,23 +411,28 @@ void AMousePlayerController::FogOfWar()
 {
 	TArray<TScriptInterface<IGameElementInterface>> BlueActors;
 	TArray<TScriptInterface<IGameElementInterface>> RedActors;
+	TArray<TScriptInterface<IGameElementInterface>> NeutralActors;
 
 	TActorIterator<AUnit> UnitItr(GetWorld());
 	for (UnitItr; UnitItr; ++UnitItr)
 	{
-		if (UnitItr->TellIfImBlue())
+		if (UnitItr->GetSide() == Side::Blue)
 			BlueActors.Add(TScriptInterface<IGameElementInterface>(*UnitItr));
-		else
+		else if (UnitItr->GetSide() == Side::Red)
 			RedActors.Add(TScriptInterface<IGameElementInterface>(*UnitItr));
+		else
+			NeutralActors.Add(TScriptInterface<IGameElementInterface>(*UnitItr));
 	}
 
 	TActorIterator<ABuilding> BuildingItr(GetWorld());
 	for (BuildingItr; BuildingItr; ++BuildingItr)
 	{
-		if (BuildingItr->TellIfImBlue())
+		if (BuildingItr->GetSide() == Side::Blue)
 			BlueActors.Add(TScriptInterface<IGameElementInterface>(*BuildingItr));
-		else
+		else if (BuildingItr->GetSide() == Side::Red)
 			RedActors.Add(TScriptInterface<IGameElementInterface>(*BuildingItr));
+		else
+			NeutralActors.Add(TScriptInterface<IGameElementInterface>(*BuildingItr));
 	}
 
 	bool ShouldBeVisible(false);
@@ -431,19 +440,27 @@ void AMousePlayerController::FogOfWar()
 	{
 		for (int i = 0; i < BlueActors.Num(); i++)
 		{
-			ShouldBeVisible = false;
-			TArray<TScriptInterface<IGameElementInterface>> OpponentsInSight;
-			for (int j = 0; j < RedActors.Num(); j++)
-			{
-				FVector vecteur = RedActors[j]->GetLocation() - BlueActors[i]->GetLocation();
-				float temp = vecteur.Size();
-				if (FVector(RedActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= RedActors[j]->GetFieldOfSight() * 100.f)
-					ShouldBeVisible = true;
-				if (FVector(RedActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= BlueActors[i]->GetFieldOfSight() * 100.f)
-					OpponentsInSight.Add(RedActors[j]);
-			}
 			if (BlueActors[i].GetObject()->IsA(AUnit::StaticClass()))
 			{
+				ShouldBeVisible = false;
+				TArray<TScriptInterface<IGameElementInterface>> OpponentsInSight;
+				for (int j = 0; j < RedActors.Num(); j++)
+				{
+					FVector vecteur = RedActors[j]->GetLocation() - BlueActors[i]->GetLocation();
+					float temp = vecteur.Size();
+					if (FVector(RedActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= RedActors[j]->GetFieldOfSight() * 100.f)
+						ShouldBeVisible = true;
+					if (FVector(RedActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= BlueActors[i]->GetFieldOfSight() * 100.f)
+						OpponentsInSight.Add(RedActors[j]);
+				}
+				for (int j = 0; j < NeutralActors.Num(); j++)
+				{
+					FVector vecteur = NeutralActors[j]->GetLocation() - BlueActors[i]->GetLocation();
+					float temp = vecteur.Size();
+					if (FVector(NeutralActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= BlueActors[i]->GetFieldOfSight() * 100.f)
+						OpponentsInSight.Add(NeutralActors[j]);
+				}
+
 				AUnit* BlueUnit = Cast<AUnit>(BlueActors[i].GetObject());
 
 				if (BlueUnit->GetOpponentVisibility() != ShouldBeVisible)
@@ -453,18 +470,25 @@ void AMousePlayerController::FogOfWar()
 		}
 		for (int i = 0; i < RedActors.Num(); i++)
 		{
-			ShouldBeVisible = false;
-			TArray<TScriptInterface<IGameElementInterface>> OpponentsInSight;
-			for (int j = 0; j < BlueActors.Num(); j++)
-			{
-				if (FVector(BlueActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= BlueActors[j]->GetFieldOfSight() * 100.f)
-					ShouldBeVisible = true;
-				if (FVector(BlueActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= RedActors[i]->GetFieldOfSight() * 100.f)
-					OpponentsInSight.Add(BlueActors[j]);
-			}
-
 			if (RedActors[i].GetObject()->IsA(AUnit::StaticClass()))
 			{
+				ShouldBeVisible = false;
+				TArray<TScriptInterface<IGameElementInterface>> OpponentsInSight;
+				for (int j = 0; j < BlueActors.Num(); j++)
+				{
+					if (FVector(BlueActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= BlueActors[j]->GetFieldOfSight() * 100.f)
+						ShouldBeVisible = true;
+					if (FVector(BlueActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= RedActors[i]->GetFieldOfSight() * 100.f)
+						OpponentsInSight.Add(BlueActors[j]);
+				}
+				for (int j = 0; j < NeutralActors.Num(); j++)
+				{
+					FVector vecteur = NeutralActors[j]->GetLocation() - RedActors[i]->GetLocation();
+					float temp = vecteur.Size();
+					if (FVector(NeutralActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= RedActors[i]->GetFieldOfSight() * 100.f)
+						OpponentsInSight.Add(NeutralActors[j]);
+				}
+
 				AUnit* RedUnit = Cast<AUnit>(RedActors[i].GetObject());
 
 				if (RedUnit->GetOpponentVisibility() != ShouldBeVisible)
@@ -531,7 +555,7 @@ void AMousePlayerController::SetFogOfWarTexture(TArray<TScriptInterface<IGameEle
 		TArray<FVector> UnitsPosition;
 		TArray<float> UnitsSight;
 
-		if (PlayerIsBlue)
+		if (PlayerSide == Side::Blue)
 		{
 			for (int i(0); i < BlueUnits.Num(); i++)
 			{
@@ -540,7 +564,7 @@ void AMousePlayerController::SetFogOfWarTexture(TArray<TScriptInterface<IGameEle
 				UnitsSight.Add(BlueUnits[i]->GetFieldOfSight());
 			}
 		}
-		else
+		else if (PlayerSide == Side::Red)
 		{
 			for (int i(0); i < RedUnits.Num(); i++)
 			{
@@ -643,7 +667,7 @@ void AMousePlayerController::Server_AddDestination_Implementation(AUnit *Unit, F
 }
 bool AMousePlayerController::Server_AddDestination_Validate(AUnit *Unit, FVector Destination, FRotator Rotation)
 {
-	return Unit != NULL && !Unit->TellIfImBlue() && !Unit->IsPendingKill();
+	return Unit != NULL && Unit->GetSide() == Side::Red && !Unit->IsPendingKill();
 }
 void AMousePlayerController::Server_ClearDestinations_Implementation(AUnit *Unit)
 {
@@ -651,7 +675,7 @@ void AMousePlayerController::Server_ClearDestinations_Implementation(AUnit *Unit
 }
 bool AMousePlayerController::Server_ClearDestinations_Validate(AUnit *Unit)
 {
-	return Unit != NULL && !Unit->TellIfImBlue() && !Unit->IsPendingKill();
+	return Unit != NULL && Unit->GetSide() == Side::Red && !Unit->IsPendingKill();
 }
 
 void AMousePlayerController::Server_AddSpecialTargets_Implementation(AUnit *Unit)
@@ -660,7 +684,7 @@ void AMousePlayerController::Server_AddSpecialTargets_Implementation(AUnit *Unit
 }
 bool AMousePlayerController::Server_AddSpecialTargets_Validate(AUnit *Unit)
 {
-	return Unit != NULL && !Unit->TellIfImBlue() && !Unit->IsPendingKill();
+	return Unit != NULL && Unit->GetSide() == Side::Red && !Unit->IsPendingKill();
 }
 void AMousePlayerController::Server_SetBoxSpecialTargets_Implementation(AUnit *Unit, const TArray<AActor*> &NewTargets)
 {
@@ -678,7 +702,7 @@ void AMousePlayerController::Server_SetBoxSpecialTargets_Implementation(AUnit *U
 }
 bool AMousePlayerController::Server_SetBoxSpecialTargets_Validate(AUnit *Unit, const TArray<AActor*> &NewTargets)
 {
-	return Unit != NULL && !Unit->TellIfImBlue() && !Unit->IsPendingKill();
+	return Unit != NULL && Unit->GetSide() == Side::Red && !Unit->IsPendingKill();
 }
 void AMousePlayerController::Server_ClearSpecialTargets_Implementation(AUnit *Unit)
 {
@@ -686,5 +710,5 @@ void AMousePlayerController::Server_ClearSpecialTargets_Implementation(AUnit *Un
 }
 bool AMousePlayerController::Server_ClearSpecialTargets_Validate(AUnit *Unit)
 {
-	return Unit != NULL && !Unit->TellIfImBlue() && !Unit->IsPendingKill();
+	return Unit != NULL && Unit->GetSide() == Side::Red && !Unit->IsPendingKill();
 }

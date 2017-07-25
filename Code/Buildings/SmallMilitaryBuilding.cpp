@@ -19,10 +19,12 @@ ASmallMilitaryBuilding::ASmallMilitaryBuilding() : Super()
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticBlueMeshRessource(TEXT("StaticMesh'/Game/Meshes/LittleBuilding/petronas_blue.petronas_blue'"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticRedMeshRessource(TEXT("StaticMesh'/Game/Meshes/LittleBuilding/petronas_red.petronas_red'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticNeutralMeshRessource(TEXT("StaticMesh'/Game/Meshes/LittleBuilding/petronas_blue.petronas_blue'"));
 	StaticBlueMesh = StaticBlueMeshRessource.Object;
 	StaticRedMesh = StaticRedMeshRessource.Object;
+	StaticNeutralMesh = StaticNeutralMeshRessource.Object;
 
-	BuildingMesh->SetStaticMesh(StaticBlueMesh);
+	BuildingMesh->SetStaticMesh(StaticNeutralMesh);
 	BuildingMesh->SetRelativeLocation(FVector(-40.f, 250.f, 0.f));
 	BuildingMesh->SetRelativeRotation(FRotator(0.f, 90.f, 90.f));
 	BuildingMesh->SetWorldScale3D(FVector(5.f, 5.f, 5.f));

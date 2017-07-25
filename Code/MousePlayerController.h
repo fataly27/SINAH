@@ -82,7 +82,7 @@ class SINAH_API AMousePlayerController : public APlayerController
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum)
 			TypeBox BoxDisplayed;
 
-		bool PlayerIsBlue;
+		Side PlayerSide;
 
 		//Fog Of War
 		UPROPERTY()

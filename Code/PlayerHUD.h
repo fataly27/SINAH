@@ -31,7 +31,7 @@ class SINAH_API APlayerHUD : public AHUD
 		void SetStartMousePos(FVector2D Pos);
 		void SetCurrentMousePos(FVector2D Pos);
 		void ShouldDisplayBox(TypeBox Display);
-		void IsPlayerBlue(bool color);
+		void SetPlayerSide(Side NewSide);
 		bool IsBoxTiny();
 
 		void SetActorsSelected(TArray<TScriptInterface<IGameElementInterface>> Units);
@@ -44,14 +44,16 @@ class SINAH_API APlayerHUD : public AHUD
 		FVector2D CurrentMousePos;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum)
 			TypeBox BoxDisplayed;
-		bool PlayerIsBlue;
+		Side PlayerSide;
 		TArray<TScriptInterface<IGameElementInterface>> ActorsSelected;
 		TArray<TScriptInterface<IGameElementInterface>> ActorsBeingSelected;
 		
 		UTexture* BlueDestinationTexture;
 		UTexture* RedDestinationTexture;
+
 		UTexture* BlueTargetTexture;
 		UTexture* RedTargetTexture;
+
 		UTexture* BlueTargetTextureLight;
 		UTexture* RedTargetTextureLight;
 

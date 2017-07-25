@@ -5,8 +5,10 @@
 
 
 // Sets default values
-ABuilding::ABuilding() : IsVisibleForOpponent(true), ImBlue(true)
+ABuilding::ABuilding() : IsVisibleForOpponent(true), MySide(Side::Neutral), Selected(false)
 {
+	bReplicates = true;
+
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -34,9 +36,12 @@ ABuilding::ABuilding() : IsVisibleForOpponent(true), ImBlue(true)
 	RedCircle = RedCircleAsset.Object;
 	static ConstructorHelpers::FObjectFinder<UMaterial> BlueCircleAsset(TEXT("/Game/Materials/BlueCircle.BlueCircle"));
 	BlueCircle = BlueCircleAsset.Object;
+	static ConstructorHelpers::FObjectFinder<UMaterial> NeutralCircleAsset(TEXT("/Game/Materials/BlueCircle.BlueCircle"));
+	NeutralCircle = NeutralCircleAsset.Object;
 
 	BuildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
 	BuildingMesh->SetupAttachment(RootComponent);
+	BuildingMesh->bReceivesDecals = false;
 }
 
 // Called when the game starts or when spawned
@@ -45,7 +50,7 @@ void ABuilding::BeginPlay()
 	Super::BeginPlay();
 
 	Unselect();
-	AmIBlue(ImBlue);
+	SetSide(MySide);
 }
 
 // Called every frame
@@ -76,31 +81,41 @@ bool ABuilding::IsSelected()
 	return Selected;
 }
 
-//Color
-void ABuilding::AmIBlue(bool color)
+//Side
+void ABuilding::SetSide(Side NewSide)
 {
-	ImBlue = color;
+	Multicast_SetSide(NewSide);
+}
+void ABuilding::Multicast_SetSide_Implementation(Side NewSide)
+{
+	Unselect();
+	MySide = NewSide;
 
-	if (ImBlue)
+	if (MySide == Side::Blue)
 	{
 		SelectionMark->SetMaterial(0, BlueCircle);
 		BuildingMesh->SetStaticMesh(StaticBlueMesh);
 	}
-	else
+	else if (MySide == Side::Red)
 	{
 		SelectionMark->SetMaterial(0, RedCircle);
 		BuildingMesh->SetStaticMesh(StaticRedMesh);
 	}
+	else
+	{
+		SelectionMark->SetMaterial(0, NeutralCircle);
+		BuildingMesh->SetStaticMesh(StaticNeutralMesh);
+	}
 }
-bool ABuilding::TellIfImBlue()
+Side ABuilding::GetSide()
 {
-	return ImBlue;
+	return MySide;
 }
 
 //Attack
-void ABuilding::ReceiveDamages(float Physic, float Magic)
+void ABuilding::ReceiveDamages(float Physic, float Magic, Side AttackingSide)
 {
-	if (Role == ROLE_Authority)
+	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
 		CurrentLife -= Physic;
 		CurrentLife -= Magic;
@@ -108,13 +123,7 @@ void ABuilding::ReceiveDamages(float Physic, float Magic)
 
 		if (CurrentLife <= 0.f)
 		{
-			if (CurrentLevel == 0)
-			{
-				// Need to see who attacked ! --> Code need to be changed
-			}
-			else
-				AmIBlue(!TellIfImBlue());
-				
+			SetSide(AttackingSide);
 			SetLevel(1);
 		}
 	}
@@ -154,12 +163,6 @@ void ABuilding::SetLevel(unsigned int Level)
 		ActualMaxLife = DefaultMaxLife * FGenericPlatformMath::Sqrt(CurrentLevel);
 		CurrentLife = ActualMaxLife;
 		ActualHeal = DefaultHeal * FGenericPlatformMath::Sqrt(CurrentLevel);
-
-		if (CurrentLevel == 0)
-		{
-			ActualFieldOfSight = 0.f;
-			Unselect();
-		}
 	}
 }
 

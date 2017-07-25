@@ -34,12 +34,12 @@ class SINAH_API IGameElementInterface
 		virtual void Unselect() = 0;
 		virtual bool IsSelected() = 0;
 
-		//Color
-		virtual void AmIBlue(bool color) = 0;
-		virtual bool TellIfImBlue() = 0;
+		//Side
+		virtual void SetSide(Side NewSide) = 0;
+		virtual Side GetSide() = 0;
 
 		//Attack
-		virtual void ReceiveDamages(float Physic, float Magic) = 0;
+		virtual void ReceiveDamages(float Physic, float Magic, Side AttackingSide) = 0;
 		virtual float GetSize() = 0;
 
 		//Statistics Getters

@@ -6,6 +6,7 @@
 #include "Units/Unit.h"
 #include "Buildings/Building.h"
 #include "GameElementInterface.h"
+#include "MultiplayerState.h"
 #include <cmath>
 #include "PlayerHUD.generated.h"
 

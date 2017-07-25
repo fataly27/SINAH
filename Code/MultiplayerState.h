@@ -12,4 +12,30 @@ UCLASS()
 class SINAH_API AMultiplayerState : public APlayerState
 {
 	GENERATED_BODY()
+
+	public:
+		AMultiplayerState();
+
+		//Replication
+		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
+
+		int GetAmountOfFood();
+		int GetAmountOfMetal();
+		int GetAmountOfCells();
+		int GetAmountOfCristals();
+
+		void SetAmountOfFood(int Food);
+		void SetAmountOfMetal(int Metal);
+		void SetAmountOfCells(int Cells);
+		void SetAmountOfCristals(int Cristals);
+
+	private:
+		UPROPERTY(Replicated)
+			int AmountOfFood;
+		UPROPERTY(Replicated)
+			int AmountOfMetal;
+		UPROPERTY(Replicated)
+			int AmountOfCells;
+		UPROPERTY(Replicated)
+			int AmountOfCristals;
 };

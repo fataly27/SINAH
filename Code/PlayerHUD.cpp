@@ -179,6 +179,14 @@ void APlayerHUD::DrawHUD()
 			}
 		}
 	}
+
+	AMultiplayerState* State = Cast<AMultiplayerState>(GetOwningPlayerController()->PlayerState);
+
+	if (State)
+	{
+		FString String = "Food : " + FString::FromInt(State->GetAmountOfFood()) + ", Metal : " + FString::FromInt(State->GetAmountOfMetal()) + ", Cells : " + FString::FromInt(State->GetAmountOfCells()) + ", Cristals : " + FString::FromInt(State->GetAmountOfCristals());
+		DrawText(String, FLinearColor::White, 0, 0);
+	}
 }
 
 void APlayerHUD::SetStartMousePos(FVector2D Pos)

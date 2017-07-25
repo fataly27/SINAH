@@ -30,13 +30,12 @@ ABuilding::ABuilding() : IsVisibleForOpponent(true), MySide(Side::Neutral), Sele
 	SelectionMark->SetupAttachment(RootComponent);
 
 	SelectionMark->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
-	SelectionMark->SetWorldScale3D(FVector(1.f, 5.f, 5.f));
 
 	static ConstructorHelpers::FObjectFinder<UMaterial> RedCircleAsset(TEXT("/Game/Materials/RedCircle.RedCircle"));
 	RedCircle = RedCircleAsset.Object;
 	static ConstructorHelpers::FObjectFinder<UMaterial> BlueCircleAsset(TEXT("/Game/Materials/BlueCircle.BlueCircle"));
 	BlueCircle = BlueCircleAsset.Object;
-	static ConstructorHelpers::FObjectFinder<UMaterial> NeutralCircleAsset(TEXT("/Game/Materials/BlueCircle.BlueCircle"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> NeutralCircleAsset(TEXT("/Game/Materials/NeutralCircle.NeutralCircle"));
 	NeutralCircle = NeutralCircleAsset.Object;
 
 	BuildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
@@ -94,17 +93,17 @@ void ABuilding::Multicast_SetSide_Implementation(Side NewSide)
 	if (MySide == Side::Blue)
 	{
 		SelectionMark->SetMaterial(0, BlueCircle);
-		BuildingMesh->SetStaticMesh(StaticBlueMesh);
+		BuildingMesh->SetMaterial(0, BuildingBlueMaterial);
 	}
 	else if (MySide == Side::Red)
 	{
 		SelectionMark->SetMaterial(0, RedCircle);
-		BuildingMesh->SetStaticMesh(StaticRedMesh);
+		BuildingMesh->SetMaterial(0, BuildingRedMaterial);
 	}
 	else
 	{
 		SelectionMark->SetMaterial(0, NeutralCircle);
-		BuildingMesh->SetStaticMesh(StaticNeutralMesh);
+		BuildingMesh->SetMaterial(0, BuildingNeutralMaterial);
 	}
 }
 Side ABuilding::GetSide()

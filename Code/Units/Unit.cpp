@@ -58,7 +58,7 @@ AUnit::AUnit() : MySide(Side::Neutral), Selected(false), CurrentAction(Action::I
 	RedCircle = RedCircleAsset.Object;
 	static ConstructorHelpers::FObjectFinder<UMaterial> BlueCircleAsset(TEXT("/Game/Materials/BlueCircle.BlueCircle"));
 	BlueCircle = BlueCircleAsset.Object;
-	static ConstructorHelpers::FObjectFinder<UMaterial> NeutralCircleAsset(TEXT("/Game/Materials/BlueCircle.BlueCircle"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> NeutralCircleAsset(TEXT("/Game/Materials/NeutralCircle.NeutralCircle"));
 	NeutralCircle = NeutralCircleAsset.Object;
 }
 
@@ -107,7 +107,7 @@ void AUnit::Tick( float DeltaTime )
 		TArray<TScriptInterface<IGameElementInterface>> NewBoxSpecialTargets;
 		for (int i = 0; i < BoxSpecialTargets.Num(); i++)
 		{
-			if (BoxSpecialTargets[i]->GetOpponentVisibility() && !BoxSpecialTargets[i]->IsPendingKill() && SpecialTargets[i]->GetSide() != GetSide())
+			if (BoxSpecialTargets[i]->GetOpponentVisibility() && !BoxSpecialTargets[i]->IsPendingKill() && BoxSpecialTargets[i]->GetSide() != GetSide())
 				NewBoxSpecialTargets.Add(BoxSpecialTargets[i]);
 			else if (BoxSpecialTargets[i]->IsPendingKill())
 				OpponentDied = true;

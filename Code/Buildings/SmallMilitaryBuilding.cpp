@@ -17,20 +17,32 @@ ASmallMilitaryBuilding::ASmallMilitaryBuilding() : Super()
 	LevelMax = 3;
 	CurrentLevel = 1;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticBlueMeshRessource(TEXT("StaticMesh'/Game/Meshes/LittleBuilding/petronas_blue.petronas_blue'"));
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticRedMeshRessource(TEXT("StaticMesh'/Game/Meshes/LittleBuilding/petronas_red.petronas_red'"));
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticNeutralMeshRessource(TEXT("StaticMesh'/Game/Meshes/LittleBuilding/petronas_blue.petronas_blue'"));
-	StaticBlueMesh = StaticBlueMeshRessource.Object;
-	StaticRedMesh = StaticRedMeshRessource.Object;
-	StaticNeutralMesh = StaticNeutralMeshRessource.Object;
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshRessource(TEXT("StaticMesh'/Game/Meshes/LittleBuilding/LittleMilitaryBuilding.LittleMilitaryBuilding'"));
 
-	BuildingMesh->SetStaticMesh(StaticNeutralMesh);
-	BuildingMesh->SetRelativeLocation(FVector(-40.f, 250.f, 0.f));
-	BuildingMesh->SetRelativeRotation(FRotator(0.f, 90.f, 90.f));
-	BuildingMesh->SetWorldScale3D(FVector(5.f, 5.f, 5.f));
+	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingBlueMaterialRessource(TEXT("UMaterial'/Game/Meshes/LittleBuilding/Blue_Material.Blue_Material'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingRedMaterialRessource(TEXT("UMaterial'/Game/Meshes/LittleBuilding/Red_Material.Red_Material'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingNeutralMaterialRessource(TEXT("UMaterial'/Game/Meshes/LittleBuilding/Grey_Material.Grey_Material'"));
+
+	StaticMesh = StaticMeshRessource.Object;
+
+	BuildingBlueMaterial = BuildingBlueMaterialRessource.Object;
+	BuildingRedMaterial = BuildingRedMaterialRessource.Object;
+	BuildingNeutralMaterial = BuildingNeutralMaterialRessource.Object;
+
+	BuildingMesh->SetStaticMesh(StaticMesh);
+
+	SelectionMark->SetWorldScale3D(FVector(1.f, 3.f, 3.f));
 }
 
 float ASmallMilitaryBuilding::GetSize()
 {
-	return 590.f;
+	return 410.f;
+}
+float ASmallMilitaryBuilding::GetHalfHeight()
+{
+	return 2000.f;
+}
+int ASmallMilitaryBuilding::GetLifeBarWidth()
+{
+	return 2500;
 }

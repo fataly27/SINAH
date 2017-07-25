@@ -17,4 +17,6 @@ public:
 	ASmallMilitaryBuilding();
 
 	virtual float GetSize();
+	virtual float GetHalfHeight();
+	virtual int GetLifeBarWidth();
 };

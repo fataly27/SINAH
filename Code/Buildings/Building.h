@@ -64,9 +64,11 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 	protected:
 
 		UStaticMeshComponent* BuildingMesh;
-		UStaticMesh* StaticBlueMesh;
-		UStaticMesh* StaticRedMesh;
-		UStaticMesh* StaticNeutralMesh;
+		UStaticMesh* StaticMesh;
+
+		UMaterial* BuildingBlueMaterial;
+		UMaterial* BuildingRedMaterial;
+		UMaterial* BuildingNeutralMaterial;
 
 		//Level
 		unsigned int LevelMax;

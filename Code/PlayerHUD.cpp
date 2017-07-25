@@ -100,7 +100,7 @@ void APlayerHUD::DrawHUD()
 			FVector2D TopPosition(Project(ActorsSelected[i]->GetLocation() + FVector(0.f, 0.f, ActorsSelected[i]->GetHalfHeight())));
 			float Percent = float(ActorsSelected[i]->GetCurrentLife()) / float(ActorsSelected[i]->GetMaxLife());
 			float HeightOfRects = FMath::RoundHalfFromZero(50.f / CurrentZoom) + 1.f;
-			float WidthOfRect = 500.f / CurrentZoom;
+			float WidthOfRect = ActorsSelected[i]->GetLifeBarWidth() / CurrentZoom;
 			float Offset = 100.f / CurrentZoom + 1.f;
 
 			if (ActorsSelected[i]->GetSide() == Side::Blue)

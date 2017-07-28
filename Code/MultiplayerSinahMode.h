@@ -4,6 +4,7 @@
 
 #include "GameFramework/GameMode.h"
 #include "MousePlayerController.h"
+#include "GameElementInterface.h"
 #include "MainCamera.h"
 #include "PlayerHUD.h"
 #include "MultiplayerState.h"
@@ -19,4 +20,10 @@ class SINAH_API AMultiplayerSinahMode : public AGameMode
 
 	public:
 		AMultiplayerSinahMode();
+
+		Side GetPlayerSide(int ID);
+
+	private:
+
+		TArray<int> PlayersIDs;
 };

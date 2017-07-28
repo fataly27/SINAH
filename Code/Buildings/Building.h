@@ -45,14 +45,14 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		virtual bool IsPendingKill();
 
 		//Statistics Getters
-		virtual int GetMaxLife() override;
-		virtual int GetCurrentLife() override;
+		virtual unsigned int GetMaxLife() override;
+		virtual unsigned int GetCurrentLife() override;
 		virtual float GetFieldOfSight() override;
 		virtual float GetHalfHeight() override;
-		virtual int GetLifeBarWidth() override;
+		virtual unsigned int GetLifeBarWidth() override;
 		virtual float GetSize() override;
 		virtual float GetHeal();
-		virtual int GetLevel();
+		virtual unsigned int GetLevel();
 
 		//Visibility
 		virtual bool GetOpponentVisibility() override;
@@ -73,26 +73,26 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		//Level
 		unsigned int LevelMax;
 		unsigned int CurrentLevel;
-		TArray<int> CostInFood;
-		TArray<int> CostInCells;
-		TArray<int> CostInMetal;
-		TArray<int> CostInCristals;
+		TArray<unsigned int> CostInFood;
+		TArray<unsigned int> CostInCells;
+		TArray<unsigned int> CostInMetal;
+		TArray<unsigned int> CostInCristals;
 
 		//Statistics
 		UPROPERTY(Replicated)
-			int CurrentLife;
+			unsigned int CurrentLife;
 
 		UPROPERTY(EditAnywhere)
-			int DefaultMaxLife;
+			unsigned int DefaultMaxLife;
 		UPROPERTY(EditAnywhere)
-			int DefaultHeal;
+			unsigned int DefaultHeal;
 		UPROPERTY(EditAnywhere)
 			float DefaultFieldOfSight;
 
 		UPROPERTY(Replicated)
-			int ActualMaxLife;
+			unsigned int ActualMaxLife;
 		UPROPERTY(Replicated)
-			int ActualHeal;
+			unsigned int ActualHeal;
 		UPROPERTY(Replicated)
 			float ActualFieldOfSight;
 

@@ -29,6 +29,8 @@ AKnight::AKnight() : Super()
 	CostInMetal = 15;
 	CostInCristals = 0;
 
+	BuildingLevelRequired = 1;
+
 	GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * 100;
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> KnightVisualAsset(TEXT("SkeletalMesh'/Game/Meshes/Paladin/Paladin.Paladin'"));
@@ -65,7 +67,7 @@ float AKnight::GetSize()
 {
 	return 40.f;
 }
-int AKnight::GetLifeBarWidth()
+unsigned int AKnight::GetLifeBarWidth()
 {
 	return 500;
 }

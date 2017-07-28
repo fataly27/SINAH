@@ -8,6 +8,13 @@
 #include "Buildings/Building.h"
 #include "PlayerHUD.h"
 #include "GameElementInterface.h"
+#include "MultiplayerSinahMode.h"
+
+#include "Buildings/FoodEconomicBuilding.h"
+#include "Buildings/CristalsEconomicBuilding.h"
+#include "Buildings/CellsEconomicBuilding.h"
+#include "Buildings/MetalEconomicBuilding.h"
+
 #include "Core.h"
 #include <cmath>
 #include <algorithm>
@@ -71,8 +78,11 @@ class SINAH_API AMousePlayerController : public APlayerController
 		UFUNCTION(Server, Reliable, WithValidation)
 			void Server_ClearSpecialTargets(AUnit *Unit);
 
+		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
 
 	protected:
+		float TimeSinceLastHarvest;
+
 		AMainCamera* MyPawn;
 		TArray<TScriptInterface<IGameElementInterface>> ActorsSelected;
 		TArray<TScriptInterface<IGameElementInterface>> ActorsSelectedByCurrentBox;
@@ -82,7 +92,8 @@ class SINAH_API AMousePlayerController : public APlayerController
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum)
 			TypeBox BoxDisplayed;
 
-		Side PlayerSide;
+		UPROPERTY(Replicated)
+			Side PlayerSide;
 
 		//Fog Of War
 		UPROPERTY()

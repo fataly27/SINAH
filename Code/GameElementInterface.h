@@ -43,11 +43,11 @@ class SINAH_API IGameElementInterface
 		virtual float GetSize() = 0;
 
 		//Statistics Getters
-		virtual int GetMaxLife() = 0;
-		virtual int GetCurrentLife() = 0;
+		virtual unsigned int GetMaxLife() = 0;
+		virtual unsigned int GetCurrentLife() = 0;
 		virtual float GetFieldOfSight() = 0;
 		virtual float GetHalfHeight() = 0;
-		virtual int GetLifeBarWidth() = 0;
+		virtual unsigned int GetLifeBarWidth() = 0;
 
 		//Visibility
 		virtual bool GetOpponentVisibility() = 0;

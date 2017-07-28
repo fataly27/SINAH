@@ -175,27 +175,27 @@ Side AUnit::GetSide()
 }
 
 //Statistics
-int AUnit::GetMaxLife()
+unsigned int AUnit::GetMaxLife()
 {
 	return ActualMaxLife;
 }
-int AUnit::GetCurrentLife()
+unsigned int AUnit::GetCurrentLife()
 {
 	return CurrentLife;
 }
-int AUnit::GetPhysicAttack()
+unsigned int AUnit::GetPhysicAttack()
 {
 	return ActualPhysicAttack;
 }
-int AUnit::GetMagicAttack()
+unsigned int AUnit::GetMagicAttack()
 {
 	return ActualMagicAttack;
 }
-int AUnit::GetPhysicDefense()
+unsigned int AUnit::GetPhysicDefense()
 {
 	return ActualPhysicDefense;
 }
-int AUnit::GetMagicDefense()
+unsigned int AUnit::GetMagicDefense()
 {
 	return ActualMagicDefense;
 }
@@ -215,7 +215,7 @@ float AUnit::GetHalfHeight()
 {
 	return GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 }
-int AUnit::GetLifeBarWidth()
+unsigned int AUnit::GetLifeBarWidth()
 {
 	return 0;
 }

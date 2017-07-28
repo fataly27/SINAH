@@ -17,5 +17,5 @@ class SINAH_API AKnight : public AUnit
 		AKnight();
 
 		virtual float GetSize() override;
-		virtual int GetLifeBarWidth() override;
+		virtual unsigned int GetLifeBarWidth() override;
 };

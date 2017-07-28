@@ -18,5 +18,5 @@ public:
 
 	virtual float GetSize();
 	virtual float GetHalfHeight();
-	virtual int GetLifeBarWidth();
+	virtual unsigned int GetLifeBarWidth();
 };

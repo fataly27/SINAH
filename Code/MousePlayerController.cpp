@@ -3,7 +3,7 @@
 #include "Sinah.h"
 #include "MousePlayerController.h"
 
-AMousePlayerController::AMousePlayerController()
+AMousePlayerController::AMousePlayerController() : TimeSinceLastHarvest(0.f)
 {
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;
@@ -18,10 +18,10 @@ void AMousePlayerController::BeginPlay()
 {
 	HUD = Cast<APlayerHUD>(GetHUD());
 
+	AMultiplayerSinahMode* Mode = Cast<AMultiplayerSinahMode>(GetWorld()->GetAuthGameMode());
+
 	if (Role == ROLE_Authority)
-		PlayerSide = Side::Blue;
-	else
-		PlayerSide = Side::Red;
+		PlayerSide = Mode->GetPlayerSide(PlayerState->PlayerId);
 
 	if (HUD)
 	{
@@ -50,6 +50,55 @@ void AMousePlayerController::SetPawn(APawn* InPawn)
 // Called every frame
 void AMousePlayerController::Tick(float DeltaTime)
 {
+	if (Role == ROLE_Authority)
+	{
+		TimeSinceLastHarvest += DeltaTime;
+
+		if (TimeSinceLastHarvest >= 0.5f)
+		{
+			TimeSinceLastHarvest -= 0.5f;
+
+			TActorIterator<AFoodEconomicBuilding> Food(GetWorld());
+			int AmountOfFood(0);
+			for (Food; Food; ++Food)
+			{
+				if (Food->GetSide() == PlayerSide)
+					AmountOfFood += Food->GetOutputInHalfASecond();
+			}
+
+			TActorIterator<ACristalsEconomicBuilding> Cristals(GetWorld());
+			int AmountOfCristals(0);
+			for (Cristals; Cristals; ++Cristals)
+			{
+				if (Cristals->GetSide() == PlayerSide)
+					AmountOfCristals += Cristals->GetOutputInHalfASecond();
+			}
+
+			TActorIterator<ACellsEconomicBuilding> Cells(GetWorld());
+			int AmountOfCells(0);
+			for (Cells; Cells; ++Cells)
+			{
+				if (Cells->GetSide() == PlayerSide)
+					AmountOfCells += Cells->GetOutputInHalfASecond();
+			}
+
+			TActorIterator<AMetalEconomicBuilding> Metal(GetWorld());
+			int AmountOfMetal(0);
+			for (Metal; Metal; ++Metal)
+			{
+				if (Metal->GetSide() == PlayerSide)
+					AmountOfMetal += Metal->GetOutputInHalfASecond();
+			}
+
+			AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
+
+			State->SetAmountOfFood(State->GetAmountOfFood() + AmountOfFood);
+			State->SetAmountOfMetal(State->GetAmountOfMetal() + AmountOfMetal);
+			State->SetAmountOfCells(State->GetAmountOfCells() + AmountOfCells);
+			State->SetAmountOfCristals(State->GetAmountOfCristals() + AmountOfCristals);
+		}
+	}
+
 	if (HUD)
 	{
 		float LocationX;
@@ -711,4 +760,10 @@ void AMousePlayerController::Server_ClearSpecialTargets_Implementation(AUnit *Un
 bool AMousePlayerController::Server_ClearSpecialTargets_Validate(AUnit *Unit)
 {
 	return Unit != NULL && Unit->GetSide() == Side::Red && !Unit->IsPendingKill();
+}
+
+//Replication
+void AMousePlayerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+	DOREPLIFETIME(AMousePlayerController, PlayerSide);
 }

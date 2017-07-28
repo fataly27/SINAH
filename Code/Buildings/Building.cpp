@@ -12,17 +12,12 @@ ABuilding::ABuilding() : IsVisibleForOpponent(true), MySide(Side::Neutral), Sele
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	DefaultMaxLife = 500;
-	DefaultHeal = 5;
-	DefaultFieldOfSight = 10;
-
 	ActualMaxLife = DefaultMaxLife;
 	CurrentLife = ActualMaxLife;
 	ActualHeal = DefaultHeal;
 	ActualFieldOfSight = DefaultFieldOfSight;
 
-	LevelMax = 3;
-	CurrentLevel = 0;
+	CurrentLevel = 1;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
@@ -60,7 +55,7 @@ void ABuilding::Tick(float DeltaTime)
 	TimeSinceLastAttack += DeltaTime;
 	TimeSinceLastHeal += DeltaTime;
 
-	if (TimeSinceLastAttack >= 10.f && TimeSinceLastHeal >= 0.5f && Role == ROLE_Authority && CurrentLevel != 0)
+	if (TimeSinceLastAttack >= 10.f && TimeSinceLastHeal >= 0.5f && Role == ROLE_Authority)
 		Heal();
 }
 
@@ -158,6 +153,8 @@ void ABuilding::SetLevel(unsigned int Level)
 		CurrentLevel = Level;
 		if (CurrentLevel > LevelMax)
 			CurrentLevel = LevelMax;
+		if (CurrentLevel <= 0)
+			CurrentLevel = 1;
 
 		ActualMaxLife = DefaultMaxLife * FGenericPlatformMath::Sqrt(CurrentLevel);
 		CurrentLife = ActualMaxLife;
@@ -172,11 +169,11 @@ bool ABuilding::IsPendingKill()
 }
 
 //Statistics Getters
-int ABuilding::GetMaxLife()
+unsigned int ABuilding::GetMaxLife()
 {
 	return ActualMaxLife;
 }
-int ABuilding::GetCurrentLife()
+unsigned int ABuilding::GetCurrentLife()
 {
 	return CurrentLife;
 }
@@ -188,7 +185,7 @@ float ABuilding::GetHalfHeight()
 {
 	return 1300.f;
 }
-int ABuilding::GetLifeBarWidth()
+unsigned int ABuilding::GetLifeBarWidth()
 {
 	return 2000;
 }
@@ -200,7 +197,7 @@ float ABuilding::GetSize()
 {
 	return 0.f;
 }
-int ABuilding::GetLevel()
+unsigned int ABuilding::GetLevel()
 {
 	return CurrentLevel;
 }

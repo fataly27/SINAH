@@ -15,7 +15,6 @@ ASmallMilitaryBuilding::ASmallMilitaryBuilding() : Super()
 	ActualFieldOfSight = DefaultFieldOfSight;
 
 	LevelMax = 3;
-	CurrentLevel = 1;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshRessource(TEXT("StaticMesh'/Game/Meshes/LittleBuilding/LittleMilitaryBuilding.LittleMilitaryBuilding'"));
 
@@ -42,7 +41,7 @@ float ASmallMilitaryBuilding::GetHalfHeight()
 {
 	return 2000.f;
 }
-int ASmallMilitaryBuilding::GetLifeBarWidth()
+unsigned int ASmallMilitaryBuilding::GetLifeBarWidth()
 {
 	return 2500;
 }

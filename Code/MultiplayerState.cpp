@@ -32,31 +32,43 @@ int AMultiplayerState::GetAmountOfCristals()
 
 void AMultiplayerState::SetAmountOfFood(int Food)
 {
-	AmountOfFood = Food;
+	if (Role == ROLE_Authority)
+	{
+		AmountOfFood = Food;
 
-	if (AmountOfFood < 0)
-		AmountOfFood = 0;
+		if (AmountOfFood < 0)
+			AmountOfFood = 0;
+	}
 }
 void AMultiplayerState::SetAmountOfMetal(int Metal)
 {
-	AmountOfMetal = Metal;
+	if (Role == ROLE_Authority)
+	{
+		AmountOfMetal = Metal;
 
-	if (AmountOfMetal < 0)
-		AmountOfMetal = 0;
+		if (AmountOfMetal < 0)
+			AmountOfMetal = 0;
+	}
 }
 void AMultiplayerState::SetAmountOfCells(int Cells)
 {
-	AmountOfCells = Cells;
+	if (Role == ROLE_Authority)
+	{
+		AmountOfCells = Cells;
 
-	if (AmountOfCells < 0)
-		AmountOfCells = 0;
+		if (AmountOfCells < 0)
+			AmountOfCells = 0;
+	}
 }
 void AMultiplayerState::SetAmountOfCristals(int Cristals)
 {
-	AmountOfCristals = Cristals;
+	if (Role == ROLE_Authority)
+	{
+		AmountOfCristals = Cristals;
 
-	if (AmountOfCristals < 0)
-		AmountOfCristals = 0;
+		if (AmountOfCristals < 0)
+			AmountOfCristals = 0;
+	}
 }
 
 //Replication

@@ -26,12 +26,20 @@ ABuilding::ABuilding() : IsVisibleForOpponent(true), MySide(Side::Neutral), Sele
 
 	SelectionMark->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
 
-	static ConstructorHelpers::FObjectFinder<UMaterial> RedCircleAsset(TEXT("/Game/Materials/RedCircle.RedCircle"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> RedCircleAsset(TEXT("/Game/Materials/BigRedCircle.BigRedCircle"));
 	RedCircle = RedCircleAsset.Object;
-	static ConstructorHelpers::FObjectFinder<UMaterial> BlueCircleAsset(TEXT("/Game/Materials/BlueCircle.BlueCircle"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> BlueCircleAsset(TEXT("/Game/Materials/BigBlueCircle.BigBlueCircle"));
 	BlueCircle = BlueCircleAsset.Object;
-	static ConstructorHelpers::FObjectFinder<UMaterial> NeutralCircleAsset(TEXT("/Game/Materials/NeutralCircle.NeutralCircle"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> NeutralCircleAsset(TEXT("/Game/Materials/BigNeutralCircle.BigNeutralCircle"));
 	NeutralCircle = NeutralCircleAsset.Object;
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingBlueMaterialRessource(TEXT("UMaterial'/Game/Meshes/LittleBuilding/Blue_Material.Blue_Material'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingRedMaterialRessource(TEXT("UMaterial'/Game/Meshes/LittleBuilding/Red_Material.Red_Material'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingNeutralMaterialRessource(TEXT("UMaterial'/Game/Meshes/LittleBuilding/Grey_Material.Grey_Material'"));
+
+	BuildingBlueMaterial = BuildingBlueMaterialRessource.Object;
+	BuildingRedMaterial = BuildingRedMaterialRessource.Object;
+	BuildingNeutralMaterial = BuildingNeutralMaterialRessource.Object;
 
 	BuildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
 	BuildingMesh->SetupAttachment(RootComponent);
@@ -100,6 +108,8 @@ void ABuilding::Multicast_SetSide_Implementation(Side NewSide)
 		SelectionMark->SetMaterial(0, NeutralCircle);
 		BuildingMesh->SetMaterial(0, BuildingNeutralMaterial);
 	}
+
+	CurrentLife = ActualMaxLife;
 }
 Side ABuilding::GetSide()
 {

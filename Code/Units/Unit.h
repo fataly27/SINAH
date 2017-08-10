@@ -106,7 +106,7 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		virtual FVector GetLocation();
 
 		//Replication
-		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
+		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
 		virtual void PreReplication(IRepChangedPropertyTracker &ChangedPropertyTracker);
 
 	protected:

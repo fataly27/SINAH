@@ -8,6 +8,7 @@
 AUnit::AUnit() : MySide(Side::Neutral), Selected(false), CurrentAction(Action::Idle), IsVisibleForOpponent(false)
 {
 	bReplicates = true;
+	bReplicateMovement = true;
 
 	SetActorScale3D(FVector(0.7f));
 
@@ -574,6 +575,8 @@ void AUnit::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetime
 	DOREPLIFETIME_CONDITION(AUnit, SpecialTargetsActors, COND_Custom);
 	DOREPLIFETIME_CONDITION(AUnit, BoxSpecialTargetsActors, COND_Custom);
 	DOREPLIFETIME_CONDITION(AUnit, Destinations, COND_Custom);
+
+	DOREPLIFETIME_CONDITION(AUnit, ReplicatedMovement, COND_Custom);
 	DOREPLIFETIME_CONDITION(AUnit, ReplicatedMovement, COND_Custom);
 
 	DOREPLIFETIME(AUnit, CurrentLife);

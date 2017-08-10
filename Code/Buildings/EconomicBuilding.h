@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Building.h"
+#include "MilitaryBuilding.h"
 #include "EconomicBuilding.generated.h"
 
 /**
@@ -15,12 +16,22 @@ class SINAH_API AEconomicBuilding : public ABuilding
 	
 	public:
 		AEconomicBuilding();
+		// Called every frame
+		virtual void Tick(float DeltaTime) override;
 
 		virtual unsigned int GetOutputInHalfASecond();
+
 		virtual void SetLevel(unsigned int Level) override;
 
+		virtual float GetSize();
+		virtual float GetHalfHeight();
+		virtual unsigned int GetLifeBarWidth();
+
+		//Attack
+		virtual void ReceiveDamages(float Physic, float Magic, Side AttackingSide) override;
+
 		//Replication
-		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
+		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
 
 	protected:
 
@@ -30,4 +41,8 @@ class SINAH_API AEconomicBuilding : public ABuilding
 			unsigned int DefaultOutputInHalfASecond;
 		UPROPERTY(Replicated)
 			unsigned int ActualOutputInHalfASecond;
+		UPROPERTY(EditAnywhere)
+			AMilitaryBuilding* RelatedMilitaryBuilding;
+
+		float TimeSinceCounterPlunder;
 };

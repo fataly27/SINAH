@@ -96,6 +96,7 @@ void AEconomicBuilding::ReceiveDamages(float Physic, float Magic, Side Attacking
 			{
 				SetLevel(CurrentLevel - 1);
 				IsPlundered = true;
+				TimeSinceCounterPlunder = 0.f;
 			}
 			SetSide(AttackingSide);
 		}

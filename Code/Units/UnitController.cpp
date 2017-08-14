@@ -39,8 +39,28 @@ void AUnitController::Tick(float DeltaSeconds)
 		else if (ClosestTarget != LastTarget || GetMoveStatus() != EPathFollowingStatus::Moving)
 		{
 			StopMovement();
-			MoveToActor(Cast<AActor>(ClosestTarget.GetObject()), Cast<AUnit>(GetPawn())->GetRange() * 100 + ClosestTarget->GetSize(), false, true, false);
-			Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(Action::Moving);
+
+			AActor* Target = Cast<AActor>(ClosestTarget.GetObject());
+			TScriptInterface<IGameElementInterface> TargetInterface;
+			TargetInterface.SetInterface(Cast<IGameElementInterface>(Target));
+			TargetInterface.SetObject(Target);
+			FVector TargetPosition = Target->GetActorLocation();
+
+			FVector PawnPosition = Cast<AUnit>(GetPawn())->GetActorLocation();
+
+			float Scale = TargetInterface->GetSize() / FVector::Dist2D(TargetPosition, PawnPosition);
+			float XOffset = Scale * (PawnPosition.X - TargetPosition.X);
+			float YOffset = Scale * (PawnPosition.Y - TargetPosition.Y);
+
+			FVector NewDestination(TargetPosition.X + XOffset, TargetPosition.Y + YOffset, TargetPosition.Z);
+
+			FNavLocation ReachableDestination;
+
+			if (GetWorld()->GetNavigationSystem()->ProjectPointToNavigation(NewDestination, ReachableDestination, FVector(Cast<AUnit>(GetPawn())->GetRange() * 100 * FGenericPlatformMath::Sqrt(2), Cast<AUnit>(GetPawn())->GetRange() * 100 * FGenericPlatformMath::Sqrt(2), 500.f)))
+			{
+				MoveToLocation(ReachableDestination.Location, 20.f, false, true, false);
+				Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(Action::Moving);
+			}
 		}
 		LastTarget = ClosestTarget;
 	}

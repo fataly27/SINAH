@@ -89,6 +89,12 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		virtual unsigned int GetMagicDefense();
 		virtual float GetSpeed();
 		virtual float GetRange();
+		virtual unsigned int GetBuildingLevelRequired();
+
+		unsigned int GetCostInFood();
+		unsigned int GetCostInCells();
+		unsigned int GetCostInMetal();
+		unsigned int GetCostInCristals();
 
 		//Modes and animation
 		virtual void SetMode();
@@ -134,8 +140,7 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 
 		UPROPERTY(Replicated)
 			bool IsVisibleForOpponent;
-		UPROPERTY(Replicated)
-			unsigned int BuildingLevelRequired;
+		unsigned int BuildingLevelRequired;
 
 		UPROPERTY(EditAnywhere)
 			unsigned int DefaultMaxLife;
@@ -154,14 +159,10 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		UPROPERTY(EditAnywhere)
 			float DefaultRange;
 
-		UPROPERTY(EditAnywhere)
-			unsigned int CostInFood;
-		UPROPERTY(EditAnywhere)
-			unsigned int CostInCells;
-		UPROPERTY(EditAnywhere)
-			unsigned int CostInMetal;
-		UPROPERTY(EditAnywhere)
-			unsigned int CostInCristals;
+		unsigned int COST_IN_FOOD;
+		unsigned int COST_IN_CELLS;
+		unsigned int COST_IN_METAL;
+		unsigned int COST_IN_CRISTALS;
 
 		//Selection
 		UPROPERTY(EditAnywhere)

@@ -35,11 +35,6 @@ AUnit::AUnit() : MySide(Side::Neutral), Selected(false), CurrentAction(Action::I
 	ActualFieldOfSight = DefaultFieldOfSight;
 	ActualRange = DefaultRange;
 
-	CostInFood = 30;
-	CostInCells = 5;
-	CostInMetal = 5;
-	CostInCristals = 0;
-
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationSingleNode);
 
 	GetMovementComponent()->SetJumpAllowed(false);
@@ -70,6 +65,8 @@ void AUnit::BeginPlay()
 	Unselect();
 	WantedMode = Modes::Attack;
 	SetSide(MySide);
+
+	SpawnDefaultController();
 
 	if ((MySide == Side::Blue && Role != ROLE_Authority) || (MySide == Side::Red && Role == ROLE_Authority))
 		SetActorHiddenInGame(!IsVisibleForOpponent);
@@ -223,6 +220,27 @@ unsigned int AUnit::GetLifeBarWidth()
 float AUnit::GetSize()
 {
 	return 0.f;
+}
+unsigned int AUnit::GetBuildingLevelRequired()
+{
+	return BuildingLevelRequired;
+}
+
+unsigned int AUnit::GetCostInFood()
+{
+	return COST_IN_FOOD;
+}
+unsigned int AUnit::GetCostInCells()
+{
+	return COST_IN_CELLS;
+}
+unsigned int AUnit::GetCostInMetal()
+{
+	return COST_IN_METAL;
+}
+unsigned int AUnit::GetCostInCristals()
+{
+	return COST_IN_CRISTALS;
 }
 
 //Destinations

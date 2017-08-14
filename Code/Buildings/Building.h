@@ -53,6 +53,12 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		virtual float GetSize() override;
 		virtual float GetHeal();
 		virtual unsigned int GetLevel();
+		virtual unsigned int GetMaxLevel();
+
+		virtual unsigned int GetCostInFoodToLevel(unsigned int WantedLevel);
+		virtual unsigned int GetCostInCellsToLevel(unsigned int WantedLevel);
+		virtual unsigned int GetCostInMetalToLevel(unsigned int WantedLevel);
+		virtual unsigned int GetCostInCristalsToLevel(unsigned int WantedLevel);
 
 		//Visibility
 		virtual bool GetOpponentVisibility() override;
@@ -73,10 +79,10 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		//Level
 		unsigned int LevelMax;
 		unsigned int CurrentLevel;
-		TArray<unsigned int> CostInFood;
-		TArray<unsigned int> CostInCells;
-		TArray<unsigned int> CostInMetal;
-		TArray<unsigned int> CostInCristals;
+		TArray<unsigned int> COST_IN_FOOD;
+		TArray<unsigned int> COST_IN_CELLS;
+		TArray<unsigned int> COST_IN_METAL;
+		TArray<unsigned int> COST_IN_CRISTALS;
 
 		//Statistics
 		UPROPERTY(Replicated)

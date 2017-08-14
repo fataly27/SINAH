@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerController.h"
 #include "MainCamera.h"
 #include "Units/Unit.h"
+#include "Units/Knight.h"
 #include "Buildings/Building.h"
 #include "PlayerHUD.h"
 #include "GameElementInterface.h"
@@ -65,6 +66,10 @@ class SINAH_API AMousePlayerController : public APlayerController
 		void FogOfWar();
 		void SetFogOfWarTexture(TArray<TScriptInterface<IGameElementInterface>> BlueUnits, TArray<TScriptInterface<IGameElementInterface>> RedUnits);
 		void UpdateTextureRegions(UTexture2D* Texture, int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData);
+
+		//Costing functions
+		void LevelUpBuilding(ABuilding* Building);
+		void SpawnUnit(AMilitaryBuilding* Spawner, UClass* Unit);
 
 		UFUNCTION(Server, Reliable, WithValidation)
 			void Server_AddDestination(AUnit *Unit, FVector Destination, FRotator Rotation);

@@ -169,6 +169,7 @@ void ABuilding::SetLevel(unsigned int Level)
 		ActualMaxLife = DefaultMaxLife * FGenericPlatformMath::Sqrt(CurrentLevel);
 		CurrentLife = ActualMaxLife;
 		ActualHeal = DefaultHeal * FGenericPlatformMath::Sqrt(CurrentLevel);
+		ActualFieldOfSight = DefaultFieldOfSight * FGenericPlatformMath::Sqrt(CurrentLevel);
 	}
 }
 
@@ -210,6 +211,39 @@ float ABuilding::GetSize()
 unsigned int ABuilding::GetLevel()
 {
 	return CurrentLevel;
+}
+unsigned int ABuilding::GetMaxLevel()
+{
+	return LevelMax;
+}
+
+unsigned int ABuilding::GetCostInFoodToLevel(unsigned int WantedLevel)
+{
+	if (WantedLevel > 1)
+		return COST_IN_FOOD[WantedLevel - 2];
+	else
+		return 0;
+}
+unsigned int ABuilding::GetCostInCellsToLevel(unsigned int WantedLevel)
+{
+	if (WantedLevel > 1)
+		return COST_IN_CELLS[WantedLevel - 2];
+	else
+		return 0;
+}
+unsigned int ABuilding::GetCostInMetalToLevel(unsigned int WantedLevel)
+{
+	if (WantedLevel > 1)
+		return COST_IN_METAL[WantedLevel - 2];
+	else
+		return 0;
+}
+unsigned int ABuilding::GetCostInCristalsToLevel(unsigned int WantedLevel)
+{
+	if (WantedLevel > 1)
+		return COST_IN_CRISTALS[WantedLevel - 2];
+	else
+		return 0;
 }
 
 //Visibility

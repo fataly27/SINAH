@@ -14,6 +14,11 @@ ASmallMilitaryBuilding::ASmallMilitaryBuilding() : Super()
 	ActualHeal = DefaultHeal;
 	ActualFieldOfSight = DefaultFieldOfSight;
 
+	COST_IN_FOOD = { 150, 500 };
+	COST_IN_CELLS = { 400, 1200 };
+	COST_IN_METAL = { 1000, 3000 };
+	COST_IN_CRISTALS = { 50, 250 };
+
 	LevelMax = 3;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshRessource(TEXT("StaticMesh'/Game/Meshes/LittleBuilding/LittleMilitaryBuilding.LittleMilitaryBuilding'"));
@@ -26,7 +31,7 @@ ASmallMilitaryBuilding::ASmallMilitaryBuilding() : Super()
 
 float ASmallMilitaryBuilding::GetSize()
 {
-	return 410.f;
+	return 523.f;
 }
 float ASmallMilitaryBuilding::GetHalfHeight()
 {

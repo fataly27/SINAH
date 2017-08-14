@@ -12,8 +12,7 @@ UCLASS()
 class SINAH_API ACristalsEconomicBuilding : public AEconomicBuilding
 {
 	GENERATED_BODY()
-	
-	
-	
-	
+
+	public:
+		ACristalsEconomicBuilding();
 };

@@ -13,7 +13,6 @@ class SINAH_API ACellsEconomicBuilding : public AEconomicBuilding
 {
 	GENERATED_BODY()
 	
-	
-	
-	
+	public:
+		ACellsEconomicBuilding();
 };

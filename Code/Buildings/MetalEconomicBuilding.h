@@ -13,7 +13,6 @@ class SINAH_API AMetalEconomicBuilding : public AEconomicBuilding
 {
 	GENERATED_BODY()
 	
-	
-	
-	
+	public:
+		AMetalEconomicBuilding();
 };

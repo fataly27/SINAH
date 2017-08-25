@@ -69,9 +69,10 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		virtual TArray<TScriptInterface<IGameElementInterface>> GetOpponentsInSight();
 		virtual void ClearOpponentsInSight();
 
-		//Attack
+		//Attack and heal
 		virtual void Attack(const TScriptInterface<IGameElementInterface>& Target);
-		virtual void ReceiveDamages(float Physic, float Magic, Side AttackingSide) override;
+		virtual void ReceiveDamages(unsigned int Physic, unsigned int Magic, Side AttackingSide) override;
+		virtual void Heal(int Heal);
 
 		//Dying
 		virtual bool IsPendingKill();
@@ -91,10 +92,12 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		virtual float GetRange();
 		virtual unsigned int GetBuildingLevelRequired();
 
-		unsigned int GetCostInFood();
-		unsigned int GetCostInCells();
-		unsigned int GetCostInMetal();
-		unsigned int GetCostInCristals();
+		virtual unsigned int GetCostInFood();
+		virtual unsigned int GetCostInCells();
+		virtual unsigned int GetCostInMetal();
+		virtual unsigned int GetCostInCristals();
+
+		virtual void SetSpeedMultiplicator(float Multiplicator);
 
 		//Modes and animation
 		virtual void SetMode();
@@ -133,6 +136,8 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 			unsigned int ActualMagicDefense;
 		UPROPERTY(Replicated)
 			float ActualSpeed;
+		UPROPERTY(Replicated)
+			float SpeedMultiplicator;
 		UPROPERTY(Replicated)
 			float ActualFieldOfSight;
 		UPROPERTY(Replicated)

@@ -31,7 +31,7 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 			virtual void Multicast_SetSide(Side NewSide);
 
 		//Attack
-		virtual void ReceiveDamages(float Physic, float Magic, Side AttackingSide) override;
+		virtual void ReceiveDamages(unsigned int Physic, unsigned int Magic, Side AttackingSide) override;
 
 		//Heal
 		virtual void Heal();

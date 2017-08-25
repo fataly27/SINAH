@@ -117,19 +117,20 @@ Side ABuilding::GetSide()
 }
 
 //Attack
-void ABuilding::ReceiveDamages(float Physic, float Magic, Side AttackingSide)
+void ABuilding::ReceiveDamages(unsigned int Physic, unsigned int Magic, Side AttackingSide)
 {
 	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
-		CurrentLife -= Physic;
-		CurrentLife -= Magic;
+		unsigned int Damages = Physic + Magic;
 		TimeSinceLastAttack = 0.f;
 
-		if (CurrentLife <= 0.f)
+		if (CurrentLife <= Damages)
 		{
 			SetSide(AttackingSide);
 			SetLevel(1);
 		}
+		else
+			CurrentLife -= Damages;
 	}
 }
 

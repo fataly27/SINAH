@@ -67,6 +67,8 @@ class SINAH_API AMousePlayerController : public APlayerController
 		void SetFogOfWarTexture(TArray<TScriptInterface<IGameElementInterface>> BlueUnits, TArray<TScriptInterface<IGameElementInterface>> RedUnits);
 		void UpdateTextureRegions(UTexture2D* Texture, int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData);
 
+		void ApplyZoneEffects(TArray<AMilitaryBuilding*> MilitaryBuildings, TArray<AUnit*> Units);
+
 		//Costing functions
 		void LevelUpBuilding(ABuilding* Building);
 		void SpawnUnit(AMilitaryBuilding* Spawner, UClass* Unit);

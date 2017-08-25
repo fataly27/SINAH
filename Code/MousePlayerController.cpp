@@ -386,8 +386,8 @@ void AMousePlayerController::UpdateBoxSelection(TArray<TScriptInterface<IGameEle
 					SpawnUnit(MyBuilding, AKnight::StaticClass());
 				}
 				
-
 				*/
+				
 
 				/*
 
@@ -494,6 +494,9 @@ void AMousePlayerController::FogOfWar()
 	TArray<TScriptInterface<IGameElementInterface>> RedActors;
 	TArray<TScriptInterface<IGameElementInterface>> NeutralActors;
 
+	TArray<AMilitaryBuilding*> MilitaryBuildings;
+	TArray<AUnit*> Units;
+
 	TActorIterator<AUnit> UnitItr(GetWorld());
 	for (UnitItr; UnitItr; ++UnitItr)
 	{
@@ -503,6 +506,7 @@ void AMousePlayerController::FogOfWar()
 			RedActors.Add(TScriptInterface<IGameElementInterface>(*UnitItr));
 		else
 			NeutralActors.Add(TScriptInterface<IGameElementInterface>(*UnitItr));
+		Units.Add(*UnitItr);
 	}
 
 	TActorIterator<ABuilding> BuildingItr(GetWorld());
@@ -514,11 +518,16 @@ void AMousePlayerController::FogOfWar()
 			RedActors.Add(TScriptInterface<IGameElementInterface>(*BuildingItr));
 		else
 			NeutralActors.Add(TScriptInterface<IGameElementInterface>(*BuildingItr));
+
+		if(BuildingItr->IsA(AMilitaryBuilding::StaticClass()))
+			MilitaryBuildings.Add(Cast<AMilitaryBuilding>(*BuildingItr));
 	}
 
 	bool ShouldBeVisible(false);
 	if (Role == ROLE_Authority)
 	{
+		ApplyZoneEffects(MilitaryBuildings, Units);
+
 		for (int i = 0; i < BlueActors.Num(); i++)
 		{
 			if (BlueActors[i].GetObject()->IsA(AUnit::StaticClass()))
@@ -739,6 +748,29 @@ void AMousePlayerController::UpdateTextureRegions(UTexture2D* Texture, int32 Mip
 		}
 		delete RegionData;
 			});
+	}
+}
+void AMousePlayerController::ApplyZoneEffects(TArray<AMilitaryBuilding*> MilitaryBuildings, TArray<AUnit*> Units)
+{
+	for (int j(0); j < Units.Num(); j++)
+	{
+		float Multiplicator = 1.f;
+		int Heal = 0;
+		for (int i(0); i < MilitaryBuildings.Num(); i++)
+		{
+			if (MilitaryBuildings[i]->GetSide() == Units[j]->GetSide())
+			{
+				Heal += MilitaryBuildings[i]->GetPlayerZone()->GetLifeEffectOnUnit(Units[j]);
+				Multiplicator *= MilitaryBuildings[i]->GetPlayerZone()->GetSpeedEffectOnUnit(Units[j]);
+			}
+			else
+			{
+				Heal += MilitaryBuildings[i]->GetOpponentZone()->GetLifeEffectOnUnit(Units[j]);
+				Multiplicator *= MilitaryBuildings[i]->GetOpponentZone()->GetSpeedEffectOnUnit(Units[j]);
+			}
+		}
+		Units[j]->SetSpeedMultiplicator(Multiplicator);
+		Units[j]->Heal(Heal);
 	}
 }
 

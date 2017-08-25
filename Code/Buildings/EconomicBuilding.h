@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(abstract)
 class SINAH_API AEconomicBuilding : public ABuilding
 {
 	GENERATED_BODY()
@@ -28,7 +28,7 @@ class SINAH_API AEconomicBuilding : public ABuilding
 		virtual unsigned int GetLifeBarWidth();
 
 		//Attack
-		virtual void ReceiveDamages(float Physic, float Magic, Side AttackingSide) override;
+		virtual void ReceiveDamages(unsigned int Physic, unsigned int Magic, Side AttackingSide) override;
 
 		//Replication
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;

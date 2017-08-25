@@ -32,6 +32,7 @@ AUnit::AUnit() : MySide(Side::Neutral), Selected(false), CurrentAction(Action::I
 	ActualPhysicDefense = DefaultPhysicDefense;
 	ActualMagicDefense = DefaultMagicDefense;
 	ActualSpeed = DefaultSpeed;
+	SpeedMultiplicator = 1.f;
 	ActualFieldOfSight = DefaultFieldOfSight;
 	ActualRange = DefaultRange;
 
@@ -243,6 +244,13 @@ unsigned int AUnit::GetCostInCristals()
 	return COST_IN_CRISTALS;
 }
 
+void AUnit::SetSpeedMultiplicator(float Multiplicator)
+{
+	SpeedMultiplicator = Multiplicator;
+
+	GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+}
+
 //Destinations
 void AUnit::AddDestination(FVector Destination, FRotator Rotation)
 {
@@ -366,23 +374,33 @@ void AUnit::Attack(const TScriptInterface<IGameElementInterface>& Target)
 	if (Role == ROLE_Authority && (CurrentMode == Modes::Attack || CurrentMode == Modes::Defense))
 		Target->ReceiveDamages(GetPhysicAttack(), GetMagicAttack(), MySide);
 }
-void AUnit::ReceiveDamages(float Physic, float Magic, Side AttackingSide)
+void AUnit::ReceiveDamages(unsigned int Physic, unsigned int Magic, Side AttackingSide)
 {
 	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
-		float PhysicDamage = Physic - GetPhysicDefense();
-		float MagicDamage = Magic - GetMagicDefense();
+		unsigned int PhysicDamage = Physic - GetPhysicDefense();
+		unsigned int MagicDamage = Magic - GetMagicDefense();
 
 		if (PhysicDamage <= 0 && Physic > 0)
 			PhysicDamage = 1.f;
 		if (MagicDamage <= 0 && Magic > 0)
 			MagicDamage = 1.f;
 
-		CurrentLife -= PhysicDamage;
-		CurrentLife -= MagicDamage;
+		unsigned int Damages = PhysicDamage + MagicDamage;
 
-		if (CurrentLife <= 0.f)
+		if (CurrentLife <= Damages)
 			Destroy();
+		else
+			CurrentLife -= Damages;
+	}
+}
+void AUnit::Heal(int Heal)
+{
+	if (Role == ROLE_Authority)
+	{
+		CurrentLife += Heal;
+		if (CurrentLife > GetMaxLife())
+			CurrentLife = GetMaxLife();
 	}
 }
 
@@ -409,7 +427,7 @@ void AUnit::SetMode()
 			ActualFieldOfSight = DefaultFieldOfSight;
 
 			ActualSpeed = DefaultSpeed;
-			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * 100;
+			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
 
 			CurrentMode = Mode;
 		}
@@ -425,7 +443,7 @@ void AUnit::SetMode()
 			ActualFieldOfSight = DefaultFieldOfSight;
 
 			ActualSpeed = 0.f;
-			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * 100;
+			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
 		}
 		else if (Mode == Modes::Alert)
 		{
@@ -442,7 +460,7 @@ void AUnit::SetMode()
 			ActualFieldOfSight = DefaultFieldOfSight * 1.4f;
 
 			ActualSpeed = DefaultSpeed;
-			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * 100;
+			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
 		}
 		else if (Mode == Modes::Movement)
 		{
@@ -457,7 +475,7 @@ void AUnit::SetMode()
 			ActualFieldOfSight = DefaultFieldOfSight;
 
 			ActualSpeed = DefaultSpeed * 1.6f;
-			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * 100;
+			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
 
 			CurrentMode = Mode;
 		}
@@ -480,7 +498,7 @@ void AUnit::SetMode()
 				ActualFieldOfSight = DefaultFieldOfSight;
 
 				ActualSpeed = DefaultSpeed;
-				GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * 100;
+				GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
 
 				CurrentMode = Mode;
 			}
@@ -502,7 +520,7 @@ void AUnit::Server_ChangeMode_Implementation(Modes Mode)
 		ActualFieldOfSight = 0;
 
 		ActualSpeed = 0.f;
-		GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * 100;
+		GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
 
 		PrepareChangingModeTime = 5.f;
 	}
@@ -604,6 +622,7 @@ void AUnit::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetime
 	DOREPLIFETIME(AUnit, ActualPhysicDefense);
 	DOREPLIFETIME(AUnit, ActualMagicDefense);
 	DOREPLIFETIME(AUnit, ActualSpeed);
+	DOREPLIFETIME(AUnit, SpeedMultiplicator);
 	DOREPLIFETIME(AUnit, ActualFieldOfSight);
 	DOREPLIFETIME(AUnit, ActualRange);
 

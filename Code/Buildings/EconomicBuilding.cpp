@@ -76,19 +76,18 @@ unsigned int AEconomicBuilding::GetLifeBarWidth()
 }
 
 //Attack
-void AEconomicBuilding::ReceiveDamages(float Physic, float Magic, Side AttackingSide)
+void AEconomicBuilding::ReceiveDamages(unsigned int Physic, unsigned int Magic, Side AttackingSide)
 {
 	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
-		CurrentLife -= Physic;
-		CurrentLife -= Magic;
+		unsigned int Damages = Physic + Magic;
 		TimeSinceLastAttack = 0.f;
 
-		if (CurrentLife <= 0.f)
+		if (CurrentLife <= Damages)
 		{
 			if (RelatedMilitaryBuilding && AttackingSide == RelatedMilitaryBuilding->GetSide())
 			{
-				if(!IsPlundered)
+				if (!IsPlundered)
 					SetLevel(1);
 				IsPlundered = false;
 			}
@@ -100,6 +99,8 @@ void AEconomicBuilding::ReceiveDamages(float Physic, float Magic, Side Attacking
 			}
 			SetSide(AttackingSide);
 		}
+		else
+			CurrentLife -= Damages;
 	}
 }
 

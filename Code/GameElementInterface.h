@@ -39,7 +39,7 @@ class SINAH_API IGameElementInterface
 		virtual Side GetSide() = 0;
 
 		//Attack
-		virtual void ReceiveDamages(float Physic, float Magic, Side AttackingSide) = 0;
+		virtual void ReceiveDamages(unsigned int Physic, unsigned int Magic, Side AttackingSide) = 0;
 		virtual float GetSize() = 0;
 
 		//Statistics Getters

@@ -6,6 +6,8 @@
 #include "MilitaryBuilding.h"
 #include "EconomicBuilding.generated.h"
 
+class AMilitaryBuilding;
+
 /**
  * 
  */

@@ -3,11 +3,9 @@
 #pragma once
 
 #include "AIController.h"
-#include "Unit.h"
-#include "../GameElementInterface.h"
 #include "UnitController.generated.h"
 
-class AUnit;
+class IGameElementInterface;
 
 /**
  * 

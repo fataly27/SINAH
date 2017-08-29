@@ -1,19 +1,40 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Sinah.h"
+#include "../MilitaryBuilding.h"
+#include "../../Units/Unit.h"
 #include "LifeZone.h"
 
-ULifeZone::ULifeZone() {}
-void ULifeZone::Init(float Reach, int LifeModifier)
+ULifeZone::ULifeZone()
 {
-	Super::Init(Reach);
-	BaseLifeModifier = LifeModifier;
+	static ConstructorHelpers::FObjectFinder<UMaterial> DecalPlayerMaterialAsset(TEXT("/Game/Materials/Zones/PlayerLifeZone.PlayerLifeZone"));
+	BaseDecalPlayerMaterial = DecalPlayerMaterialAsset.Object;
+	static ConstructorHelpers::FObjectFinder<UMaterial> DecalOpponentMaterialAsset(TEXT("/Game/Materials/Zones/OpponentLifeZone.OpponentLifeZone"));
+	BaseDecalOpponentMaterial = DecalOpponentMaterialAsset.Object;
+}
+void ULifeZone::Init(bool Player)
+{
+	if (Player)
+	{
+		Super::Init(Player, 10.f);
+		BaseLifeModifier = 50;
+	}
+	else
+	{
+		Super::Init(Player, 5.f);
+		BaseLifeModifier = 20;
+	}
 }
 
-int ULifeZone::GetLifeModifier(AUnit* Unit, ABuilding* Building)
+int ULifeZone::GetLifeModifier(AUnit* Unit, AMilitaryBuilding* Building)
 {
 	if (FVector::Dist(Building->GetActorLocation(), Unit->GetActorLocation()) > GetReach() * 100)
 		return 0;
 	else
-		return BaseLifeModifier * FGenericPlatformMath::Sqrt(CurrentEffectLevel);
+	{
+		if(IsForPlayer)
+			return BaseLifeModifier * FGenericPlatformMath::Sqrt(CurrentEffectLevel);
+		else
+			return -BaseLifeModifier * FGenericPlatformMath::Sqrt(CurrentEffectLevel);
+	}
 }

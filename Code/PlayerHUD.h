@@ -3,12 +3,10 @@
 #pragma once
 
 #include "GameFramework/HUD.h"
-#include "Units/Unit.h"
-#include "Buildings/Building.h"
 #include "GameElementInterface.h"
-#include "MultiplayerState.h"
-#include <cmath>
 #include "PlayerHUD.generated.h"
+
+class ABuilding;
 
 UENUM(BlueprintType)
 	enum class TypeBox : uint8

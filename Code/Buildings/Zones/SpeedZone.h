@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "Zone.h"
 #include "SpeedZone.generated.h"
 
@@ -17,9 +15,9 @@ class SINAH_API USpeedZone : public UZone
 	
 	public:
 		USpeedZone();
-		void Init(float Reach, float SpeedMultiplicator);
+		void Init(bool Player);
 
-		float GetSpeedMultiplicator(AUnit* Unit, ABuilding* Building);
+		float GetSpeedMultiplicator(AUnit* Unit, AMilitaryBuilding* Building);
 
 	protected:
 		float BaseSpeedMultiplicator;

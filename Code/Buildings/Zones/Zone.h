@@ -3,35 +3,54 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "../Building.h"
-#include "../../Units/Unit.h"
+#include "Components/DecalComponent.h"
 #include "Zone.generated.h"
+
+class AUnit;
+class AMilitaryBuilding;
 
 /**
  * 
  */
 UCLASS(abstract)
-class SINAH_API UZone : public UObject
+class SINAH_API UZone : public UDecalComponent
 {
 	GENERATED_BODY()
 	
 	public:
 		UZone();
-		void Init(float Reach);
+		void Init(bool IsPlayer, float Reach);
 
 		virtual float GetReach();
 
-		virtual void SetReachLevel(unsigned int Level);
-		virtual void SetEffectLevel(unsigned int Level);
+		UFUNCTION(NetMulticast, Reliable)
+			virtual void Multicast_SetReachLevel(unsigned int Level);
+		UFUNCTION(NetMulticast, Reliable)
+			virtual void Multicast_SetEffectLevel(unsigned int Level);
 		virtual void LevelUpReach();
 		virtual void LevelUpEffect();
 
-	protected:
-		float BaseReach;
+		//Replication
+		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
 
-		unsigned int MaxEffectLevel;
-		unsigned int CurrentEffectLevel;
-		unsigned int MaxReachLevel;
-		unsigned int CurrentReachLevel;
+	protected:
+		UPROPERTY(Replicated)
+			UMaterialInstanceDynamic* MyDecalMaterial;
+		UMaterial* BaseDecalPlayerMaterial;
+		UMaterial* BaseDecalOpponentMaterial;
+
+		UPROPERTY(Replicated)
+			bool IsForPlayer;
+
+		UPROPERTY(Replicated)
+			float BaseReach;
+
+		UPROPERTY(Replicated)
+			unsigned int MaxEffectLevel;
+		UPROPERTY(Replicated)
+			unsigned int CurrentEffectLevel;
+		UPROPERTY(Replicated)
+			unsigned int MaxReachLevel;
+		UPROPERTY(Replicated)
+			unsigned int CurrentReachLevel;
 };

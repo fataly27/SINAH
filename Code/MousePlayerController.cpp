@@ -1,6 +1,23 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Sinah.h"
+#include "Buildings/MilitaryBuilding.h"
+#include "MultiplayerSinahMode.h"
+#include "MultiplayerState.h"
+#include "MainCamera.h"
+#include "Units/Knight.h"
+#include "Units/Unit.h"
+#include "Buildings/Zones/SpeedZone.h"
+#include "Buildings/Zones/LifeZone.h"
+
+#include "Buildings/FoodEconomicBuilding.h"
+#include "Buildings/CristalsEconomicBuilding.h"
+#include "Buildings/CellsEconomicBuilding.h"
+#include "Buildings/MetalEconomicBuilding.h"
+
+#include <cmath>
+#include <algorithm>
+
 #include "MousePlayerController.h"
 
 AMousePlayerController::AMousePlayerController() : TimeSinceLastHarvest(0.f)
@@ -158,6 +175,11 @@ void AMousePlayerController::SetupInputComponent()
 	InputComponent->BindAxis("MoveRight", this, &AMousePlayerController::MoveRight);
 	InputComponent->BindAxis("Zoom", this, &AMousePlayerController::Zoom);
 
+}
+
+Side AMousePlayerController::GetSide()
+{
+	return PlayerSide;
 }
 
 //Input functions
@@ -375,19 +397,19 @@ void AMousePlayerController::UpdateBoxSelection(TArray<TScriptInterface<IGameEle
 
 				if (ActorsSelected.Top().GetObject()->IsA(AMilitaryBuilding::StaticClass()))
 				{
-					AMilitaryBuilding* MyBuilding = Cast<AMilitaryBuilding>(ActorsSelected.Top().GetObject());
+				AMilitaryBuilding* MyBuilding = Cast<AMilitaryBuilding>(ActorsSelected.Top().GetObject());
 
-					AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
-					State->SetAmountOfFood(50);
-					State->SetAmountOfCells(50);
-					State->SetAmountOfCristals(50);
-					State->SetAmountOfMetal(50);
+				AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
+				State->SetAmountOfFood(50);
+				State->SetAmountOfCells(50);
+				State->SetAmountOfCristals(50);
+				State->SetAmountOfMetal(50);
 
-					SpawnUnit(MyBuilding, AKnight::StaticClass());
+				SpawnUnit(MyBuilding, AKnight::StaticClass());
 				}
-				
+
 				*/
-				
+
 
 				/*
 
@@ -441,7 +463,7 @@ void AMousePlayerController::UpdateBoxSelection(TArray<TScriptInterface<IGameEle
 		{
 			if (AllSelectedBefore.IsValidIndex(0))
 			{
-				if(AllSelectedBefore[0] == NewSelection[i])
+				if (AllSelectedBefore[0] == NewSelection[i])
 					FinalSelection.Add(NewSelection[i]);
 			}
 			else
@@ -519,7 +541,7 @@ void AMousePlayerController::FogOfWar()
 		else
 			NeutralActors.Add(TScriptInterface<IGameElementInterface>(*BuildingItr));
 
-		if(BuildingItr->IsA(AMilitaryBuilding::StaticClass()))
+		if (BuildingItr->IsA(AMilitaryBuilding::StaticClass()))
 			MilitaryBuildings.Add(Cast<AMilitaryBuilding>(*BuildingItr));
 	}
 
@@ -760,13 +782,13 @@ void AMousePlayerController::ApplyZoneEffects(TArray<AMilitaryBuilding*> Militar
 		{
 			if (MilitaryBuildings[i]->GetSide() == Units[j]->GetSide())
 			{
-				Heal += MilitaryBuildings[i]->GetPlayerZone()->GetLifeEffectOnUnit(Units[j]);
-				Multiplicator *= MilitaryBuildings[i]->GetPlayerZone()->GetSpeedEffectOnUnit(Units[j]);
+				Heal += MilitaryBuildings[i]->GetPlayerLifeZone()->GetLifeModifier(Units[j], MilitaryBuildings[i]);
+				Multiplicator *= MilitaryBuildings[i]->GetPlayerSpeedZone()->GetSpeedMultiplicator(Units[j], MilitaryBuildings[i]);
 			}
 			else
 			{
-				Heal += MilitaryBuildings[i]->GetOpponentZone()->GetLifeEffectOnUnit(Units[j]);
-				Multiplicator *= MilitaryBuildings[i]->GetOpponentZone()->GetSpeedEffectOnUnit(Units[j]);
+				Heal += MilitaryBuildings[i]->GetOpponentLifeZone()->GetLifeModifier(Units[j], MilitaryBuildings[i]);
+				Multiplicator *= MilitaryBuildings[i]->GetOpponentSpeedZone()->GetSpeedMultiplicator(Units[j], MilitaryBuildings[i]);
 			}
 		}
 		Units[j]->SetSpeedMultiplicator(Multiplicator);

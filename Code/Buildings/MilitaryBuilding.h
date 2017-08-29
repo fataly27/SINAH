@@ -3,9 +3,10 @@
 #pragma once
 
 #include "Building.h"
-#include "Zones/PlayerZoneType.h"
-#include "Zones/OpponentZoneType.h"
 #include "MilitaryBuilding.generated.h"
+
+class ULifeZone;
+class USpeedZone;
 
 /**
  * 
@@ -22,15 +23,26 @@ class SINAH_API AMilitaryBuilding : public ABuilding
 		virtual void BeginPlay() override;
 
 		//Zones
-		virtual UPlayerZoneType* GetPlayerZone();
-		virtual UOpponentZoneType* GetOpponentZone();
+		virtual void ChangeDecals(bool Reverse);
+
+		ULifeZone* GetPlayerLifeZone();
+		ULifeZone* GetOpponentLifeZone();
+		USpeedZone* GetPlayerSpeedZone();
+		USpeedZone* GetOpponentSpeedZone();
 
 		//Side
 		virtual void SetSide(Side NewSide) override;
 
+		//Replication
+		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
+
 	protected:
-		UPROPERTY()
-			UPlayerZoneType* PlayerZone;
-		UPROPERTY()
-			UOpponentZoneType* OpponentZone;
+		UPROPERTY(Replicated)
+			ULifeZone* PlayerLifeZone;
+		UPROPERTY(Replicated)
+			ULifeZone* OpponentLifeZone;
+		UPROPERTY(Replicated)
+			USpeedZone* PlayerSpeedZone;
+		UPROPERTY(Replicated)
+			USpeedZone* OpponentSpeedZone;
 };

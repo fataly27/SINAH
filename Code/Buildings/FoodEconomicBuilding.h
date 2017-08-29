@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Buildings/EconomicBuilding.h"
+#include "EconomicBuilding.h"
 #include "FoodEconomicBuilding.generated.h"
 
 /**

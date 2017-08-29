@@ -1,6 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Sinah.h"
+#include "MousePlayerController.h"
+#include "MainCamera.h"
+#include "PlayerHUD.h"
+#include "MultiplayerState.h"
 #include "MultiplayerSinahMode.h"
 
 AMultiplayerSinahMode::AMultiplayerSinahMode()

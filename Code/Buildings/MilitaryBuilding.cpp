@@ -1,35 +1,78 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Sinah.h"
+#include "Zones/SpeedZone.h"
+#include "Zones/LifeZone.h"
+#include "../MousePlayerController.h"
 #include "MilitaryBuilding.h"
 
 
 AMilitaryBuilding::AMilitaryBuilding() : Super()
 {
+	PlayerLifeZone = CreateDefaultSubobject<ULifeZone>(TEXT("PlayerLifeZone"));
+	PlayerSpeedZone = CreateDefaultSubobject<USpeedZone>(TEXT("PlayerSpeedZone"));
+	OpponentLifeZone = CreateDefaultSubobject<ULifeZone>(TEXT("OpponentLifeZone"));
+	OpponentSpeedZone = CreateDefaultSubobject<USpeedZone>(TEXT("OpponentSpeedZone"));
+
+	PlayerSpeedZone->SetupAttachment(RootComponent);
+	PlayerLifeZone->SetupAttachment(RootComponent);
+	OpponentSpeedZone->SetupAttachment(RootComponent);
+	OpponentLifeZone->SetupAttachment(RootComponent);
+
+	PlayerLifeZone->SetIsReplicated(true);
+	PlayerSpeedZone->SetIsReplicated(true);
+	OpponentLifeZone->SetIsReplicated(true);
+	OpponentSpeedZone->SetIsReplicated(true);
 }
 
 void AMilitaryBuilding::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (Role == ROLE_Authority)
-	{
-		PlayerZone = NewObject<UPlayerZoneType>(this, UPlayerZoneType::StaticClass());
-		OpponentZone = NewObject<UOpponentZoneType>(this, UOpponentZoneType::StaticClass());
+	PlayerLifeZone->Init(true);
+	PlayerSpeedZone->Init(true);
+	OpponentLifeZone->Init(false);
+	OpponentSpeedZone->Init(false);
 
-		PlayerZone->Init(this);
-		OpponentZone->Init(this);
-	}
+	ChangeDecals(false);
 }
 
 //Zones
-UPlayerZoneType* AMilitaryBuilding::GetPlayerZone()
+void AMilitaryBuilding::ChangeDecals(bool Reverse)
 {
-	return PlayerZone;
+	bool IsPlayer(Cast<AMousePlayerController>(GetWorld()->GetFirstPlayerController())->GetSide() == GetSide());
+
+	if ((IsPlayer && !Reverse) || (!IsPlayer && Reverse))
+	{
+		PlayerLifeZone->SetHiddenInGame(false);
+		PlayerSpeedZone->SetHiddenInGame(false);
+		OpponentLifeZone->SetHiddenInGame(true);
+		OpponentSpeedZone->SetHiddenInGame(true);
+	}
+	else
+	{
+		PlayerLifeZone->SetHiddenInGame(true);
+		PlayerSpeedZone->SetHiddenInGame(true);
+		OpponentLifeZone->SetHiddenInGame(false);
+		OpponentSpeedZone->SetHiddenInGame(false);
+	}
 }
-UOpponentZoneType* AMilitaryBuilding::GetOpponentZone()
+
+ULifeZone* AMilitaryBuilding::GetPlayerLifeZone()
 {
-	return OpponentZone;
+	return PlayerLifeZone;
+}
+ULifeZone* AMilitaryBuilding::GetOpponentLifeZone()
+{
+	return OpponentLifeZone;
+}
+USpeedZone* AMilitaryBuilding::GetPlayerSpeedZone()
+{
+	return PlayerSpeedZone;
+}
+USpeedZone* AMilitaryBuilding::GetOpponentSpeedZone()
+{
+	return OpponentSpeedZone;
 }
 
 //Side
@@ -37,16 +80,26 @@ void AMilitaryBuilding::SetSide(Side NewSide)
 {
 	Super::SetSide(NewSide);
 
-	if (PlayerZone && OpponentZone && Role == ROLE_Authority)
+	if (Role == ROLE_Authority)
 	{
-		PlayerZone->GetLifeZone()->SetReachLevel(1);
-		PlayerZone->GetLifeZone()->SetEffectLevel(0);
-		PlayerZone->GetSpeedZone()->SetReachLevel(1);
-		PlayerZone->GetSpeedZone()->SetEffectLevel(0);
+		PlayerLifeZone->Multicast_SetReachLevel(1);
+		PlayerLifeZone->Multicast_SetEffectLevel(0);
+		PlayerSpeedZone->Multicast_SetReachLevel(1);
+		PlayerSpeedZone->Multicast_SetEffectLevel(0);
 
-		OpponentZone->GetLifeZone()->SetReachLevel(1);
-		OpponentZone->GetLifeZone()->SetEffectLevel(0);
-		OpponentZone->GetSpeedZone()->SetReachLevel(1);
-		OpponentZone->GetSpeedZone()->SetEffectLevel(0);
+		OpponentLifeZone->Multicast_SetReachLevel(1);
+		OpponentLifeZone->Multicast_SetEffectLevel(0);
+		OpponentSpeedZone->Multicast_SetReachLevel(1);
+		OpponentSpeedZone->Multicast_SetEffectLevel(0);
 	}
+}
+
+
+//Replication
+void AMilitaryBuilding::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+	DOREPLIFETIME(AMilitaryBuilding, PlayerLifeZone);
+	DOREPLIFETIME(AMilitaryBuilding, OpponentLifeZone);
+	DOREPLIFETIME(AMilitaryBuilding, PlayerSpeedZone);
+	DOREPLIFETIME(AMilitaryBuilding, OpponentSpeedZone);
 }

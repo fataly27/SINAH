@@ -2,11 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "Zone.h"
-#include "../../Units/Unit.h"
-#include "../Building.h"
 #include "LifeZone.generated.h"
 
 /**
@@ -19,9 +15,9 @@ class SINAH_API ULifeZone : public UZone
 	
 	public:
 		ULifeZone();
-		void Init(float Reach, int LifeModifier);
+		void Init(bool Player);
 
-		int GetLifeModifier(AUnit* Unit, ABuilding* Building);
+		int GetLifeModifier(AUnit* Unit, AMilitaryBuilding* Building);
 
 	protected:
 		int BaseLifeModifier;

@@ -3,23 +3,12 @@
 #pragma once
 
 #include "GameFramework/PlayerController.h"
-#include "MainCamera.h"
-#include "Units/Unit.h"
-#include "Units/Knight.h"
-#include "Buildings/Building.h"
 #include "PlayerHUD.h"
-#include "GameElementInterface.h"
-#include "MultiplayerSinahMode.h"
-
-#include "Buildings/FoodEconomicBuilding.h"
-#include "Buildings/CristalsEconomicBuilding.h"
-#include "Buildings/CellsEconomicBuilding.h"
-#include "Buildings/MetalEconomicBuilding.h"
-
-#include "Core.h"
-#include <cmath>
-#include <algorithm>
 #include "MousePlayerController.generated.h"
+
+class AMainCamera;
+class AUnit;
+class AMilitaryBuilding;
 
 /**
  * 
@@ -42,6 +31,8 @@ class SINAH_API AMousePlayerController : public APlayerController
 		virtual void Tick(float DeltaSeconds) override;
 
 		virtual void SetPawn(APawn* InPawn) override;
+
+		Side GetSide();
 
 		//Input functions
 		void MoveForward(float AxisValue);

@@ -1,6 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Sinah.h"
+#include "Units/Unit.h"
+#include "Buildings/Building.h"
+#include "MultiplayerState.h"
+#include <cmath>
 #include "PlayerHUD.h"
 
 

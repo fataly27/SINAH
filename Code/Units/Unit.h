@@ -3,9 +3,7 @@
 #pragma once
 
 #include "GameFramework/Character.h"
-#include "UnitController.h"
 #include "../GameElementInterface.h"
-#include <cmath>
 #include "Unit.generated.h"
 
 UENUM(BlueprintType)

@@ -20,7 +20,7 @@
 
 #include "MousePlayerController.h"
 
-AMousePlayerController::AMousePlayerController() : TimeSinceLastHarvest(0.f)
+AMousePlayerController::AMousePlayerController() : TimeSinceLastHarvest(0.f), OpponentView(false)
 {
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;
@@ -170,6 +170,11 @@ void AMousePlayerController::SetupInputComponent()
 	InputComponent->BindAction("AddDirect", IE_Pressed, this, &AMousePlayerController::StartAddDirect);
 	InputComponent->BindAction("Direct", IE_Released, this, &AMousePlayerController::Direct);
 	InputComponent->BindAction("AddDirect", IE_Released, this, &AMousePlayerController::AddDirect);
+	InputComponent->BindAction("Direct", IE_Released, this, &AMousePlayerController::Direct);
+	InputComponent->BindAction("AddDirect", IE_Released, this, &AMousePlayerController::AddDirect);
+
+	InputComponent->BindAction("OpponentView", IE_Pressed, this, &AMousePlayerController::EnableOpponentView);
+	InputComponent->BindAction("OpponentView", IE_Released, this, &AMousePlayerController::DisableOpponentView);
 
 	InputComponent->BindAxis("MoveForward", this, &AMousePlayerController::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &AMousePlayerController::MoveRight);
@@ -510,6 +515,33 @@ void AMousePlayerController::UpdateBoxTargeting(TArray<TScriptInterface<IGameEle
 	}
 }
 
+//EnemyView
+void AMousePlayerController::SetOpponentView(bool Enable)
+{
+	OpponentView = Enable;
+
+	TActorIterator<AMilitaryBuilding> BuildingItr(GetWorld());
+	for (BuildingItr; BuildingItr; ++BuildingItr)
+	{
+		BuildingItr->ChangeDecals();
+	}
+
+	FogOfWar();
+}
+bool AMousePlayerController::IsOpponentViewEnabled()
+{
+	return OpponentView;
+}
+void AMousePlayerController::EnableOpponentView()
+{
+  	SetOpponentView(true);
+}
+void AMousePlayerController::DisableOpponentView()
+{
+	SetOpponentView(false);
+}
+
+//Fog Of War
 void AMousePlayerController::FogOfWar()
 {
 	TArray<TScriptInterface<IGameElementInterface>> BlueActors;
@@ -545,6 +577,7 @@ void AMousePlayerController::FogOfWar()
 			MilitaryBuildings.Add(Cast<AMilitaryBuilding>(*BuildingItr));
 	}
 
+
 	bool ShouldBeVisible(false);
 	if (Role == ROLE_Authority)
 	{
@@ -567,8 +600,6 @@ void AMousePlayerController::FogOfWar()
 				}
 				for (int j = 0; j < NeutralActors.Num(); j++)
 				{
-					FVector vecteur = NeutralActors[j]->GetLocation() - BlueActors[i]->GetLocation();
-					float temp = vecteur.Size();
 					if (FVector(NeutralActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= BlueActors[i]->GetFieldOfSight() * 100.f)
 						OpponentsInSight.Add(NeutralActors[j]);
 				}
@@ -595,8 +626,6 @@ void AMousePlayerController::FogOfWar()
 				}
 				for (int j = 0; j < NeutralActors.Num(); j++)
 				{
-					FVector vecteur = NeutralActors[j]->GetLocation() - RedActors[i]->GetLocation();
-					float temp = vecteur.Size();
 					if (FVector(NeutralActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= RedActors[i]->GetFieldOfSight() * 100.f)
 						OpponentsInSight.Add(NeutralActors[j]);
 				}
@@ -610,9 +639,38 @@ void AMousePlayerController::FogOfWar()
 		}
 	}
 
-	SetFogOfWarTexture(BlueActors, RedActors);
+	if (!OpponentView)
+	{
+		if (PlayerSide == Side::Blue)
+			SetFogOfWarTexture(BlueActors);
+		else
+			SetFogOfWarTexture(RedActors);
+	}
+	else
+	{
+		if (PlayerSide == Side::Blue)
+		{
+			TArray<TScriptInterface<IGameElementInterface>> VisibleRedActors;
+			for (int i = 0; i < RedActors.Num(); i++)
+			{
+				if (RedActors[i]->GetOpponentVisibility())
+					VisibleRedActors.Add(RedActors[i]);
+			}
+			SetFogOfWarTexture(VisibleRedActors);
+		}
+		else
+		{
+			TArray<TScriptInterface<IGameElementInterface>> VisibleBlueActors;
+			for (int i = 0; i < BlueActors.Num(); i++)
+			{
+				if (BlueActors[i]->GetOpponentVisibility())
+					VisibleBlueActors.Add(BlueActors[i]);
+			}
+			SetFogOfWarTexture(VisibleBlueActors);
+		}
+	}
 }
-void AMousePlayerController::SetFogOfWarTexture(TArray<TScriptInterface<IGameElementInterface>> BlueUnits, TArray<TScriptInterface<IGameElementInterface>> RedUnits)
+void AMousePlayerController::SetFogOfWarTexture(TArray<TScriptInterface<IGameElementInterface>> Actors)
 {
 	if (FogOfWarTexture)
 	{
@@ -667,23 +725,11 @@ void AMousePlayerController::SetFogOfWarTexture(TArray<TScriptInterface<IGameEle
 		TArray<FVector> UnitsPosition;
 		TArray<float> UnitsSight;
 
-		if (PlayerSide == Side::Blue)
+		for (int i(0); i < Actors.Num(); i++)
 		{
-			for (int i(0); i < BlueUnits.Num(); i++)
-			{
-				FVector TempPosition = BlueUnits[i]->GetLocation();
-				UnitsPosition.Add(FVector(TempPosition.X, TempPosition.Y, 0.f));
-				UnitsSight.Add(BlueUnits[i]->GetFieldOfSight());
-			}
-		}
-		else if (PlayerSide == Side::Red)
-		{
-			for (int i(0); i < RedUnits.Num(); i++)
-			{
-				FVector TempPosition = RedUnits[i]->GetLocation();
-				UnitsPosition.Add(FVector(TempPosition.X, TempPosition.Y, 0.f));
-				UnitsSight.Add(RedUnits[i]->GetFieldOfSight());
-			}
+			FVector TempPosition = Actors[i]->GetLocation();
+			UnitsPosition.Add(FVector(TempPosition.X, TempPosition.Y, 0.f));
+			UnitsSight.Add(Actors[i]->GetFieldOfSight());
 		}
 
 		int NumUnits = UnitsPosition.Num();

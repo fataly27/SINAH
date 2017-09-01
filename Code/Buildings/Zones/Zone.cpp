@@ -57,7 +57,7 @@ void UZone::Multicast_SetEffectLevel_Implementation(unsigned int Level)
 		CurrentEffectLevel = Level;
 
 	if(MyDecalMaterial)
-		MyDecalMaterial->SetScalarParameterValue("Opacity", 1.f / FGenericPlatformMath::Sqrt(MaxEffectLevel) * FGenericPlatformMath::Sqrt(CurrentEffectLevel));
+		MyDecalMaterial->SetScalarParameterValue("Opacity", 1.f / FMath::Sqrt(MaxEffectLevel) * FMath::Sqrt(CurrentEffectLevel));
 }
 
 

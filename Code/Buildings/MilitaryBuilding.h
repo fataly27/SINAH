@@ -23,7 +23,7 @@ class SINAH_API AMilitaryBuilding : public ABuilding
 		virtual void BeginPlay() override;
 
 		//Zones
-		virtual void ChangeDecals(bool Reverse);
+		virtual void ChangeDecals();
 
 		ULifeZone* GetPlayerLifeZone();
 		ULifeZone* GetOpponentLifeZone();

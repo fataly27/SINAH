@@ -53,9 +53,15 @@ class SINAH_API AMousePlayerController : public APlayerController
 		void UpdateBoxSelection(TArray<TScriptInterface<IGameElementInterface>> NewSelection);
 		void UpdateBoxTargeting(TArray<TScriptInterface<IGameElementInterface>> NewTargets, bool IsFinal);
 
+		//EnemyView
+		void SetOpponentView(bool Enable);
+		bool IsOpponentViewEnabled();
+		void EnableOpponentView();
+		void DisableOpponentView();
+
 		//Fog Of War functions
 		void FogOfWar();
-		void SetFogOfWarTexture(TArray<TScriptInterface<IGameElementInterface>> BlueUnits, TArray<TScriptInterface<IGameElementInterface>> RedUnits);
+		void SetFogOfWarTexture(TArray<TScriptInterface<IGameElementInterface>> Actors);
 		void UpdateTextureRegions(UTexture2D* Texture, int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData);
 
 		void ApplyZoneEffects(TArray<AMilitaryBuilding*> MilitaryBuildings, TArray<AUnit*> Units);
@@ -80,6 +86,7 @@ class SINAH_API AMousePlayerController : public APlayerController
 
 	protected:
 		float TimeSinceLastHarvest;
+		bool OpponentView;
 
 		AMainCamera* MyPawn;
 		TArray<TScriptInterface<IGameElementInterface>> ActorsSelected;

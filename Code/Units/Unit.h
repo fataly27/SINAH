@@ -171,11 +171,6 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		UPROPERTY(EditAnywhere)
 			Side MySide;
 		bool Selected;
-		UPROPERTY(EditAnywhere)
-			UDecalComponent* SelectionMark;
-		UMaterial* RedCircle;
-		UMaterial* BlueCircle;
-		UMaterial* NeutralCircle;
 
 		//Target
 		UPROPERTY(Replicated)

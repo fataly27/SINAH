@@ -43,7 +43,7 @@ void AMousePlayerController::BeginPlay()
 	if (HUD)
 	{
 		FTimerHandle TimerHandle;
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AMousePlayerController::FogOfWar, 0.4f, true);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AMousePlayerController::FogOfWar, 0.1f, true);
 
 		FogOfWarTexture = UTexture2D::CreateTransient(MidTextureSize * 2, MidTextureSize * 2);
 		FogOfWarTexture->UpdateResource();

@@ -10,9 +10,9 @@ AKnight::AKnight() : Super()
 	DefaultMagicAttack = 0;
 	DefaultPhysicDefense = 12;
 	DefaultMagicDefense = 0;
-	DefaultSpeed = 3.5f;
-	DefaultFieldOfSight = 15.f;
-	DefaultRange = 2.f;
+	DefaultSpeed = 3.f;
+	DefaultFieldOfSight = 8.f;
+	DefaultRange = 1.f;
 
 	ActualMaxLife = DefaultMaxLife;
 	CurrentLife = ActualMaxLife;
@@ -32,6 +32,8 @@ AKnight::AKnight() : Super()
 	COST_IN_CRISTALS = 0;
 
 	GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * 100;
+
+	SetActorScale3D(FVector(0.8f));
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> KnightVisualAsset(TEXT("SkeletalMesh'/Game/Meshes/Paladin/Paladin.Paladin'"));
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> KnightVisualAssetTransparent(TEXT("SkeletalMesh'/Game/Meshes/Paladin/Paladin_Transparent.Paladin_Transparent'"));
@@ -60,12 +62,11 @@ AKnight::AKnight() : Super()
 	GetCapsuleComponent()->SetCapsuleRadius(50.0f);
 	GetCapsuleComponent()->SetCapsuleHalfHeight(88.f);
 	GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -88.f));
-	SelectionMark->SetWorldScale3D(FVector(2.f, 0.3f, 0.3f));
 }
 
 float AKnight::GetSize()
 {
-	return 40.f;
+	return 28.f;
 }
 unsigned int AKnight::GetLifeBarWidth()
 {

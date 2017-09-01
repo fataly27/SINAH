@@ -21,18 +21,6 @@ ABuilding::ABuilding() : IsVisibleForOpponent(true), MySide(Side::Neutral), Sele
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	SelectionMark = CreateDefaultSubobject<UDecalComponent>(TEXT("SelectionMark"));
-	SelectionMark->SetupAttachment(RootComponent);
-
-	SelectionMark->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
-
-	static ConstructorHelpers::FObjectFinder<UMaterial> RedCircleAsset(TEXT("/Game/Materials/BigRedCircle.BigRedCircle"));
-	RedCircle = RedCircleAsset.Object;
-	static ConstructorHelpers::FObjectFinder<UMaterial> BlueCircleAsset(TEXT("/Game/Materials/BigBlueCircle.BigBlueCircle"));
-	BlueCircle = BlueCircleAsset.Object;
-	static ConstructorHelpers::FObjectFinder<UMaterial> NeutralCircleAsset(TEXT("/Game/Materials/BigNeutralCircle.BigNeutralCircle"));
-	NeutralCircle = NeutralCircleAsset.Object;
-
 	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingBlueMaterialRessource(TEXT("UMaterial'/Game/Meshes/LittleBuilding/Blue_Material.Blue_Material'"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingRedMaterialRessource(TEXT("UMaterial'/Game/Meshes/LittleBuilding/Red_Material.Red_Material'"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingNeutralMaterialRessource(TEXT("UMaterial'/Game/Meshes/LittleBuilding/Grey_Material.Grey_Material'"));
@@ -44,6 +32,7 @@ ABuilding::ABuilding() : IsVisibleForOpponent(true), MySide(Side::Neutral), Sele
 	BuildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
 	BuildingMesh->SetupAttachment(RootComponent);
 	BuildingMesh->bReceivesDecals = false;
+	BuildingMesh->SetRenderCustomDepth(false);
 }
 
 // Called when the game starts or when spawned
@@ -71,12 +60,12 @@ void ABuilding::Tick(float DeltaTime)
 void ABuilding::Select()
 {
 	Selected = true;
-	SelectionMark->SetHiddenInGame(false);
+	BuildingMesh->SetRenderCustomDepth(true);
 }
 void ABuilding::Unselect()
 {
 	Selected = false;
-	SelectionMark->SetHiddenInGame(true);
+	BuildingMesh->SetRenderCustomDepth(false);
 }
 bool ABuilding::IsSelected()
 {
@@ -95,17 +84,17 @@ void ABuilding::Multicast_SetSide_Implementation(Side NewSide)
 
 	if (MySide == Side::Blue)
 	{
-		SelectionMark->SetMaterial(0, BlueCircle);
+		BuildingMesh->CustomDepthStencilValue = STENCIL_BLUE_OUTLINE;
 		BuildingMesh->SetMaterial(0, BuildingBlueMaterial);
 	}
 	else if (MySide == Side::Red)
 	{
-		SelectionMark->SetMaterial(0, RedCircle);
+		BuildingMesh->CustomDepthStencilValue = STENCIL_RED_OUTLINE;
 		BuildingMesh->SetMaterial(0, BuildingRedMaterial);
 	}
 	else
 	{
-		SelectionMark->SetMaterial(0, NeutralCircle);
+		BuildingMesh->CustomDepthStencilValue = STENCIL_GREY_OUTLINE;
 		BuildingMesh->SetMaterial(0, BuildingNeutralMaterial);
 	}
 

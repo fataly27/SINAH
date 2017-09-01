@@ -11,7 +11,7 @@ AEconomicBuilding::AEconomicBuilding() : Super(), TimeSinceCounterPlunder(0.f)
 
 	DefaultMaxLife = 1000;
 	DefaultHeal = 10;
-	DefaultFieldOfSight = 10.f;
+	DefaultFieldOfSight = 5.f;
 
 	ActualMaxLife = DefaultMaxLife;
 	CurrentLife = ActualMaxLife;
@@ -20,12 +20,12 @@ AEconomicBuilding::AEconomicBuilding() : Super(), TimeSinceCounterPlunder(0.f)
 
 	LevelMax = 4;
 
+	SetActorScale3D(FVector(0.5f));
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshRessource(TEXT("StaticMesh'/Game/Meshes/EconomicBuilding/EconomicBuilding.EconomicBuilding'"));
 	StaticMesh = StaticMeshRessource.Object;
 
 	BuildingMesh->SetStaticMesh(StaticMesh);
-
-	SelectionMark->SetWorldScale3D(FVector(1.f, 3.f, 3.f));
 }
 
 void AEconomicBuilding::Tick(float DeltaTime)
@@ -64,11 +64,11 @@ void AEconomicBuilding::SetLevel(unsigned int Level)
 
 float AEconomicBuilding::GetSize()
 {
-	return 495.f;
+	return 282.f;
 }
 float AEconomicBuilding::GetHalfHeight()
 {
-	return 700.f;
+	return 400.f;
 }
 unsigned int AEconomicBuilding::GetLifeBarWidth()
 {

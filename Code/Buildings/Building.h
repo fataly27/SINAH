@@ -112,9 +112,4 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		bool Selected;
 		UPROPERTY(EditAnywhere)
 			Side MySide;
-		UPROPERTY(EditAnywhere)
-			UDecalComponent* SelectionMark;
-		UMaterial* RedCircle;
-		UMaterial* BlueCircle;
-		UMaterial* NeutralCircle;
 };

@@ -11,8 +11,6 @@ AUnit::AUnit() : MySide(Side::Neutral), Selected(false), CurrentAction(Action::I
 	bReplicates = true;
 	bReplicateMovement = true;
 
-	SetActorScale3D(FVector(0.7f));
-
 	InvisibleLimitedTime = 15.f;
 	InvisibleCoolDown = 0.f;
 	PrepareChangingModeTime = 0.f;
@@ -46,18 +44,7 @@ AUnit::AUnit() : MySide(Side::Neutral), Selected(false), CurrentAction(Action::I
 	AIControllerClass = AUnitController::StaticClass();
 
 	GetMesh()->bReceivesDecals = false;
-
-	SelectionMark = CreateDefaultSubobject<UDecalComponent>(TEXT("SelectionMark"));
-	SelectionMark->SetupAttachment(GetCapsuleComponent());
-
-	SelectionMark->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
-
-	static ConstructorHelpers::FObjectFinder<UMaterial> RedCircleAsset(TEXT("/Game/Materials/RedCircle.RedCircle"));
-	RedCircle = RedCircleAsset.Object;
-	static ConstructorHelpers::FObjectFinder<UMaterial> BlueCircleAsset(TEXT("/Game/Materials/BlueCircle.BlueCircle"));
-	BlueCircle = BlueCircleAsset.Object;
-	static ConstructorHelpers::FObjectFinder<UMaterial> NeutralCircleAsset(TEXT("/Game/Materials/NeutralCircle.NeutralCircle"));
-	NeutralCircle = NeutralCircleAsset.Object;
+	GetMesh()->SetRenderCustomDepth(false);
 }
 
 // Called when the game starts or when spawned
@@ -142,12 +129,12 @@ void AUnit::Tick( float DeltaTime )
 void AUnit::Select()
 {
 	Selected = true;
-	SelectionMark->SetHiddenInGame(false);
+	GetMesh()->SetRenderCustomDepth(true);
 }
 void AUnit::Unselect()
 {
 	Selected = false;
-	SelectionMark->SetHiddenInGame(true);
+	GetMesh()->SetRenderCustomDepth(false);
 }
 bool AUnit::IsSelected()
 {
@@ -162,12 +149,20 @@ void AUnit::Multicast_SetSide_Implementation(Side NewSide)
 	Unselect();
 	MySide = NewSide;
 
+	int Color(0);
+
 	if (MySide == Side::Blue)
-		SelectionMark->SetMaterial(0, BlueCircle);
+	{
+		Color = STENCIL_BLUE_OUTLINE;
+	}
 	else if (MySide == Side::Red)
-		SelectionMark->SetMaterial(0, RedCircle);
+	{
+		Color = STENCIL_RED_OUTLINE;
+	}
 	else
-		SelectionMark->SetMaterial(0, NeutralCircle);
+		Color = STENCIL_GREY_OUTLINE
+
+	GetMesh()->SetCustomDepthStencilValue(Color);
 }
 Side AUnit::GetSide()
 {

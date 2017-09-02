@@ -13,10 +13,10 @@ class SINAH_API ASmallMilitaryBuilding : public AMilitaryBuilding
 {
 	GENERATED_BODY()
 
-public:
-	ASmallMilitaryBuilding();
+	public:
+		ASmallMilitaryBuilding();
 
-	virtual float GetSize();
-	virtual float GetHalfHeight();
-	virtual unsigned int GetLifeBarWidth();
+		virtual float GetSize();
+		virtual float GetHalfHeight();
+		virtual unsigned int GetLifeBarWidth();
 };

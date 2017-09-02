@@ -14,16 +14,16 @@ ASmallMilitaryBuilding::ASmallMilitaryBuilding() : Super()
 	ActualHeal = DefaultHeal;
 	ActualFieldOfSight = DefaultFieldOfSight;
 
-	COST_IN_FOOD = { 150, 500 };
-	COST_IN_CELLS = { 400, 1200 };
-	COST_IN_METAL = { 1000, 3000 };
-	COST_IN_CRISTALS = { 50, 250 };
+	COST_IN_FOOD = { 150, 300, 1000 };
+	COST_IN_CELLS = { 400, 800, 2000 };
+	COST_IN_METAL = { 1000, 2000, 4000 };
+	COST_IN_CRISTALS = { 50, 250, 1000 };
 
 	SetActorScale3D(FVector(0.4f));
 
-	LevelMax = 3;
+	LevelMax = 4;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshRessource(TEXT("StaticMesh'/Game/Meshes/LittleBuilding/LittleMilitaryBuilding.LittleMilitaryBuilding'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshRessource(TEXT("StaticMesh'/Game/Meshes/LittleMilitaryBuilding.LittleMilitaryBuilding'"));
 	StaticMesh = StaticMeshRessource.Object;
 
 	BuildingMesh->SetStaticMesh(StaticMesh);

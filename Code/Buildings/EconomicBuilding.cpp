@@ -22,7 +22,7 @@ AEconomicBuilding::AEconomicBuilding() : Super(), TimeSinceCounterPlunder(0.f)
 
 	SetActorScale3D(FVector(0.5f));
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshRessource(TEXT("StaticMesh'/Game/Meshes/EconomicBuilding/EconomicBuilding.EconomicBuilding'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshRessource(TEXT("StaticMesh'/Game/Meshes/EconomicBuilding.EconomicBuilding'"));
 	StaticMesh = StaticMeshRessource.Object;
 
 	BuildingMesh->SetStaticMesh(StaticMesh);

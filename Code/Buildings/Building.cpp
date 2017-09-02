@@ -21,9 +21,9 @@ ABuilding::ABuilding() : IsVisibleForOpponent(true), MySide(Side::Neutral), Sele
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingBlueMaterialRessource(TEXT("UMaterial'/Game/Meshes/LittleBuilding/Blue_Material.Blue_Material'"));
-	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingRedMaterialRessource(TEXT("UMaterial'/Game/Meshes/LittleBuilding/Red_Material.Red_Material'"));
-	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingNeutralMaterialRessource(TEXT("UMaterial'/Game/Meshes/LittleBuilding/Grey_Material.Grey_Material'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingBlueMaterialRessource(TEXT("UMaterial'/Game/Materials/Colors/Blue_Material.Blue_Material'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingRedMaterialRessource(TEXT("UMaterial'/Game/Materials/Colors/Red_Material.Red_Material'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> BuildingNeutralMaterialRessource(TEXT("UMaterial'/Game/Materials/Colors/Grey_Material.Grey_Material'"));
 
 	BuildingBlueMaterial = BuildingBlueMaterialRessource.Object;
 	BuildingRedMaterial = BuildingRedMaterialRessource.Object;
@@ -85,17 +85,23 @@ void ABuilding::Multicast_SetSide_Implementation(Side NewSide)
 	if (MySide == Side::Blue)
 	{
 		BuildingMesh->CustomDepthStencilValue = STENCIL_BLUE_OUTLINE;
-		BuildingMesh->SetMaterial(0, BuildingBlueMaterial);
+
+		for (int i = 0; i < BuildingMesh->GetNumMaterials(); i++)
+			BuildingMesh->SetMaterial(i, BuildingBlueMaterial);
 	}
 	else if (MySide == Side::Red)
 	{
 		BuildingMesh->CustomDepthStencilValue = STENCIL_RED_OUTLINE;
-		BuildingMesh->SetMaterial(0, BuildingRedMaterial);
+
+		for (int i = 0; i < BuildingMesh->GetNumMaterials(); i++)
+			BuildingMesh->SetMaterial(i, BuildingRedMaterial);
 	}
 	else
 	{
 		BuildingMesh->CustomDepthStencilValue = STENCIL_GREY_OUTLINE;
-		BuildingMesh->SetMaterial(0, BuildingNeutralMaterial);
+
+		for (int i = 0; i < BuildingMesh->GetNumMaterials(); i++)
+			BuildingMesh->SetMaterial(i, BuildingNeutralMaterial);
 	}
 
 	CurrentLife = ActualMaxLife;

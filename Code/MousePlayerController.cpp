@@ -953,4 +953,5 @@ void AMousePlayerController::SpawnUnit(AMilitaryBuilding* Spawner, UClass* Unit)
 void AMousePlayerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	DOREPLIFETIME(AMousePlayerController, PlayerSide);
+	DOREPLIFETIME(AMousePlayerController, PlayerState);
 }

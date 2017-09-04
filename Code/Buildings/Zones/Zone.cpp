@@ -21,9 +21,9 @@ void UZone::Init(bool IsPlayer, float Reach)
 	BaseReach = Reach;
 
 	MaxReachLevel = 5;
-	Multicast_SetReachLevel(1);
+	SetReachLevel(5);
 	MaxEffectLevel = 4;
-	Multicast_SetEffectLevel(0);
+	SetEffectLevel(4);
 }
 
 float UZone::GetReach()
@@ -33,14 +33,14 @@ float UZone::GetReach()
 
 void UZone::LevelUpReach()
 {
-	Multicast_SetReachLevel(CurrentReachLevel + 1);
+	SetReachLevel(CurrentReachLevel + 1);
 }
 void UZone::LevelUpEffect()
 {
-	Multicast_SetEffectLevel(CurrentEffectLevel + 1);
+	SetEffectLevel(CurrentEffectLevel + 1);
 }
 
-void UZone::Multicast_SetReachLevel_Implementation(unsigned int Level)
+void UZone::SetReachLevel(unsigned int Level)
 {
 	if (Level > MaxReachLevel)
 		CurrentReachLevel = MaxReachLevel;
@@ -49,7 +49,7 @@ void UZone::Multicast_SetReachLevel_Implementation(unsigned int Level)
 
 	DecalSize = FVector(300, GetReach() * 100, GetReach() * 100);
 }
-void UZone::Multicast_SetEffectLevel_Implementation(unsigned int Level)
+void UZone::SetEffectLevel(unsigned int Level)
 {
 	if (Level > MaxEffectLevel)
 		CurrentEffectLevel = MaxEffectLevel;

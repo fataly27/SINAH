@@ -32,6 +32,8 @@ class SINAH_API AMilitaryBuilding : public ABuilding
 
 		//Side
 		virtual void SetSide(Side NewSide) override;
+		UFUNCTION(NetMulticast, Reliable)
+			virtual void Multicast_ChangeDecals();
 
 		//Replication
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;

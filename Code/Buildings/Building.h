@@ -31,7 +31,7 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 			virtual void Multicast_SetSide(Side NewSide);
 
 		//Attack
-		virtual void ReceiveDamages(unsigned int Physic, unsigned int Magic, Side AttackingSide) override;
+		virtual void ReceiveDamages(int Physic, int Magic, Side AttackingSide) override;
 
 		//Heal
 		virtual void Heal();
@@ -45,8 +45,8 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		virtual bool IsPendingKill();
 
 		//Statistics Getters
-		virtual unsigned int GetMaxLife() override;
-		virtual unsigned int GetCurrentLife() override;
+		virtual int GetMaxLife() override;
+		virtual int GetCurrentLife() override;
 		virtual float GetFieldOfSight() override;
 		virtual float GetHalfHeight() override;
 		virtual unsigned int GetLifeBarWidth() override;
@@ -55,10 +55,10 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		virtual unsigned int GetLevel();
 		virtual unsigned int GetMaxLevel();
 
-		virtual unsigned int GetCostInFoodToLevel(unsigned int WantedLevel);
-		virtual unsigned int GetCostInCellsToLevel(unsigned int WantedLevel);
-		virtual unsigned int GetCostInMetalToLevel(unsigned int WantedLevel);
-		virtual unsigned int GetCostInCristalsToLevel(unsigned int WantedLevel);
+		virtual int GetCostInFoodToLevel(int WantedLevel);
+		virtual int GetCostInCellsToLevel(int WantedLevel);
+		virtual int GetCostInMetalToLevel(int WantedLevel);
+		virtual int GetCostInCristalsToLevel(int WantedLevel);
 
 		//Visibility
 		virtual bool GetOpponentVisibility() override;
@@ -79,26 +79,26 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		//Level
 		unsigned int LevelMax;
 		unsigned int CurrentLevel;
-		TArray<unsigned int> COST_IN_FOOD;
-		TArray<unsigned int> COST_IN_CELLS;
-		TArray<unsigned int> COST_IN_METAL;
-		TArray<unsigned int> COST_IN_CRISTALS;
+		TArray<int> COST_IN_FOOD;
+		TArray<int> COST_IN_CELLS;
+		TArray<int> COST_IN_METAL;
+		TArray<int> COST_IN_CRISTALS;
 
 		//Statistics
 		UPROPERTY(Replicated)
-			unsigned int CurrentLife;
+			int CurrentLife;
 
 		UPROPERTY(EditAnywhere)
-			unsigned int DefaultMaxLife;
+			int DefaultMaxLife;
 		UPROPERTY(EditAnywhere)
-			unsigned int DefaultHeal;
+			int DefaultHeal;
 		UPROPERTY(EditAnywhere)
 			float DefaultFieldOfSight;
 
 		UPROPERTY(Replicated)
-			unsigned int ActualMaxLife;
+			int ActualMaxLife;
 		UPROPERTY(Replicated)
-			unsigned int ActualHeal;
+			int ActualHeal;
 		UPROPERTY(Replicated)
 			float ActualFieldOfSight;
 

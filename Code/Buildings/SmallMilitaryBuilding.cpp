@@ -19,7 +19,7 @@ ASmallMilitaryBuilding::ASmallMilitaryBuilding() : Super()
 	COST_IN_METAL = { 1000, 2000, 4000 };
 	COST_IN_CRISTALS = { 50, 250, 1000 };
 
-	SetActorScale3D(FVector(0.4f));
+	SetActorScale3D(FVector(1.f));
 
 	LevelMax = 4;
 
@@ -31,11 +31,11 @@ ASmallMilitaryBuilding::ASmallMilitaryBuilding() : Super()
 
 float ASmallMilitaryBuilding::GetSize()
 {
-	return 289.f;
+	return 300.f;
 }
 float ASmallMilitaryBuilding::GetHalfHeight()
 {
-	return 900.f;
+	return 1000.f;
 }
 unsigned int ASmallMilitaryBuilding::GetLifeBarWidth()
 {

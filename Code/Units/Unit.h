@@ -69,31 +69,31 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 
 		//Attack and heal
 		virtual void Attack(const TScriptInterface<IGameElementInterface>& Target);
-		virtual void ReceiveDamages(unsigned int Physic, unsigned int Magic, Side AttackingSide) override;
+		virtual void ReceiveDamages(int Physic, int Magic, Side AttackingSide) override;
 		virtual void Heal(int Heal);
 
 		//Dying
 		virtual bool IsPendingKill();
 
 		//Statistics Getters
-		virtual unsigned int GetMaxLife() override;
-		virtual unsigned int GetCurrentLife() override;
+		virtual int GetMaxLife() override;
+		virtual int GetCurrentLife() override;
 		virtual float GetFieldOfSight() override;
 		virtual float GetHalfHeight() override;
 		virtual unsigned int GetLifeBarWidth() override;
 		virtual float GetSize() override;
-		virtual unsigned int GetPhysicAttack();
-		virtual unsigned int GetMagicAttack();
-		virtual unsigned int GetPhysicDefense();
-		virtual unsigned int GetMagicDefense();
+		virtual int GetPhysicAttack();
+		virtual int GetMagicAttack();
+		virtual int GetPhysicDefense();
+		virtual int GetMagicDefense();
 		virtual float GetSpeed();
 		virtual float GetRange();
 		virtual unsigned int GetBuildingLevelRequired();
 
-		virtual unsigned int GetCostInFood();
-		virtual unsigned int GetCostInCells();
-		virtual unsigned int GetCostInMetal();
-		virtual unsigned int GetCostInCristals();
+		virtual int GetCostInFood();
+		virtual int GetCostInCells();
+		virtual int GetCostInMetal();
+		virtual int GetCostInCristals();
 
 		virtual void SetSpeedMultiplicator(float Multiplicator);
 
@@ -120,18 +120,18 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 
 		//Statistics
 		UPROPERTY(Replicated)
-			unsigned int CurrentLife;
+			int CurrentLife;
 
 		UPROPERTY(Replicated)
-			unsigned int ActualMaxLife;
+			int ActualMaxLife;
 		UPROPERTY(Replicated)
-			unsigned int ActualPhysicAttack;
+			int ActualPhysicAttack;
 		UPROPERTY(Replicated)
-			unsigned int ActualMagicAttack;
+			int ActualMagicAttack;
 		UPROPERTY(Replicated)
-			unsigned int ActualPhysicDefense;
+			int ActualPhysicDefense;
 		UPROPERTY(Replicated)
-			unsigned int ActualMagicDefense;
+			int ActualMagicDefense;
 		UPROPERTY(Replicated)
 			float ActualSpeed;
 		UPROPERTY(Replicated)
@@ -146,15 +146,15 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		unsigned int BuildingLevelRequired;
 
 		UPROPERTY(EditAnywhere)
-			unsigned int DefaultMaxLife;
+			int DefaultMaxLife;
 		UPROPERTY(EditAnywhere)
-			unsigned int DefaultPhysicAttack;
+			int DefaultPhysicAttack;
 		UPROPERTY(EditAnywhere)
-			unsigned int DefaultMagicAttack;
+			int DefaultMagicAttack;
 		UPROPERTY(EditAnywhere)
-			unsigned int DefaultPhysicDefense;
+			int DefaultPhysicDefense;
 		UPROPERTY(EditAnywhere)
-			unsigned int DefaultMagicDefense;
+			int DefaultMagicDefense;
 		UPROPERTY(EditAnywhere)
 			float DefaultSpeed;
 		UPROPERTY(EditAnywhere)
@@ -162,10 +162,10 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		UPROPERTY(EditAnywhere)
 			float DefaultRange;
 
-		unsigned int COST_IN_FOOD;
-		unsigned int COST_IN_CELLS;
-		unsigned int COST_IN_METAL;
-		unsigned int COST_IN_CRISTALS;
+		int COST_IN_FOOD;
+		int COST_IN_CELLS;
+		int COST_IN_METAL;
+		int COST_IN_CRISTALS;
 
 		//Selection
 		UPROPERTY(EditAnywhere)

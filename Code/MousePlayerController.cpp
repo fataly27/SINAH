@@ -838,7 +838,7 @@ void AMousePlayerController::ApplyZoneEffects(TArray<AMilitaryBuilding*> Militar
 			}
 		}
 		Units[j]->SetSpeedMultiplicator(Multiplicator);
-		Units[j]->Heal(Heal);
+		Units[j]->Heal(Heal * 0.1);
 	}
 }
 

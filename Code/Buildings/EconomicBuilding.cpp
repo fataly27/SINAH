@@ -42,7 +42,7 @@ void AEconomicBuilding::Tick(float DeltaTime)
 	}
 }
 
-unsigned int AEconomicBuilding::GetOutputInHalfASecond()
+int AEconomicBuilding::GetOutputInHalfASecond()
 {
 	if (IsPlundered)
 		return ActualOutputInHalfASecond / 2;
@@ -76,11 +76,11 @@ unsigned int AEconomicBuilding::GetLifeBarWidth()
 }
 
 //Attack
-void AEconomicBuilding::ReceiveDamages(unsigned int Physic, unsigned int Magic, Side AttackingSide)
+void AEconomicBuilding::ReceiveDamages(int Physic, int Magic, Side AttackingSide)
 {
 	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
-		unsigned int Damages = Physic + Magic;
+		int Damages = Physic + Magic;
 		TimeSinceLastAttack = 0.f;
 
 		if (CurrentLife <= Damages)

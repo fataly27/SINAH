@@ -39,12 +39,12 @@ class SINAH_API IGameElementInterface
 		virtual Side GetSide() = 0;
 
 		//Attack
-		virtual void ReceiveDamages(unsigned int Physic, unsigned int Magic, Side AttackingSide) = 0;
+		virtual void ReceiveDamages(int Physic, int Magic, Side AttackingSide) = 0;
 		virtual float GetSize() = 0;
 
 		//Statistics Getters
-		virtual unsigned int GetMaxLife() = 0;
-		virtual unsigned int GetCurrentLife() = 0;
+		virtual int GetMaxLife() = 0;
+		virtual int GetCurrentLife() = 0;
 		virtual float GetFieldOfSight() = 0;
 		virtual float GetHalfHeight() = 0;
 		virtual unsigned int GetLifeBarWidth() = 0;

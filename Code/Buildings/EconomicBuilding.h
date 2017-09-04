@@ -21,7 +21,7 @@ class SINAH_API AEconomicBuilding : public ABuilding
 		// Called every frame
 		virtual void Tick(float DeltaTime) override;
 
-		virtual unsigned int GetOutputInHalfASecond();
+		virtual int GetOutputInHalfASecond();
 
 		virtual void SetLevel(unsigned int Level) override;
 
@@ -30,7 +30,7 @@ class SINAH_API AEconomicBuilding : public ABuilding
 		virtual unsigned int GetLifeBarWidth();
 
 		//Attack
-		virtual void ReceiveDamages(unsigned int Physic, unsigned int Magic, Side AttackingSide) override;
+		virtual void ReceiveDamages(int Physic, int Magic, Side AttackingSide) override;
 
 		//Replication
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
@@ -40,9 +40,9 @@ class SINAH_API AEconomicBuilding : public ABuilding
 		UPROPERTY(Replicated)
 			bool IsPlundered;
 		UPROPERTY(Replicated)
-			unsigned int DefaultOutputInHalfASecond;
+			int DefaultOutputInHalfASecond;
 		UPROPERTY(Replicated)
-			unsigned int ActualOutputInHalfASecond;
+			int ActualOutputInHalfASecond;
 		UPROPERTY(EditAnywhere)
 			AMilitaryBuilding* RelatedMilitaryBuilding;
 

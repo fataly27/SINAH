@@ -170,27 +170,27 @@ Side AUnit::GetSide()
 }
 
 //Statistics
-unsigned int AUnit::GetMaxLife()
+int AUnit::GetMaxLife()
 {
 	return ActualMaxLife;
 }
-unsigned int AUnit::GetCurrentLife()
+int AUnit::GetCurrentLife()
 {
 	return CurrentLife;
 }
-unsigned int AUnit::GetPhysicAttack()
+int AUnit::GetPhysicAttack()
 {
 	return ActualPhysicAttack;
 }
-unsigned int AUnit::GetMagicAttack()
+int AUnit::GetMagicAttack()
 {
 	return ActualMagicAttack;
 }
-unsigned int AUnit::GetPhysicDefense()
+int AUnit::GetPhysicDefense()
 {
 	return ActualPhysicDefense;
 }
-unsigned int AUnit::GetMagicDefense()
+int AUnit::GetMagicDefense()
 {
 	return ActualMagicDefense;
 }
@@ -223,19 +223,19 @@ unsigned int AUnit::GetBuildingLevelRequired()
 	return BuildingLevelRequired;
 }
 
-unsigned int AUnit::GetCostInFood()
+int AUnit::GetCostInFood()
 {
 	return COST_IN_FOOD;
 }
-unsigned int AUnit::GetCostInCells()
+int AUnit::GetCostInCells()
 {
 	return COST_IN_CELLS;
 }
-unsigned int AUnit::GetCostInMetal()
+int AUnit::GetCostInMetal()
 {
 	return COST_IN_METAL;
 }
-unsigned int AUnit::GetCostInCristals()
+int AUnit::GetCostInCristals()
 {
 	return COST_IN_CRISTALS;
 }
@@ -245,6 +245,8 @@ void AUnit::SetSpeedMultiplicator(float Multiplicator)
 	SpeedMultiplicator = Multiplicator;
 
 	GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+
+	ChangeLoopingAnimation();
 }
 
 //Destinations
@@ -370,19 +372,19 @@ void AUnit::Attack(const TScriptInterface<IGameElementInterface>& Target)
 	if (Role == ROLE_Authority && (CurrentMode == Modes::Attack || CurrentMode == Modes::Defense))
 		Target->ReceiveDamages(GetPhysicAttack(), GetMagicAttack(), MySide);
 }
-void AUnit::ReceiveDamages(unsigned int Physic, unsigned int Magic, Side AttackingSide)
+void AUnit::ReceiveDamages(int Physic, int Magic, Side AttackingSide)
 {
 	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
-		unsigned int PhysicDamage = Physic - GetPhysicDefense();
-		unsigned int MagicDamage = Magic - GetMagicDefense();
+		int PhysicDamage = Physic - GetPhysicDefense();
+		int MagicDamage = Magic - GetMagicDefense();
 
 		if (PhysicDamage <= 0 && Physic > 0)
 			PhysicDamage = 1.f;
 		if (MagicDamage <= 0 && Magic > 0)
 			MagicDamage = 1.f;
 
-		unsigned int Damages = PhysicDamage + MagicDamage;
+		int Damages = PhysicDamage + MagicDamage;
 
 		if (CurrentLife <= Damages)
 			Destroy();
@@ -394,9 +396,14 @@ void AUnit::Heal(int Heal)
 {
 	if (Role == ROLE_Authority)
 	{
-		CurrentLife += Heal;
-		if (CurrentLife > GetMaxLife())
-			CurrentLife = GetMaxLife();
+		if (CurrentLife + Heal <= 0)
+			Destroy();
+		else
+		{
+			CurrentLife += Heal;
+			if (CurrentLife > GetMaxLife())
+				CurrentLife = GetMaxLife();
+		}
 	}
 }
 
@@ -562,7 +569,7 @@ void AUnit::ChangeLoopingAnimation()
 		CurrentAnimation = NewAnimation;
 		GetMesh()->PlayAnimation(CurrentAnimation, true);
 		if (CurrentAnimation == WalkingAnimation || CurrentAnimation == RunningAnimation)
-			GetMesh()->SetPlayRate(ActualSpeed);
+			GetMesh()->SetPlayRate(ActualSpeed * SpeedMultiplicator);
 		else
 			GetMesh()->SetPlayRate(1.f);
 	}

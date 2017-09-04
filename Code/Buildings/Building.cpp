@@ -112,11 +112,11 @@ Side ABuilding::GetSide()
 }
 
 //Attack
-void ABuilding::ReceiveDamages(unsigned int Physic, unsigned int Magic, Side AttackingSide)
+void ABuilding::ReceiveDamages(int Physic, int Magic, Side AttackingSide)
 {
 	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
-		unsigned int Damages = Physic + Magic;
+		int Damages = Physic + Magic;
 		TimeSinceLastAttack = 0.f;
 
 		if (CurrentLife <= Damages)
@@ -176,11 +176,11 @@ bool ABuilding::IsPendingKill()
 }
 
 //Statistics Getters
-unsigned int ABuilding::GetMaxLife()
+int ABuilding::GetMaxLife()
 {
 	return ActualMaxLife;
 }
-unsigned int ABuilding::GetCurrentLife()
+int ABuilding::GetCurrentLife()
 {
 	return CurrentLife;
 }
@@ -213,28 +213,28 @@ unsigned int ABuilding::GetMaxLevel()
 	return LevelMax;
 }
 
-unsigned int ABuilding::GetCostInFoodToLevel(unsigned int WantedLevel)
+int ABuilding::GetCostInFoodToLevel(int WantedLevel)
 {
 	if (WantedLevel > 1)
 		return COST_IN_FOOD[WantedLevel - 2];
 	else
 		return 0;
 }
-unsigned int ABuilding::GetCostInCellsToLevel(unsigned int WantedLevel)
+int ABuilding::GetCostInCellsToLevel(int WantedLevel)
 {
 	if (WantedLevel > 1)
 		return COST_IN_CELLS[WantedLevel - 2];
 	else
 		return 0;
 }
-unsigned int ABuilding::GetCostInMetalToLevel(unsigned int WantedLevel)
+int ABuilding::GetCostInMetalToLevel(int WantedLevel)
 {
 	if (WantedLevel > 1)
 		return COST_IN_METAL[WantedLevel - 2];
 	else
 		return 0;
 }
-unsigned int ABuilding::GetCostInCristalsToLevel(unsigned int WantedLevel)
+int ABuilding::GetCostInCristalsToLevel(int WantedLevel)
 {
 	if (WantedLevel > 1)
 		return COST_IN_CRISTALS[WantedLevel - 2];

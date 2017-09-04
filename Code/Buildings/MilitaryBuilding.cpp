@@ -27,12 +27,12 @@ AMilitaryBuilding::AMilitaryBuilding() : Super()
 
 void AMilitaryBuilding::BeginPlay()
 {
-	Super::BeginPlay();
-
 	PlayerLifeZone->Init(true);
 	PlayerSpeedZone->Init(true);
 	OpponentLifeZone->Init(false);
 	OpponentSpeedZone->Init(false);
+
+	Super::BeginPlay();
 
 	ChangeDecals();
 }
@@ -92,20 +92,23 @@ void AMilitaryBuilding::SetSide(Side NewSide)
 
 	if (Role == ROLE_Authority)
 	{
-		PlayerLifeZone->Multicast_SetReachLevel(1);
-		PlayerLifeZone->Multicast_SetEffectLevel(0);
-		PlayerSpeedZone->Multicast_SetReachLevel(1);
-		PlayerSpeedZone->Multicast_SetEffectLevel(0);
+		PlayerLifeZone->SetReachLevel(5);
+		PlayerLifeZone->SetEffectLevel(4);
+		PlayerSpeedZone->SetReachLevel(5);
+		PlayerSpeedZone->SetEffectLevel(4);
 
-		OpponentLifeZone->Multicast_SetReachLevel(1);
-		OpponentLifeZone->Multicast_SetEffectLevel(0);
-		OpponentSpeedZone->Multicast_SetReachLevel(1);
-		OpponentSpeedZone->Multicast_SetEffectLevel(0);
+		OpponentLifeZone->SetReachLevel(5);
+		OpponentLifeZone->SetEffectLevel(4);
+		OpponentSpeedZone->SetReachLevel(5);
+		OpponentSpeedZone->SetEffectLevel(4);
 	}
-
+	
+	Multicast_ChangeDecals();
+}
+void AMilitaryBuilding::Multicast_ChangeDecals_Implementation()
+{
 	ChangeDecals();
 }
-
 
 //Replication
 void AMilitaryBuilding::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const

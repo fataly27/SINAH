@@ -23,10 +23,8 @@ class SINAH_API UZone : public UDecalComponent
 
 		virtual float GetReach();
 
-		UFUNCTION(NetMulticast, Reliable)
-			virtual void Multicast_SetReachLevel(unsigned int Level);
-		UFUNCTION(NetMulticast, Reliable)
-			virtual void Multicast_SetEffectLevel(unsigned int Level);
+		virtual void SetReachLevel(unsigned int Level);
+		virtual void SetEffectLevel(unsigned int Level);
 		virtual void LevelUpReach();
 		virtual void LevelUpEffect();
 

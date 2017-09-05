@@ -34,10 +34,15 @@ void AEconomicBuilding::Tick(float DeltaTime)
 	{
 		TimeSinceCounterPlunder += DeltaTime;
 
-		if (IsPlundered && RelatedMilitaryBuilding && TimeSinceCounterPlunder >= 0.5f)
+		if (IsPlundered && RelatedMilitaryBuilding)
 		{
-			ReceiveDamages(ActualHeal, 0, RelatedMilitaryBuilding->GetSide());
-			TimeSinceCounterPlunder -= 0.5f;
+			if (RelatedMilitaryBuilding->GetSide() == MySide)
+				IsPlundered = false;
+			else if (TimeSinceCounterPlunder >= 0.5f)
+			{
+				ReceiveDamages(ActualHeal, 0, RelatedMilitaryBuilding->GetSide());
+				TimeSinceCounterPlunder -= 0.5f;
+			}
 		}
 	}
 }

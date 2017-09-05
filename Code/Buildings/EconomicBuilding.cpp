@@ -30,6 +30,8 @@ AEconomicBuilding::AEconomicBuilding() : Super(), TimeSinceCounterPlunder(0.f)
 
 void AEconomicBuilding::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
+
 	if (Role == ROLE_Authority)
 	{
 		TimeSinceCounterPlunder += DeltaTime;

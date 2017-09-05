@@ -191,6 +191,32 @@ void APlayerHUD::DrawHUD()
 		FString String = "Food : " + FString::FromInt(State->GetAmountOfFood()) + ", Metal : " + FString::FromInt(State->GetAmountOfMetal()) + ", Cells : " + FString::FromInt(State->GetAmountOfCells()) + ", Cristals : " + FString::FromInt(State->GetAmountOfCristals());
 		DrawText(String, FLinearColor::White, 0, 0);
 	}
+
+	AGameState* GameState = GetWorld()->GetGameState<AGameState>();
+
+	if (GameState)
+	{
+		int BaseSeconds = GameState->ElapsedTime;
+
+		int Minutes = BaseSeconds / 60;
+		int Seconds = BaseSeconds % 60;
+
+		FString MinutesString;
+		FString SecondsString;
+
+		if (Minutes < 10)
+			MinutesString = "0" + FString::FromInt(Minutes) + ":";
+		else
+			MinutesString = FString::FromInt(Minutes) + ":";
+
+		if (Seconds < 10)
+			SecondsString = "0" + FString::FromInt(Seconds);
+		else
+			SecondsString = FString::FromInt(Seconds);
+
+
+		DrawText(MinutesString.Append(SecondsString), FLinearColor::White, 500, 0);
+	}
 }
 
 void APlayerHUD::SetStartMousePos(FVector2D Pos)

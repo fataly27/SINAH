@@ -67,7 +67,7 @@ void AMousePlayerController::SetPawn(APawn* InPawn)
 // Called every frame
 void AMousePlayerController::Tick(float DeltaTime)
 {
-	if (Role == ROLE_Authority)
+	if (Role == ROLE_Authority && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
 	{
 		TimeSinceLastHarvest += DeltaTime;
 
@@ -206,7 +206,7 @@ void AMousePlayerController::Zoom(float AxisValue)
 
 void AMousePlayerController::StartSelect()
 {
-	if (BoxDisplayed != TypeBox::Target)
+	if (BoxDisplayed != TypeBox::Target && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
 	{
 		ClearSelection();
 		StartAddSelect();
@@ -214,7 +214,7 @@ void AMousePlayerController::StartSelect()
 }
 void AMousePlayerController::StartAddSelect()
 {
-	if (BoxDisplayed != TypeBox::Target)
+	if (BoxDisplayed != TypeBox::Target && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
 	{
 		float LocationX;
 		float LocationY;
@@ -236,7 +236,7 @@ void AMousePlayerController::Select()
 }
 void AMousePlayerController::AddSelect()
 {
-	if (BoxDisplayed == TypeBox::Select)
+	if (BoxDisplayed == TypeBox::Select && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
 	{
 		UpdateBoxSelection(HUD->GetActorsBeingSelected());
 		ActorsSelected.Append(ActorsSelectedByCurrentBox);
@@ -248,7 +248,7 @@ void AMousePlayerController::AddSelect()
 }
 void AMousePlayerController::StartDirect()
 {
-	if (BoxDisplayed != TypeBox::Select && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()))
+	if (BoxDisplayed != TypeBox::Select && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
 	{
 		for (int i(0); i < ActorsSelected.Num(); i++)
 		{
@@ -272,7 +272,7 @@ void AMousePlayerController::StartDirect()
 }
 void AMousePlayerController::StartAddDirect()
 {
-	if (BoxDisplayed != TypeBox::Select)
+	if (BoxDisplayed != TypeBox::Select && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
 	{
 		float LocationX;
 		float LocationY;
@@ -294,7 +294,7 @@ void AMousePlayerController::Direct()
 }
 void AMousePlayerController::AddDirect()
 {
-	if (BoxDisplayed == TypeBox::Target  && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()))
+	if (BoxDisplayed == TypeBox::Target  && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
 	{
 		TArray<TScriptInterface<IGameElementInterface>> NewTargets = HUD->GetActorsBeingSelected();
 		UpdateBoxTargeting(NewTargets, true);

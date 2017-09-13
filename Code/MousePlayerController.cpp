@@ -1,8 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Sinah.h"
+#include "Blueprint/UserWidget.h"
 #include "Buildings/MilitaryBuilding.h"
 #include "MultiplayerSinahMode.h"
+#include "MultiplayerGameState.h"
 #include "MultiplayerState.h"
 #include "MainCamera.h"
 #include "Units/Knight.h"
@@ -20,7 +22,7 @@
 
 #include "MousePlayerController.h"
 
-AMousePlayerController::AMousePlayerController() : TimeSinceLastHarvest(0.f), OpponentView(false)
+AMousePlayerController::AMousePlayerController() : TimeSinceLastHarvest(0.f), OpponentView(false), OldString(""), IsThrobberEnabled(true)
 {
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;
@@ -54,6 +56,13 @@ void AMousePlayerController::BeginPlay()
 
 		TActorIterator<ADecalActor> ActorItr(GetWorld());
 		ActorItr->SetDecalMaterial(DynFOWMaterial);
+
+		if (wGameStartInfo)
+		{
+			MyGameStartInfo = CreateWidget<UUserWidget>(this, wGameStartInfo);
+			if (MyGameStartInfo)
+				MyGameStartInfo->AddToViewport();
+		}
 	}
 }
 
@@ -67,7 +76,25 @@ void AMousePlayerController::SetPawn(APawn* InPawn)
 // Called every frame
 void AMousePlayerController::Tick(float DeltaTime)
 {
-	if (Role == ROLE_Authority && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
+	if (GetWorld()->GetGameState<AMultiplayerGameState>())
+	{
+		FString NewString(GetWorld()->GetGameState<AMultiplayerGameState>()->GetStatusInfo());
+
+		if (OldString != NewString)
+		{
+			String = GetWorld()->GetGameState<AMultiplayerGameState>()->GetStatusInfo();
+			SetText();
+			OldString = String;
+		}
+
+		if (GetWorld()->GetGameState<AMultiplayerGameState>()->GetStatusInfo() != "Waiting for your opponent" && IsThrobberEnabled)
+		{
+			DisableLoading();
+			IsThrobberEnabled = false;
+		}
+	}
+
+	if (Role == ROLE_Authority && GetWorld()->GetAuthGameMode() && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
 	{
 		TimeSinceLastHarvest += DeltaTime;
 
@@ -206,7 +233,7 @@ void AMousePlayerController::Zoom(float AxisValue)
 
 void AMousePlayerController::StartSelect()
 {
-	if (BoxDisplayed != TypeBox::Target && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
+	if (BoxDisplayed != TypeBox::Target && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
 	{
 		ClearSelection();
 		StartAddSelect();
@@ -214,7 +241,7 @@ void AMousePlayerController::StartSelect()
 }
 void AMousePlayerController::StartAddSelect()
 {
-	if (BoxDisplayed != TypeBox::Target && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
+	if (BoxDisplayed != TypeBox::Target && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
 	{
 		float LocationX;
 		float LocationY;
@@ -236,7 +263,7 @@ void AMousePlayerController::Select()
 }
 void AMousePlayerController::AddSelect()
 {
-	if (BoxDisplayed == TypeBox::Select && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
+	if (BoxDisplayed == TypeBox::Select && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
 	{
 		UpdateBoxSelection(HUD->GetActorsBeingSelected());
 		ActorsSelected.Append(ActorsSelectedByCurrentBox);
@@ -248,7 +275,7 @@ void AMousePlayerController::AddSelect()
 }
 void AMousePlayerController::StartDirect()
 {
-	if (BoxDisplayed != TypeBox::Select && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
+	if (BoxDisplayed != TypeBox::Select && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
 	{
 		for (int i(0); i < ActorsSelected.Num(); i++)
 		{
@@ -272,7 +299,7 @@ void AMousePlayerController::StartDirect()
 }
 void AMousePlayerController::StartAddDirect()
 {
-	if (BoxDisplayed != TypeBox::Select && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
+	if (BoxDisplayed != TypeBox::Select && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
 	{
 		float LocationX;
 		float LocationY;
@@ -294,7 +321,7 @@ void AMousePlayerController::Direct()
 }
 void AMousePlayerController::AddDirect()
 {
-	if (BoxDisplayed == TypeBox::Target  && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
+	if (BoxDisplayed == TypeBox::Target && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
 	{
 		TArray<TScriptInterface<IGameElementInterface>> NewTargets = HUD->GetActorsBeingSelected();
 		UpdateBoxTargeting(NewTargets, true);

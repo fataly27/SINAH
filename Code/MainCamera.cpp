@@ -16,6 +16,8 @@ AMainCamera::AMainCamera() : ZoomMin(15.f), ZoomMax(45.f), XMin(-50.f), XMax(40.
 	// Create a camera and a visible object
 	UCameraComponent* OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("OurCamera"));
 	OurCamera->SetupAttachment(RootComponent);
+	OurCamera->PostProcessSettings.AutoExposureMinBrightness = 1.f;
+	OurCamera->PostProcessSettings.AutoExposureMaxBrightness = 1.f;
 
 	if (ZoomMin > ZoomMax)
 		ZoomMin = ZoomMax;

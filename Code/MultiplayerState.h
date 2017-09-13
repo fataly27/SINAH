@@ -29,7 +29,7 @@ class SINAH_API AMultiplayerState : public APlayerState
 		void SetAmountOfCells(int Cells);
 		void SetAmountOfCristals(int Cristals);
 
-	private:
+	protected:
 		UPROPERTY(Replicated)
 			int AmountOfFood;
 		UPROPERTY(Replicated)

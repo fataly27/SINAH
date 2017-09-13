@@ -6,6 +6,7 @@
 #include "PlayerHUD.h"
 #include "MultiplayerState.h"
 #include "MultiplayerSinahMode.h"
+#include "MultiplayerGameState.h"
 
 AMultiplayerSinahMode::AMultiplayerSinahMode()
 {
@@ -13,6 +14,15 @@ AMultiplayerSinahMode::AMultiplayerSinahMode()
 	DefaultPawnClass = AMainCamera::StaticClass();
 	HUDClass = APlayerHUD::StaticClass();
 	PlayerStateClass = AMultiplayerState::StaticClass();
+	GameStateClass = AMultiplayerGameState::StaticClass();
+}
+
+void AMultiplayerSinahMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+
+	if(NumPlayers == 2)
+		GetGameState<AMultiplayerGameState>()->PreBeginGame();
 }
 
 Side AMultiplayerSinahMode::GetPlayerSide(int ID)

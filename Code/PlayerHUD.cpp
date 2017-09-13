@@ -4,6 +4,7 @@
 #include "Units/Unit.h"
 #include "Buildings/Building.h"
 #include "MultiplayerState.h"
+#include "MultiplayerGameState.h"
 #include <cmath>
 #include "PlayerHUD.h"
 
@@ -30,6 +31,8 @@ void APlayerHUD::BeginPlay()
 	Super::BeginPlay();
 
 	SetPlayerSide(Side::Blue);
+
+	
 }
 
 void APlayerHUD::DrawHUD()
@@ -192,11 +195,11 @@ void APlayerHUD::DrawHUD()
 		DrawText(String, FLinearColor::White, 0, 0);
 	}
 
-	AGameState* GameState = GetWorld()->GetGameState<AGameState>();
+	AMultiplayerGameState* GameState = GetWorld()->GetGameState<AMultiplayerGameState>();
 
 	if (GameState)
 	{
-		int BaseSeconds = GameState->ElapsedTime;
+		int BaseSeconds = GameState->GetTime();
 
 		int Minutes = BaseSeconds / 60;
 		int Seconds = BaseSeconds % 60;

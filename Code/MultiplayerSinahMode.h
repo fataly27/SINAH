@@ -17,9 +17,10 @@ class SINAH_API AMultiplayerSinahMode : public AGameMode
 	public:
 		AMultiplayerSinahMode();
 
+		void PostLogin(APlayerController* NewPlayer) override;
+
 		Side GetPlayerSide(int ID);
 
 	private:
-
 		TArray<int> PlayersIDs;
 };

@@ -82,6 +82,12 @@ class SINAH_API AMousePlayerController : public APlayerController
 		UFUNCTION(Server, Reliable, WithValidation)
 			void Server_ClearSpecialTargets(AUnit *Unit);
 
+		//Widget
+		UFUNCTION(BlueprintImplementableEvent)
+			void DisableLoading();
+		UFUNCTION(BlueprintImplementableEvent)
+			void SetText();
+
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
 
 	protected:
@@ -109,4 +115,15 @@ class SINAH_API AMousePlayerController : public APlayerController
 		TArray<FColor> TextureData;
 		const int32 MidTextureSize = 512;
 		const float MidTerrainSize = 31700.f;
+
+		//Widget
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+			TSubclassOf<class UUserWidget> wGameStartInfo;
+		UPROPERTY(BlueprintReadWrite, Category = "Widgets")
+			FString String;
+		UPROPERTY(BlueprintReadWrite, Category = "Widgets")
+			UUserWidget* MyGameStartInfo;
+
+		FString OldString;
+		bool IsThrobberEnabled;
 };

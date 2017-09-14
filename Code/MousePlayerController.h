@@ -87,6 +87,8 @@ class SINAH_API AMousePlayerController : public APlayerController
 			void DisableLoading();
 		UFUNCTION(BlueprintImplementableEvent)
 			void SetText();
+		UFUNCTION(BlueprintImplementableEvent)
+			void EnableExit();
 
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
 
@@ -126,4 +128,5 @@ class SINAH_API AMousePlayerController : public APlayerController
 
 		FString OldString;
 		bool IsThrobberEnabled;
+		bool IsExitEnabled;
 };

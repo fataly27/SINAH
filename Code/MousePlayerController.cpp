@@ -22,7 +22,7 @@
 
 #include "MousePlayerController.h"
 
-AMousePlayerController::AMousePlayerController() : TimeSinceLastHarvest(0.f), OpponentView(false), OldString(""), IsThrobberEnabled(true)
+AMousePlayerController::AMousePlayerController() : TimeSinceLastHarvest(0.f), OpponentView(false), OldString(""), IsThrobberEnabled(true), IsExitEnabled(false)
 {
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;
@@ -91,6 +91,12 @@ void AMousePlayerController::Tick(float DeltaTime)
 		{
 			DisableLoading();
 			IsThrobberEnabled = false;
+		}
+
+		if ((GetWorld()->GetGameState<AMultiplayerGameState>()->GetStatusInfo() == "Blue player has won !" || GetWorld()->GetGameState<AMultiplayerGameState>()->GetStatusInfo() == "Red player has won !") && !IsExitEnabled)
+		{
+			EnableExit();
+			IsExitEnabled = true;
 		}
 	}
 

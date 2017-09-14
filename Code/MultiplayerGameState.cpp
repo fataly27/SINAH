@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Sinah.h"
+#include "Buildings/MilitaryBuilding.h"
 #include "MultiplayerGameState.h"
+#include "GameElementInterface.h"
 
 
 AMultiplayerGameState::AMultiplayerGameState() : Super(), GameBegan(false), StateInfo("Waiting for your opponent"), BeginTime(0), CountDown(-1.f)
@@ -27,6 +29,34 @@ void AMultiplayerGameState::Tick(float DeltaTime)
 		}
 		else
 			SetStatusInfo(FString::FromInt((int)(FMath::RoundFromZero(CountDown))));
+	}
+
+	TActorIterator<AMilitaryBuilding> Building(GetWorld());
+	Side FirstSide;
+	bool IsGameEnded(true);
+	bool FirstTime(true);
+	for (Building; Building; ++Building)
+	{
+		if (!FirstTime)
+		{
+			if (Building->GetSide() != FirstSide)
+				IsGameEnded = false;
+		}
+		else
+		{
+			FirstTime = false;
+			FirstSide = Building->GetSide();
+		}
+	}
+
+	if (IsGameEnded)
+	{
+		GameBegan = false;
+
+		if(FirstSide == Side::Blue)
+			SetStatusInfo("Blue player has won !");
+		else if (FirstSide == Side::Red)
+			SetStatusInfo("Red player has won !");
 	}
 }
 

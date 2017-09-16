@@ -90,6 +90,21 @@ class SINAH_API AMousePlayerController : public APlayerController
 		UFUNCTION(BlueprintImplementableEvent)
 			void EnableExit();
 
+		UFUNCTION(BlueprintImplementableEvent)
+			void SetColorToBlue();
+		UFUNCTION(BlueprintImplementableEvent)
+			void SetColorToRed();
+
+		int GetAmountOfFood();
+		int GetAmountOfMetal();
+		int GetAmountOfCells();
+		int GetAmountOfCristals();
+
+		void SetAmountOfFood(int Food);
+		void SetAmountOfMetal(int Metal);
+		void SetAmountOfCells(int Cells);
+		void SetAmountOfCristals(int Cristals);
+
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
 
 	protected:
@@ -119,14 +134,43 @@ class SINAH_API AMousePlayerController : public APlayerController
 		const float MidTerrainSize = 31700.f;
 
 		//Widget
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameStartWidget")
 			TSubclassOf<class UUserWidget> wGameStartInfo;
-		UPROPERTY(BlueprintReadWrite, Category = "Widgets")
-			FString String;
-		UPROPERTY(BlueprintReadWrite, Category = "Widgets")
+		UPROPERTY(BlueprintReadWrite, Category = "GameStartWidget")
 			UUserWidget* MyGameStartInfo;
 
+		UPROPERTY(BlueprintReadWrite, Category = "GameStartWidget")
+			FString String;
 		FString OldString;
 		bool IsThrobberEnabled;
 		bool IsExitEnabled;
+
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TopInterface")
+			TSubclassOf<class UUserWidget> wTopInterface;
+		UPROPERTY(BlueprintReadWrite, Category = "TopInterface")
+			UUserWidget* MyTopInterface;
+
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
+			int AmountOfFood;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
+			int AmountOfMetal;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
+			int AmountOfCells;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
+			int AmountOfCristals;
+
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
+			int FoodChange;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
+			int MetalChange;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
+			int CellsChange;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
+			int CristalsChange;
+
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
+			FString FoodVariationType;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
+			FString TheTimer;
 };

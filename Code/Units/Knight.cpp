@@ -26,6 +26,7 @@ AKnight::AKnight() : Super()
 
 	BuildingLevelRequired = 1;
 
+	FoodEatenInHalfASecond = 1;
 	COST_IN_FOOD = 5;
 	COST_IN_CELLS = 50;
 	COST_IN_METAL = 30;

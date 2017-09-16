@@ -6,7 +6,7 @@
 #include "GameElementInterface.h"
 
 
-AMultiplayerGameState::AMultiplayerGameState() : Super(), GameBegan(false), StateInfo("Waiting for your opponent"), BeginTime(0), CountDown(-1.f)
+AMultiplayerGameState::AMultiplayerGameState() : Super(), GameBegan(false), StateInfo("Waiting for your opponent"), CountDown(-1.f), CurrentTime(0.f)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -49,6 +49,9 @@ void AMultiplayerGameState::Tick(float DeltaTime)
 		}
 	}
 
+	if (GameBegan)
+		CurrentTime += DeltaTime;
+
 	if (IsGameEnded)
 	{
 		GameBegan = false;
@@ -73,7 +76,6 @@ void AMultiplayerGameState::PreBeginGame()
 void AMultiplayerGameState::BeginGame()
 {
 	GameBegan = true;
-	BeginTime = ElapsedTime;
 }
 
 FString AMultiplayerGameState::GetStatusInfo()
@@ -88,10 +90,7 @@ void AMultiplayerGameState::SetStatusInfo(FString Text)
 
 int AMultiplayerGameState::GetTime()
 {
-	if (GameBegan)
-		return ElapsedTime - BeginTime;
-	else
-		return 0.f;
+	return CurrentTime;
 }
 
 //Replication
@@ -101,5 +100,4 @@ void AMultiplayerGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty
 
 	DOREPLIFETIME(AMultiplayerGameState, GameBegan);
 	DOREPLIFETIME(AMultiplayerGameState, StateInfo);
-	DOREPLIFETIME(AMultiplayerGameState, BeginTime);
 }

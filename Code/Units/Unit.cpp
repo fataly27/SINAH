@@ -223,6 +223,10 @@ unsigned int AUnit::GetBuildingLevelRequired()
 	return BuildingLevelRequired;
 }
 
+int AUnit::GetFoodEatenInHalfASecond()
+{
+	return FoodEatenInHalfASecond;
+}
 int AUnit::GetCostInFood()
 {
 	return COST_IN_FOOD;

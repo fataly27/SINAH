@@ -5,7 +5,6 @@
 #include "Buildings/MilitaryBuilding.h"
 #include "MultiplayerSinahMode.h"
 #include "MultiplayerGameState.h"
-#include "MultiplayerState.h"
 #include "MainCamera.h"
 #include "Units/Knight.h"
 #include "Units/Unit.h"
@@ -30,6 +29,19 @@ AMousePlayerController::AMousePlayerController() : TimeSinceLastHarvest(0.f), Op
 
 	static ConstructorHelpers::FObjectFinder<UMaterial> MaterialAsset(TEXT("/Game/Materials/FogOfWarDecal.FogOfWarDecal"));
 	FogOfWarMaterial = MaterialAsset.Object;
+
+	AmountOfFood = 0;
+	AmountOfMetal = 0;
+	AmountOfCells = 0;
+	AmountOfCristals = 0;
+
+	FoodChange = 0;
+	MetalChange = 0;
+	CellsChange = 0;
+	CristalsChange = 0;
+
+	FoodVariationType = " +";
+	TheTimer = "00:00";
 }
 
 // Called when the game starts or when spawned
@@ -63,7 +75,20 @@ void AMousePlayerController::BeginPlay()
 			if (MyGameStartInfo)
 				MyGameStartInfo->AddToViewport();
 		}
+		if (wTopInterface)
+		{
+			MyTopInterface = CreateWidget<UUserWidget>(this, wTopInterface);
+			if (MyTopInterface)
+				MyTopInterface->AddToViewport();
+
+			if(GetSide() == Side::Blue)
+				SetColorToBlue();
+			if (GetSide() == Side::Red)
+				SetColorToRed();
+		}
 	}
+
+	Super::BeginPlay();
 }
 
 void AMousePlayerController::SetPawn(APawn* InPawn)
@@ -100,7 +125,7 @@ void AMousePlayerController::Tick(float DeltaTime)
 		}
 	}
 
-	if (Role == ROLE_Authority && GetWorld()->GetAuthGameMode() && GetWorld()->GetAuthGameMode()->GetNumPlayers() == 2)
+	if (Role == ROLE_Authority && GetWorld()->GetAuthGameMode() && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
 	{
 		TimeSinceLastHarvest += DeltaTime;
 
@@ -109,43 +134,93 @@ void AMousePlayerController::Tick(float DeltaTime)
 			TimeSinceLastHarvest -= 0.5f;
 
 			TActorIterator<AFoodEconomicBuilding> Food(GetWorld());
-			int AmountOfFood(0);
+			int AmountOfFoodToAdd(0);
 			for (Food; Food; ++Food)
 			{
 				if (Food->GetSide() == PlayerSide)
-					AmountOfFood += Food->GetOutputInHalfASecond();
+					AmountOfFoodToAdd += Food->GetOutputInHalfASecond();
 			}
 
 			TActorIterator<ACristalsEconomicBuilding> Cristals(GetWorld());
-			int AmountOfCristals(0);
+			int AmountOfCristalsToAdd(0);
 			for (Cristals; Cristals; ++Cristals)
 			{
 				if (Cristals->GetSide() == PlayerSide)
-					AmountOfCristals += Cristals->GetOutputInHalfASecond();
+					AmountOfCristalsToAdd += Cristals->GetOutputInHalfASecond();
 			}
 
 			TActorIterator<ACellsEconomicBuilding> Cells(GetWorld());
-			int AmountOfCells(0);
+			int AmountOfCellsToAdd(0);
 			for (Cells; Cells; ++Cells)
 			{
 				if (Cells->GetSide() == PlayerSide)
-					AmountOfCells += Cells->GetOutputInHalfASecond();
+					AmountOfCellsToAdd += Cells->GetOutputInHalfASecond();
 			}
 
 			TActorIterator<AMetalEconomicBuilding> Metal(GetWorld());
-			int AmountOfMetal(0);
+			int AmountOfMetalToAdd(0);
 			for (Metal; Metal; ++Metal)
 			{
 				if (Metal->GetSide() == PlayerSide)
-					AmountOfMetal += Metal->GetOutputInHalfASecond();
+					AmountOfMetalToAdd += Metal->GetOutputInHalfASecond();
 			}
 
-			AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
+			SetAmountOfFood(GetAmountOfFood() + AmountOfFoodToAdd);
+			SetAmountOfMetal(GetAmountOfMetal() + AmountOfMetalToAdd);
+			SetAmountOfCells(GetAmountOfCells() + AmountOfCellsToAdd);
+			SetAmountOfCristals(GetAmountOfCristals() + AmountOfCristalsToAdd);
 
-			State->SetAmountOfFood(State->GetAmountOfFood() + AmountOfFood);
-			State->SetAmountOfMetal(State->GetAmountOfMetal() + AmountOfMetal);
-			State->SetAmountOfCells(State->GetAmountOfCells() + AmountOfCells);
-			State->SetAmountOfCristals(State->GetAmountOfCristals() + AmountOfCristals);
+			int CurrentFood(GetAmountOfFood());
+			int NeededFood(0);
+			int GlobalNeededFood(0);
+
+			TActorIterator<AUnit> UnitItr(GetWorld());
+			for (UnitItr; UnitItr; ++UnitItr)
+			{
+				if (UnitItr->GetSide() == GetSide())
+				{
+					int FoodNeededByUnit(UnitItr->GetFoodEatenInHalfASecond());
+
+					if (CurrentFood - NeededFood - FoodNeededByUnit >= 0)
+						NeededFood += FoodNeededByUnit;
+					else
+						UnitItr->Heal(-2 * FoodNeededByUnit);
+
+					GlobalNeededFood += FoodNeededByUnit;
+				}
+			}
+
+			SetAmountOfFood(CurrentFood - NeededFood);
+
+			FoodChange = AmountOfFoodToAdd - GlobalNeededFood;
+			MetalChange = AmountOfMetalToAdd;
+			CellsChange = AmountOfCellsToAdd;
+			CristalsChange = AmountOfCristalsToAdd;
+
+			if (FoodChange >= 0)
+				FoodVariationType = " +";
+			else
+				FoodVariationType = " ";
+
+			int BaseSeconds = GetWorld()->GetGameState<AMultiplayerGameState>()->GetTime();
+
+			int Minutes = BaseSeconds / 60;
+			int Seconds = BaseSeconds % 60;
+
+			FString MinutesString;
+			FString SecondsString;
+
+			if (Minutes < 10)
+				MinutesString = "0" + FString::FromInt(Minutes) + ":";
+			else
+				MinutesString = FString::FromInt(Minutes) + ":";
+
+			if (Seconds < 10)
+				SecondsString = "0" + FString::FromInt(Seconds);
+			else
+				SecondsString = FString::FromInt(Seconds);
+
+			TheTimer = MinutesString.Append(SecondsString);
 		}
 	}
 
@@ -187,6 +262,8 @@ void AMousePlayerController::Tick(float DeltaTime)
 		if (MyPawn)
 			HUD->SetZoom(MyPawn->GetZoom());
 	}
+
+	Super::Tick(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -437,11 +514,10 @@ void AMousePlayerController::UpdateBoxSelection(TArray<TScriptInterface<IGameEle
 				{
 				AMilitaryBuilding* MyBuilding = Cast<AMilitaryBuilding>(ActorsSelected.Top().GetObject());
 
-				AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
-				State->SetAmountOfFood(50);
-				State->SetAmountOfCells(50);
-				State->SetAmountOfCristals(50);
-				State->SetAmountOfMetal(50);
+				SetAmountOfFood(50);
+				SetAmountOfCells(50);
+				SetAmountOfCristals(50);
+				SetAmountOfMetal(50);
 
 				SpawnUnit(MyBuilding, AKnight::StaticClass());
 				}
@@ -453,11 +529,10 @@ void AMousePlayerController::UpdateBoxSelection(TArray<TScriptInterface<IGameEle
 
 				ABuilding* MyBuilding = Cast<ABuilding>(ActorsSelected.Top().GetObject());
 
-				AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
-				State->SetAmountOfFood(5000);
-				State->SetAmountOfCells(5000);
-				State->SetAmountOfCristals(5000);
-				State->SetAmountOfMetal(5000);
+				SetAmountOfFood(5000);
+				SetAmountOfCells(5000);
+				SetAmountOfCristals(5000);
+				SetAmountOfMetal(5000);
 
 				LevelUpBuilding(MyBuilding);
 
@@ -853,25 +928,28 @@ void AMousePlayerController::UpdateTextureRegions(UTexture2D* Texture, int32 Mip
 }
 void AMousePlayerController::ApplyZoneEffects(TArray<AMilitaryBuilding*> MilitaryBuildings, TArray<AUnit*> Units)
 {
-	for (int j(0); j < Units.Num(); j++)
+	if (Role == ROLE_Authority && GetWorld()->GetAuthGameMode() && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
 	{
-		float Multiplicator = 1.f;
-		int Heal = 0;
-		for (int i(0); i < MilitaryBuildings.Num(); i++)
+		for (int j(0); j < Units.Num(); j++)
 		{
-			if (MilitaryBuildings[i]->GetSide() == Units[j]->GetSide())
+			float Multiplicator = 1.f;
+			int Heal = 0;
+			for (int i(0); i < MilitaryBuildings.Num(); i++)
 			{
-				Heal += MilitaryBuildings[i]->GetPlayerLifeZone()->GetLifeModifier(Units[j], MilitaryBuildings[i]);
-				Multiplicator *= MilitaryBuildings[i]->GetPlayerSpeedZone()->GetSpeedMultiplicator(Units[j], MilitaryBuildings[i]);
+				if (MilitaryBuildings[i]->GetSide() == Units[j]->GetSide())
+				{
+					Heal += MilitaryBuildings[i]->GetPlayerLifeZone()->GetLifeModifier(Units[j], MilitaryBuildings[i]);
+					Multiplicator *= MilitaryBuildings[i]->GetPlayerSpeedZone()->GetSpeedMultiplicator(Units[j], MilitaryBuildings[i]);
+				}
+				else
+				{
+					Heal += MilitaryBuildings[i]->GetOpponentLifeZone()->GetLifeModifier(Units[j], MilitaryBuildings[i]);
+					Multiplicator *= MilitaryBuildings[i]->GetOpponentSpeedZone()->GetSpeedMultiplicator(Units[j], MilitaryBuildings[i]);
+				}
 			}
-			else
-			{
-				Heal += MilitaryBuildings[i]->GetOpponentLifeZone()->GetLifeModifier(Units[j], MilitaryBuildings[i]);
-				Multiplicator *= MilitaryBuildings[i]->GetOpponentSpeedZone()->GetSpeedMultiplicator(Units[j], MilitaryBuildings[i]);
-			}
+			Units[j]->SetSpeedMultiplicator(Multiplicator);
+			Units[j]->Heal(Heal * 0.1);
 		}
-		Units[j]->SetSpeedMultiplicator(Multiplicator);
-		Units[j]->Heal(Heal * 0.1);
 	}
 }
 
@@ -937,16 +1015,15 @@ void AMousePlayerController::LevelUpBuilding(ABuilding* Building)
 		int CostInFood = Building->GetCostInFoodToLevel(Building->GetLevel() + 1);
 		int CostInCristals = Building->GetCostInCristalsToLevel(Building->GetLevel() + 1);
 
-		AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
 
-		if (State->GetAmountOfCells() >= CostInCells && State->GetAmountOfMetal() >= CostInMetal && State->GetAmountOfFood() >= CostInFood && State->GetAmountOfCristals() >= CostInCristals)
+		if (GetAmountOfCells() >= CostInCells && GetAmountOfMetal() >= CostInMetal && GetAmountOfFood() >= CostInFood && GetAmountOfCristals() >= CostInCristals)
 		{
 			Building->Server_LevelUp();
 
-			State->SetAmountOfCells(State->GetAmountOfCells() - CostInCells);
-			State->SetAmountOfMetal(State->GetAmountOfMetal() - CostInMetal);
-			State->SetAmountOfFood(State->GetAmountOfFood() - CostInFood);
-			State->SetAmountOfCristals(State->GetAmountOfCristals() - CostInCristals);
+			SetAmountOfCells(GetAmountOfCells() - CostInCells);
+			SetAmountOfMetal(GetAmountOfMetal() - CostInMetal);
+			SetAmountOfFood(GetAmountOfFood() - CostInFood);
+			SetAmountOfCristals(GetAmountOfCristals() - CostInCristals);
 		}
 	}
 }
@@ -959,9 +1036,8 @@ void AMousePlayerController::SpawnUnit(AMilitaryBuilding* Spawner, UClass* Unit)
 		int CostInFood = Cast<AUnit>(Unit->GetDefaultObject())->GetCostInFood();
 		int CostInCristals = Cast<AUnit>(Unit->GetDefaultObject())->GetCostInCristals();
 
-		AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
 
-		if (State->GetAmountOfCells() >= CostInCells && State->GetAmountOfMetal() >= CostInMetal && State->GetAmountOfFood() >= CostInFood && State->GetAmountOfCristals() >= CostInCristals)
+		if (GetAmountOfCells() >= CostInCells && GetAmountOfMetal() >= CostInMetal && GetAmountOfFood() >= CostInFood && GetAmountOfCristals() >= CostInCristals)
 		{
 			FNavLocation Location;
 
@@ -973,12 +1049,71 @@ void AMousePlayerController::SpawnUnit(AMilitaryBuilding* Spawner, UClass* Unit)
 				AUnit* NewUnit = GetWorld()->SpawnActor<AUnit>(Unit, Position, Rotation);
 				NewUnit->SetSide(PlayerSide);
 
-				State->SetAmountOfCells(State->GetAmountOfCells() - CostInCells);
-				State->SetAmountOfMetal(State->GetAmountOfMetal() - CostInMetal);
-				State->SetAmountOfFood(State->GetAmountOfFood() - CostInFood);
-				State->SetAmountOfCristals(State->GetAmountOfCristals() - CostInCristals);
+				SetAmountOfCells(GetAmountOfCells() - CostInCells);
+				SetAmountOfMetal(GetAmountOfMetal() - CostInMetal);
+				SetAmountOfFood(GetAmountOfFood() - CostInFood);
+				SetAmountOfCristals(GetAmountOfCristals() - CostInCristals);
 			}
 		}
+	}
+}
+
+//Widgets
+int AMousePlayerController::GetAmountOfFood()
+{
+	return AmountOfFood;
+}
+int AMousePlayerController::GetAmountOfMetal()
+{
+	return AmountOfMetal;
+}
+int AMousePlayerController::GetAmountOfCells()
+{
+	return AmountOfCells;
+}
+int AMousePlayerController::GetAmountOfCristals()
+{
+	return AmountOfCristals;
+}
+
+void AMousePlayerController::SetAmountOfFood(int Food)
+{
+	if (Role == ROLE_Authority)
+	{
+		AmountOfFood = Food;
+
+		if (AmountOfFood < 0)
+			AmountOfFood = 0;
+	}
+}
+void AMousePlayerController::SetAmountOfMetal(int Metal)
+{
+	if (Role == ROLE_Authority)
+	{
+		AmountOfMetal = Metal;
+
+		if (AmountOfMetal < 0)
+			AmountOfMetal = 0;
+	}
+}
+void AMousePlayerController::SetAmountOfCells(int Cells)
+{
+	if (Role == ROLE_Authority)
+	{
+		AmountOfCells = Cells;
+
+		if (AmountOfCells < 0)
+			AmountOfCells = 0;
+	}
+}
+void AMousePlayerController::SetAmountOfCristals(int Cristals)
+{
+	if (Role == ROLE_Authority)
+	{
+		AmountOfCristals = Cristals;
+
+		if (AmountOfCristals < 0)
+			AmountOfCristals = 0;
 	}
 }
 
@@ -986,5 +1121,17 @@ void AMousePlayerController::SpawnUnit(AMilitaryBuilding* Spawner, UClass* Unit)
 void AMousePlayerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	DOREPLIFETIME(AMousePlayerController, PlayerSide);
-	DOREPLIFETIME(AMousePlayerController, PlayerState);
+
+	DOREPLIFETIME(AMousePlayerController, AmountOfFood);
+	DOREPLIFETIME(AMousePlayerController, AmountOfMetal);
+	DOREPLIFETIME(AMousePlayerController, AmountOfCells);
+	DOREPLIFETIME(AMousePlayerController, AmountOfCristals);
+
+	DOREPLIFETIME(AMousePlayerController, FoodChange);
+	DOREPLIFETIME(AMousePlayerController, MetalChange);
+	DOREPLIFETIME(AMousePlayerController, CellsChange);
+	DOREPLIFETIME(AMousePlayerController, CristalsChange);
+
+	DOREPLIFETIME(AMousePlayerController, FoodVariationType);
+	DOREPLIFETIME(AMousePlayerController, TheTimer);
 }

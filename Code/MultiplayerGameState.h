@@ -36,7 +36,6 @@ class SINAH_API AMultiplayerGameState : public AGameState
 			bool GameBegan;
 		UPROPERTY(Replicated)
 			FString StateInfo;
-		UPROPERTY(Replicated)
-			int BeginTime;
+		float CurrentTime;
 		float CountDown;
 };

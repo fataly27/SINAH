@@ -90,6 +90,7 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		virtual float GetRange();
 		virtual unsigned int GetBuildingLevelRequired();
 
+		virtual int GetFoodEatenInHalfASecond();
 		virtual int GetCostInFood();
 		virtual int GetCostInCells();
 		virtual int GetCostInMetal();
@@ -161,6 +162,8 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 			float DefaultFieldOfSight;
 		UPROPERTY(EditAnywhere)
 			float DefaultRange;
+
+		int FoodEatenInHalfASecond;
 
 		int COST_IN_FOOD;
 		int COST_IN_CELLS;

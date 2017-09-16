@@ -3,7 +3,6 @@
 #include "Sinah.h"
 #include "Units/Unit.h"
 #include "Buildings/Building.h"
-#include "MultiplayerState.h"
 #include "MultiplayerGameState.h"
 #include <cmath>
 #include "PlayerHUD.h"
@@ -185,40 +184,6 @@ void APlayerHUD::DrawHUD()
 					DrawTextureSimple(RedTargetTextureLight, TopPosition.X - RedTargetTextureLight->GetSurfaceWidth() * Scale / 2, TopPosition.Y - Offset - RedTargetTextureLight->GetSurfaceHeight() * Scale / 2, Scale);
 			}
 		}
-	}
-
-	AMultiplayerState* State = Cast<AMultiplayerState>(GetOwningPlayerController()->PlayerState);
-
-	if (State)
-	{
-		FString String = "Food : " + FString::FromInt(State->GetAmountOfFood()) + ", Metal : " + FString::FromInt(State->GetAmountOfMetal()) + ", Cells : " + FString::FromInt(State->GetAmountOfCells()) + ", Cristals : " + FString::FromInt(State->GetAmountOfCristals());
-		DrawText(String, FLinearColor::White, 0, 0);
-	}
-
-	AMultiplayerGameState* GameState = GetWorld()->GetGameState<AMultiplayerGameState>();
-
-	if (GameState)
-	{
-		int BaseSeconds = GameState->GetTime();
-
-		int Minutes = BaseSeconds / 60;
-		int Seconds = BaseSeconds % 60;
-
-		FString MinutesString;
-		FString SecondsString;
-
-		if (Minutes < 10)
-			MinutesString = "0" + FString::FromInt(Minutes) + ":";
-		else
-			MinutesString = FString::FromInt(Minutes) + ":";
-
-		if (Seconds < 10)
-			SecondsString = "0" + FString::FromInt(Seconds);
-		else
-			SecondsString = FString::FromInt(Seconds);
-
-
-		DrawText(MinutesString.Append(SecondsString), FLinearColor::White, 500, 0);
 	}
 }
 

@@ -10,6 +10,11 @@ AMultiplayerState::AMultiplayerState()
 	AmountOfCells = 0;
 	AmountOfCristals = 0;
 
+	FoodChange = 0;
+	MetalChange = 0;
+	CellsChange = 0;
+	CristalsChange = 0;
+
 	bReplicates = true;
 }
 
@@ -71,6 +76,45 @@ void AMultiplayerState::SetAmountOfCristals(int Cristals)
 	}
 }
 
+
+int AMultiplayerState::GetFoodChange()
+{
+	return FoodChange;
+}
+int AMultiplayerState::GetMetalChange()
+{
+	return MetalChange;
+}
+int AMultiplayerState::GetCellsChange()
+{
+	return CellsChange;
+}
+int AMultiplayerState::GetCristalsChange()
+{
+	return CristalsChange;
+}
+
+void AMultiplayerState::SetFoodChange(int Food)
+{
+	if (Role == ROLE_Authority)
+		FoodChange = Food;
+}
+void AMultiplayerState::SetMetalChange(int Metal)
+{
+	if (Role == ROLE_Authority && Metal >= 0)
+		MetalChange = Metal;
+}
+void AMultiplayerState::SetCellsChange(int Cells)
+{
+	if (Role == ROLE_Authority && Cells >= 0)
+		CellsChange = Cells;
+}
+void AMultiplayerState::SetCristalsChange(int Cristals)
+{
+	if (Role == ROLE_Authority && Cristals >= 0)
+		CristalsChange = Cristals;
+}
+
 //Replication
 void AMultiplayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
@@ -80,4 +124,9 @@ void AMultiplayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &
 	DOREPLIFETIME(AMultiplayerState, AmountOfMetal);
 	DOREPLIFETIME(AMultiplayerState, AmountOfCells);
 	DOREPLIFETIME(AMultiplayerState, AmountOfCristals);
+
+	DOREPLIFETIME(AMultiplayerState, FoodChange);
+	DOREPLIFETIME(AMultiplayerState, MetalChange);
+	DOREPLIFETIME(AMultiplayerState, CellsChange);
+	DOREPLIFETIME(AMultiplayerState, CristalsChange);
 }

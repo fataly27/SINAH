@@ -9,6 +9,9 @@
 class AMainCamera;
 class AUnit;
 class AMilitaryBuilding;
+class UMapWidget;
+class UStatWidget;
+class UUpWidget;
 
 /**
  * 
@@ -95,16 +98,6 @@ class SINAH_API AMousePlayerController : public APlayerController
 		UFUNCTION(BlueprintImplementableEvent)
 			void SetColorToRed();
 
-		int GetAmountOfFood();
-		int GetAmountOfMetal();
-		int GetAmountOfCells();
-		int GetAmountOfCristals();
-
-		void SetAmountOfFood(int Food);
-		void SetAmountOfMetal(int Metal);
-		void SetAmountOfCells(int Cells);
-		void SetAmountOfCristals(int Cristals);
-
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
 
 	protected:
@@ -147,30 +140,17 @@ class SINAH_API AMousePlayerController : public APlayerController
 
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TopInterface")
-			TSubclassOf<class UUserWidget> wTopInterface;
-		UPROPERTY(BlueprintReadWrite, Category = "TopInterface")
-			UUserWidget* MyTopInterface;
+			TSubclassOf<class UUpWidget> wTopInterface;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
+			UUpWidget* MyTopInterface;
 
-		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
-			int AmountOfFood;
-		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
-			int AmountOfMetal;
-		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
-			int AmountOfCells;
-		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
-			int AmountOfCristals;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StatInterface")
+			TSubclassOf<class UStatWidget> wStatInterface;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "StatInterface")
+			UStatWidget* MyStatInterface;
 
-		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
-			int FoodChange;
-		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
-			int MetalChange;
-		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
-			int CellsChange;
-		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
-			int CristalsChange;
-
-		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
-			FString FoodVariationType;
-		UPROPERTY(Replicated, BlueprintReadWrite, Category = "TopInterface")
-			FString TheTimer;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MapInterface")
+			TSubclassOf<class UMapWidget> wMapInterface;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "MapInterface")
+			UMapWidget* MyMapInterface;
 };

@@ -6,7 +6,7 @@
 AEconomicBuilding::AEconomicBuilding() : Super(), TimeSinceCounterPlunder(0.f)
 {
 	IsPlundered = false;
-	DefaultOutputInHalfASecond = 10;
+	DefaultOutputInHalfASecond = 4;
 	ActualOutputInHalfASecond = DefaultOutputInHalfASecond;
 
 	DefaultMaxLife = 1000;

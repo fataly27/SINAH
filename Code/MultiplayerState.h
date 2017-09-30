@@ -29,6 +29,16 @@ class SINAH_API AMultiplayerState : public APlayerState
 		void SetAmountOfCells(int Cells);
 		void SetAmountOfCristals(int Cristals);
 
+		int GetFoodChange();
+		int GetMetalChange();
+		int GetCellsChange();
+		int GetCristalsChange();
+
+		void SetFoodChange(int Food);
+		void SetMetalChange(int Metal);
+		void SetCellsChange(int Cells);
+		void SetCristalsChange(int Cristals);
+
 	protected:
 		UPROPERTY(Replicated)
 			int AmountOfFood;
@@ -38,4 +48,13 @@ class SINAH_API AMultiplayerState : public APlayerState
 			int AmountOfCells;
 		UPROPERTY(Replicated)
 			int AmountOfCristals;
+
+		UPROPERTY(Replicated)
+			int FoodChange;
+		UPROPERTY(Replicated)
+			int MetalChange;
+		UPROPERTY(Replicated)
+			int CellsChange;
+		UPROPERTY(Replicated)
+			int CristalsChange;
 };

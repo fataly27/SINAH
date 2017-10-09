@@ -8,7 +8,6 @@
 #include "MultiplayerState.h"
 #include "MainCamera.h"
 #include "Units/Knight.h"
-#include "Units/Unit.h"
 #include "Buildings/Zones/SpeedZone.h"
 #include "Buildings/Zones/LifeZone.h"
 
@@ -20,6 +19,7 @@
 #include "Widgets/UpWidget.h"
 #include "Widgets/StatWidget.h"
 #include "Widgets/MapWidget.h"
+#include "Widgets/ModesWidget.h"
 
 #include <cmath>
 #include <algorithm>
@@ -34,6 +34,16 @@ AMousePlayerController::AMousePlayerController() : TimeSinceLastHarvest(0.f), Op
 
 	static ConstructorHelpers::FObjectFinder<UMaterial> MaterialAsset(TEXT("/Game/Materials/FogOfWarDecal.FogOfWarDecal"));
 	FogOfWarMaterial = MaterialAsset.Object;
+
+
+	static ConstructorHelpers::FObjectFinder<UTexture> UnselectedAsset(TEXT("/Game/Textures/Modes_Buttons/button.button"));
+	UnselectedTexture = UnselectedAsset.Object;
+
+	static ConstructorHelpers::FObjectFinder<UTexture> SelectedAsset(TEXT("/Game/Textures/Modes_Buttons/selected_button.selected_button"));
+	SelectedTexture = SelectedAsset.Object;
+
+	static ConstructorHelpers::FObjectFinder<UTexture> SelectedAmidSeveralAsset(TEXT("/Game/Textures/Modes_Buttons/multiple_selected_button.multiple_selected_button"));
+	SelectedAmidSeveralTexture = SelectedAmidSeveralAsset.Object;
 }
 
 // Called when the game starts or when spawned
@@ -74,6 +84,8 @@ void AMousePlayerController::BeginPlay()
 			MyStatInterface = CreateWidget<UStatWidget>(this, wStatInterface);
 		if (wMapInterface)
 			MyMapInterface = CreateWidget<UMapWidget>(this, wMapInterface);
+		if (wModesInterface)
+			MyModesInterface = CreateWidget<UModesWidget>(this, wModesInterface);
 
 		if (MyTopInterface)
 			MyTopInterface->AddToViewport();
@@ -81,6 +93,8 @@ void AMousePlayerController::BeginPlay()
 			MyStatInterface->AddToViewport();
 		if (MyMapInterface)
 			MyMapInterface->AddToViewport();
+		if (MyModesInterface)
+			MyModesInterface->AddToViewport();
 
 		if (GetSide() == Side::Blue)
 			SetColorToBlue();
@@ -288,6 +302,75 @@ void AMousePlayerController::Tick(float DeltaTime)
 				{
 					Title = "Stats of the units";
 
+					if (MyModesInterface)
+					{
+						if(AllActorsSelected[0]->GetSide() == GetSide())
+							MyModesInterface->SetModesVisibility(ESlateVisibility::Visible);
+						else
+							MyModesInterface->SetModesVisibility(ESlateVisibility::Hidden);
+
+						MyModesInterface->SetAllButtonsEnabled(true);
+						MyModesInterface->SetInvisibleButtonEnabled(false);
+
+						for (int i(0); i < AllActorsSelected.Num(); i++)
+						{
+							AUnit* Unit = Cast<AUnit>(AllActorsSelected[i].GetObject());
+
+							if (Unit->GetMode() == Modes::None)
+							{
+								MyModesInterface->SetAllButtonsEnabled(false);
+								break;
+							}
+							else if (Unit->GetInvisibleCoolDown() <= 0.f)
+								MyModesInterface->SetInvisibleButtonEnabled(true);
+						}
+
+						float InvisibleTimeRatio = 0.f;
+						float InvisibleCoolDownRatio = 1.f;
+
+						int UnitsPerMode[] = {0, 0, 0, 0, 0};
+
+						for (int i(0); i < AllActorsSelected.Num(); i++)
+						{
+							AUnit* Unit = Cast<AUnit>(AllActorsSelected[i].GetObject());
+
+							if (Unit->GetInvisibleTime() / 15.f > InvisibleTimeRatio)
+								InvisibleTimeRatio = Unit->GetInvisibleTime() / 15.f;
+							if (1.f - (Unit->GetInvisibleCoolDown() / 180.f) < InvisibleCoolDownRatio)
+								InvisibleCoolDownRatio = 1.f - (Unit->GetInvisibleCoolDown() / 180.f);
+
+							if (Unit->GetMode() == Modes::Attack)
+								UnitsPerMode[0] += 1;
+							else if (Unit->GetMode() == Modes::Defense)
+								UnitsPerMode[1] += 1;
+							else if (Unit->GetMode() == Modes::Movement)
+								UnitsPerMode[2] += 1;
+							else if (Unit->GetMode() == Modes::Alert)
+								UnitsPerMode[3] += 1;
+							else if (Unit->GetMode() == Modes::Invisible)
+								UnitsPerMode[4] += 1;
+						}
+
+						if (InvisibleTimeRatio > 0.f)
+							MyModesInterface->SetInvisibleButtonProgress(InvisibleTimeRatio);
+						else
+							MyModesInterface->SetInvisibleButtonProgress(InvisibleCoolDownRatio);
+
+						UTexture* TexturePerMode[5];
+
+						for (int i(0); i < 5; i++)
+						{
+							if (UnitsPerMode[i] == 0)
+								TexturePerMode[i] = UnselectedTexture;
+							else if (UnitsPerMode[i] == AllActorsSelected.Num())
+								TexturePerMode[i] = SelectedTexture;
+							else
+								TexturePerMode[i] = SelectedAmidSeveralTexture;
+						}
+
+						MyModesInterface->SetButtonsTextures(TexturePerMode[0], TexturePerMode[1], TexturePerMode[2], TexturePerMode[3], TexturePerMode[4]);
+					}
+
 					for (int i(0); i < AllActorsSelected.Num(); i++)
 					{
 						AUnit* Unit = Cast<AUnit>(AllActorsSelected[i].GetObject());
@@ -320,10 +403,16 @@ void AMousePlayerController::Tick(float DeltaTime)
 					FinalFieldOfSight = Building->GetFieldOfSight();
 
 					MyStatInterface->SetStatsVisibility(ESlateVisibility::Hidden, ESlateVisibility::Visible);
+					if (MyModesInterface)
+						MyModesInterface->SetModesVisibility(ESlateVisibility::Hidden);
 				}
 			}
 			else
+			{
 				MyStatInterface->SetStatsVisibility(ESlateVisibility::Hidden, ESlateVisibility::Hidden);
+				if (MyModesInterface)
+					MyModesInterface->SetModesVisibility(ESlateVisibility::Hidden);
+			}
 
 			MyStatInterface->SetPVs(FinalCurrentLife, FinalMaxLife);
 			MyStatInterface->SetHeal(FinalHeal * 2);
@@ -1133,6 +1222,49 @@ void AMousePlayerController::SpawnUnit(AMilitaryBuilding* Spawner, UClass* Unit)
 			}
 		}
 	}
+}
+
+//Modes
+void AMousePlayerController::SetMode(Modes Mode)
+{
+	if (ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()))
+	{
+		for (int i(0); i < ActorsSelected.Num(); i++)
+		{
+			AUnit* Unit = Cast<AUnit>(ActorsSelected[i].GetObject());
+
+			Server_ChangeMode(Unit, Mode);
+		}
+	}
+}
+void AMousePlayerController::Server_ChangeMode_Implementation(AUnit* Unit, Modes Mode)
+{
+	Unit->ChangeMode(Mode);
+}
+bool AMousePlayerController::Server_ChangeMode_Validate(AUnit* Unit, Modes Mode)
+{
+	return true;
+}
+
+void AMousePlayerController::SetModeToAttack()
+{
+	SetMode(Modes::Attack);
+}
+void AMousePlayerController::SetModeToDefense()
+{
+	SetMode(Modes::Defense);
+}
+void AMousePlayerController::SetModeToSpeed()
+{
+	SetMode(Modes::Movement);
+}
+void AMousePlayerController::SetModeToSight()
+{
+	SetMode(Modes::Alert);
+}
+void AMousePlayerController::SetModeToInvisible()
+{
+	SetMode(Modes::Invisible);
 }
 
 //Replication

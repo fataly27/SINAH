@@ -58,10 +58,7 @@ void AUnitController::Tick(float DeltaSeconds)
 			FNavLocation ReachableDestination;
 
 			if (GetWorld()->GetNavigationSystem()->ProjectPointToNavigation(NewDestination, ReachableDestination, FVector(Cast<AUnit>(GetPawn())->GetRange() * 100 * FGenericPlatformMath::Sqrt(2), Cast<AUnit>(GetPawn())->GetRange() * 100 * FGenericPlatformMath::Sqrt(2), 500.f)))
-			{
 				MoveToLocation(ReachableDestination.Location, 20.f, false, true, false);
-				Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(Action::Moving);
-			}
 		}
 		LastTarget = ClosestTarget;
 	}
@@ -72,10 +69,7 @@ void AUnitController::BeginMove()
 	if (!Cast<AUnit>(GetPawn())->GetSpecialTargets().IsValidIndex(0))
 	{
 		if (Cast<AUnit>(GetPawn())->GetDestinations().IsValidIndex(0))
-		{
 			MoveToLocation(Cast<AUnit>(GetPawn())->GetDestinations()[0], 10.f, false, true, true, false);
-			Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(Action::Moving);
-		}
 		else
 			Cast<AUnit>(GetPawn())->Rotate();
 	}

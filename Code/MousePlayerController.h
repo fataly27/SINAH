@@ -4,14 +4,15 @@
 
 #include "GameFramework/PlayerController.h"
 #include "PlayerHUD.h"
+#include "Units/Unit.h"
 #include "MousePlayerController.generated.h"
 
 class AMainCamera;
-class AUnit;
 class AMilitaryBuilding;
 class UMapWidget;
 class UStatWidget;
 class UUpWidget;
+class UModesWidget;
 
 /**
  * 
@@ -98,6 +99,25 @@ class SINAH_API AMousePlayerController : public APlayerController
 		UFUNCTION(BlueprintImplementableEvent)
 			void SetColorToRed();
 
+		//Modes
+		UFUNCTION(BlueprintCallable)
+			void SetModeToAttack();
+		UFUNCTION(BlueprintCallable)
+			void SetModeToDefense();
+		UFUNCTION(BlueprintCallable)
+			void SetModeToSpeed();
+		UFUNCTION(BlueprintCallable)
+			void SetModeToSight();
+		UFUNCTION(BlueprintCallable)
+			void SetModeToInvisible();
+		void SetMode(Modes Mode);
+		UFUNCTION(Server, Reliable, WithValidation)
+			void Server_ChangeMode(AUnit* Unit, Modes Mode);
+
+		UTexture* UnselectedTexture;
+		UTexture* SelectedTexture;
+		UTexture* SelectedAmidSeveralTexture;
+
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
 
 	protected:
@@ -153,4 +173,9 @@ class SINAH_API AMousePlayerController : public APlayerController
 			TSubclassOf<class UMapWidget> wMapInterface;
 		UPROPERTY(Replicated, BlueprintReadWrite, Category = "MapInterface")
 			UMapWidget* MyMapInterface;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ModesInterface")
+			TSubclassOf<class UModesWidget> wModesInterface;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "ModesInterface")
+			UModesWidget* MyModesInterface;
 };

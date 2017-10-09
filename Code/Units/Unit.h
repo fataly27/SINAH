@@ -100,12 +100,14 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 
 		//Modes and animation
 		virtual void SetMode();
-		UFUNCTION(Server, Reliable, WithValidation)
-			virtual void Server_ChangeMode(Modes Mode);
+		virtual void ChangeMode(Modes Mode);
 		virtual Modes GetMode();
 		UFUNCTION(NetMulticast, Reliable)
 			virtual void Multicast_SetIsMoving(Action NewAction);
 		virtual void ChangeLoopingAnimation();
+
+		virtual float GetInvisibleCoolDown();
+		virtual float GetInvisibleTime();
 
 		//Visibility
 		virtual bool GetOpponentVisibility() override;

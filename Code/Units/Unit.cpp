@@ -39,7 +39,7 @@ AUnit::AUnit() : MySide(Side::Neutral), Selected(false), CurrentAction(Action::I
 
 	GetMovementComponent()->SetJumpAllowed(false);
 
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	AIControllerClass = AUnitController::StaticClass();
 
@@ -62,9 +62,9 @@ void AUnit::BeginPlay()
 }
 
 // Called every frame
-void AUnit::Tick( float DeltaTime )
+void AUnit::Tick(float DeltaTime)
 {
-	Super::Tick( DeltaTime );
+	Super::Tick(DeltaTime);
 
 	if (Role == ROLE_Authority)
 	{
@@ -73,7 +73,8 @@ void AUnit::Tick( float DeltaTime )
 
 		if (InvisibleLimitedTime <= 0.f && CurrentMode == Modes::Invisible)
 		{
-			WantedMode = Modes::Attack;
+			ChangeMode(Modes::Attack);
+			InvisibleCoolDown = 180.f;
 			Multicast_SetHidden(false, GetLocation(), GetActorRotation(), true);
 		}
 		if (WantedMode != Modes::None)
@@ -100,7 +101,7 @@ void AUnit::Tick( float DeltaTime )
 				OpponentDied = true;
 		}
 		BoxSpecialTargets = NewBoxSpecialTargets;
-		if(OpponentDied)
+		if (OpponentDied)
 			Cast<AUnitController>(GetController())->BeginMove();
 
 		if (SpecialTargets.IsValidIndex(0))
@@ -162,7 +163,7 @@ void AUnit::Multicast_SetSide_Implementation(Side NewSide)
 	else
 		Color = STENCIL_GREY_OUTLINE
 
-	GetMesh()->SetCustomDepthStencilValue(Color);
+		GetMesh()->SetCustomDepthStencilValue(Color);
 }
 Side AUnit::GetSide()
 {
@@ -265,9 +266,7 @@ void AUnit::AddDestination(FVector Destination, FRotator Rotation)
 			DesiredRotation = Rotation;
 			Destinations.Add(CorrectDestination.Location);
 			if (!Destinations.IsValidIndex(1) && !SpecialTargets.IsValidIndex(0) && !BoxSpecialTargets.IsValidIndex(0))
-			{
-				Cast<AUnitController>(GetController())->BeginMove();
-			}
+				Multicast_SetIsMoving(Action::Moving);
 		}
 	}
 }
@@ -324,7 +323,7 @@ void AUnit::SetBoxSpecialTargets(TArray<TScriptInterface<IGameElementInterface>>
 		}
 		BoxSpecialTargets = CleanedNewTargets;
 		if (CurrentMode != Modes::Attack && CurrentMode != Modes::Defense && WantedMode != Modes::Attack && WantedMode != Modes::Defense && NewTargets.Num() != 0)
-			Server_ChangeMode(Modes::Attack);
+			ChangeMode(Modes::Attack);
 
 		if (BoxSpecialTargets.IsValidIndex(0))
 			Multicast_SetIsMoving(Action::Idle);
@@ -432,9 +431,13 @@ void AUnit::SetMode()
 			ActualMagicDefense = DefaultMagicDefense * 0.8f;
 
 			ActualFieldOfSight = DefaultFieldOfSight;
+			ActualRange = DefaultRange;
 
 			ActualSpeed = DefaultSpeed;
 			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+
+			if (!Destinations.IsValidIndex(1) && !SpecialTargets.IsValidIndex(0) && !BoxSpecialTargets.IsValidIndex(0))
+				Multicast_SetIsMoving(Action::Moving);
 
 			CurrentMode = Mode;
 		}
@@ -448,9 +451,12 @@ void AUnit::SetMode()
 			ActualMagicDefense = DefaultMagicDefense * 1.6f;
 
 			ActualFieldOfSight = DefaultFieldOfSight;
+			ActualRange = DefaultRange;
 
 			ActualSpeed = 0.f;
 			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+
+			ClearDestinations();
 		}
 		else if (Mode == Modes::Alert)
 		{
@@ -465,9 +471,13 @@ void AUnit::SetMode()
 			ActualMagicDefense = DefaultMagicDefense;
 
 			ActualFieldOfSight = DefaultFieldOfSight * 1.4f;
+			ActualRange = 0;
 
 			ActualSpeed = DefaultSpeed;
 			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+
+			if (!Destinations.IsValidIndex(1) && !SpecialTargets.IsValidIndex(0) && !BoxSpecialTargets.IsValidIndex(0))
+				Multicast_SetIsMoving(Action::Moving);
 		}
 		else if (Mode == Modes::Movement)
 		{
@@ -479,10 +489,15 @@ void AUnit::SetMode()
 			ActualPhysicDefense = DefaultPhysicDefense * 0.8f;
 			ActualMagicDefense = DefaultMagicDefense * 0.8f;
 
+			ActualRange = 0;
+
 			ActualFieldOfSight = DefaultFieldOfSight;
 
 			ActualSpeed = DefaultSpeed * 1.6f;
 			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+
+			if (!Destinations.IsValidIndex(1) && !SpecialTargets.IsValidIndex(0) && !BoxSpecialTargets.IsValidIndex(0))
+				Multicast_SetIsMoving(Action::Moving);
 
 			CurrentMode = Mode;
 		}
@@ -493,7 +508,6 @@ void AUnit::SetMode()
 				ClearOpponentsInSight();
 				ClearSpecialTargets();
 
-				InvisibleCoolDown = 180.f;
 				InvisibleLimitedTime = 15.f;
 				Multicast_SetHidden(true, GetLocation(), GetActorRotation(), true);
 
@@ -502,20 +516,32 @@ void AUnit::SetMode()
 				ActualPhysicDefense = 0;
 				ActualMagicDefense = 0;
 
+				ActualRange = 0;
+
 				ActualFieldOfSight = DefaultFieldOfSight;
 
 				ActualSpeed = DefaultSpeed;
 				GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+
+				if (!Destinations.IsValidIndex(1) && !SpecialTargets.IsValidIndex(0) && !BoxSpecialTargets.IsValidIndex(0))
+					Multicast_SetIsMoving(Action::Moving);
 
 				CurrentMode = Mode;
 			}
 		}
 	}
 }
-void AUnit::Server_ChangeMode_Implementation(Modes Mode)
+void AUnit::ChangeMode(Modes Mode)
 {
-	if (Mode != Modes::Invisible || InvisibleCoolDown <= 0.f)
+	if ((Mode != Modes::Invisible || InvisibleCoolDown <= 0.f) && CurrentMode != Mode && Role == ROLE_Authority)
 	{
+		if (CurrentMode == Modes::Invisible)
+		{
+			InvisibleCoolDown = 180.f - InvisibleLimitedTime / 15.f * 180.f;
+			InvisibleLimitedTime = 0.f;
+			Multicast_SetHidden(false, GetLocation(), GetActorRotation(), true);
+		}
+
 		WantedMode = Mode;
 		CurrentMode = Modes::None;
 
@@ -525,16 +551,14 @@ void AUnit::Server_ChangeMode_Implementation(Modes Mode)
 		ActualMagicDefense = 0;
 
 		ActualFieldOfSight = 0;
+		ActualRange = 0;
 
 		ActualSpeed = 0.f;
 		GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+		Multicast_SetIsMoving(Action::Idle);
 
-		PrepareChangingModeTime = 5.f;
+		PrepareChangingModeTime = 2.f;
 	}
-}
-bool AUnit::Server_ChangeMode_Validate(Modes Mode)
-{
-	return true;
 }
 Modes AUnit::GetMode()
 {
@@ -544,8 +568,10 @@ void AUnit::Multicast_SetIsMoving_Implementation(Action NewAction)
 {
 	CurrentAction = NewAction;
 
-	if(NewAction != Action::Moving && Role == ROLE_Authority)
+	if (NewAction != Action::Moving && Role == ROLE_Authority)
 		Cast<AUnitController>(GetController())->StopMovement();
+	else if(Role == ROLE_Authority)
+		Cast<AUnitController>(GetController())->BeginMove();
 }
 void AUnit::ChangeLoopingAnimation()
 {
@@ -577,6 +603,14 @@ void AUnit::ChangeLoopingAnimation()
 		else
 			GetMesh()->SetPlayRate(1.f);
 	}
+}
+float AUnit::GetInvisibleCoolDown()
+{
+	return InvisibleCoolDown;
+}
+float AUnit::GetInvisibleTime()
+{
+	return InvisibleLimitedTime;
 }
 
 //Visibility

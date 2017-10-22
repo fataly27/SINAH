@@ -354,7 +354,12 @@ void AMousePlayerController::Tick(float DeltaTime)
 						if (InvisibleTimeRatio > 0.f)
 							MyModesInterface->SetInvisibleButtonProgress(InvisibleTimeRatio);
 						else
-							MyModesInterface->SetInvisibleButtonProgress(InvisibleCoolDownRatio);
+						{
+							if (FMath::IsNearlyEqual(InvisibleCoolDownRatio, 1.f, 0.001f))
+								MyModesInterface->SetInvisibleButtonProgress(1.001f);
+							else
+								MyModesInterface->SetInvisibleButtonProgress(InvisibleCoolDownRatio);
+						}
 
 						UTexture* TexturePerMode[5];
 
@@ -861,25 +866,27 @@ void AMousePlayerController::FogOfWar()
 			{
 				ShouldBeVisible = false;
 				TArray<TScriptInterface<IGameElementInterface>> OpponentsInSight;
+				AUnit* BlueUnit = Cast<AUnit>(BlueActors[i].GetObject());
+
 				for (int j = 0; j < RedActors.Num(); j++)
 				{
-					FVector vecteur = RedActors[j]->GetLocation() - BlueActors[i]->GetLocation();
-					float temp = vecteur.Size();
-					if (FVector(RedActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= RedActors[j]->GetFieldOfSight() * 100.f)
+					bool IsRedActorInvisible(false);
+					if (RedActors[j].GetObject()->IsA(AUnit::StaticClass()))
+						IsRedActorInvisible = Cast<AUnit>(RedActors[j].GetObject())->GetMode() == Modes::Invisible;
+
+					if (FVector(RedActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= RedActors[j]->GetFieldOfSight() * 100.f && BlueUnit->GetMode() != Modes::Invisible)
 						ShouldBeVisible = true;
-					if (FVector(RedActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= BlueActors[i]->GetFieldOfSight() * 100.f)
+					if (FVector(RedActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= BlueActors[i]->GetFieldOfSight() * 100.f && !IsRedActorInvisible)
 						OpponentsInSight.Add(RedActors[j]);
 				}
 				for (int j = 0; j < NeutralActors.Num(); j++)
 				{
-					if (FVector(NeutralActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= BlueActors[i]->GetFieldOfSight() * 100.f)
+					if (FVector(NeutralActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= BlueActors[i]->GetFieldOfSight() * 100.f && BlueUnit->GetMode() != Modes::Invisible)
 						OpponentsInSight.Add(NeutralActors[j]);
 				}
 
-				AUnit* BlueUnit = Cast<AUnit>(BlueActors[i].GetObject());
-
 				if (BlueUnit->GetOpponentVisibility() != ShouldBeVisible)
-					BlueUnit->Multicast_SetHidden(!ShouldBeVisible, BlueUnit->GetLocation(), BlueUnit->GetActorRotation());
+					BlueUnit->Multicast_SetVisibility(ShouldBeVisible, BlueUnit->GetLocation(), BlueUnit->GetActorRotation());
 				BlueUnit->SetOpponentsInSight(OpponentsInSight);
 			}
 		}
@@ -889,23 +896,27 @@ void AMousePlayerController::FogOfWar()
 			{
 				ShouldBeVisible = false;
 				TArray<TScriptInterface<IGameElementInterface>> OpponentsInSight;
+				AUnit* RedUnit = Cast<AUnit>(RedActors[i].GetObject());
+
 				for (int j = 0; j < BlueActors.Num(); j++)
 				{
-					if (FVector(BlueActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= BlueActors[j]->GetFieldOfSight() * 100.f)
+					bool IsBlueActorInvisible(false);
+					if (BlueActors[j].GetObject()->IsA(AUnit::StaticClass()))
+						IsBlueActorInvisible = Cast<AUnit>(BlueActors[j].GetObject())->GetMode() == Modes::Invisible;
+
+					if (FVector(BlueActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= BlueActors[j]->GetFieldOfSight() * 100.f && RedUnit->GetMode() != Modes::Invisible)
 						ShouldBeVisible = true;
-					if (FVector(BlueActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= RedActors[i]->GetFieldOfSight() * 100.f)
+					if (FVector(BlueActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= RedActors[i]->GetFieldOfSight() * 100.f && !IsBlueActorInvisible)
 						OpponentsInSight.Add(BlueActors[j]);
 				}
 				for (int j = 0; j < NeutralActors.Num(); j++)
 				{
-					if (FVector(NeutralActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= RedActors[i]->GetFieldOfSight() * 100.f)
+					if (FVector(NeutralActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= RedActors[i]->GetFieldOfSight() * 100.f && RedUnit->GetMode() != Modes::Invisible)
 						OpponentsInSight.Add(NeutralActors[j]);
 				}
 
-				AUnit* RedUnit = Cast<AUnit>(RedActors[i].GetObject());
-
 				if (RedUnit->GetOpponentVisibility() != ShouldBeVisible)
-					RedUnit->Multicast_SetHidden(!ShouldBeVisible, RedUnit->GetLocation(), RedUnit->GetActorRotation());
+					RedUnit->Multicast_SetVisibility(ShouldBeVisible, RedUnit->GetLocation(), RedUnit->GetActorRotation());
 				RedUnit->SetOpponentsInSight(OpponentsInSight);
 			}
 		}

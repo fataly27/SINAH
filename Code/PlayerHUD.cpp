@@ -107,7 +107,7 @@ void APlayerHUD::DrawHUD()
 			float Percent = float(ActorsSelected[i]->GetCurrentLife()) / float(ActorsSelected[i]->GetMaxLife());
 			float HeightOfRects = FMath::RoundHalfFromZero(50.f / CurrentZoom) + 1.f;
 			float WidthOfRect = ActorsSelected[i]->GetLifeBarWidth() / CurrentZoom;
-			float Offset = 100.f / CurrentZoom + 1.f;
+			float Offset = 100.f / CurrentZoom + 2.f;
 
 			if (ActorsSelected[i]->GetSide() == Side::Blue)
 			{
@@ -168,7 +168,7 @@ void APlayerHUD::DrawHUD()
 		{
 			FVector2D TopPosition(Project(AllTargets[i]->GetLocation() + FVector(0.f, 0.f, AllTargets[i]->GetHalfHeight())));
 			float Scale = 5.f / CurrentZoom + 0.2f;
-			float Offset = 100.f / CurrentZoom + 1.f;
+			float Offset = 100.f / CurrentZoom + 2.f;
 			if (NumberOfOccurences[i] == ActorsSelected.Num())
 			{
 				if (PlayerSide == Side::Blue)

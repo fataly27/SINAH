@@ -112,7 +112,9 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		//Visibility
 		virtual bool GetOpponentVisibility() override;
 		UFUNCTION(NetMulticast, Reliable)
-			virtual void Multicast_SetHidden(bool Hidden, FVector Position, FRotator Rotation, bool TurnIntoGhost = false);
+			virtual void Multicast_SetVisibility(bool Visibility, FVector Position, FRotator Rotation);
+		UFUNCTION(NetMulticast, Reliable)
+			virtual void Multicast_SetInvisibleAsset(bool IsInvisible);
 		virtual FVector GetLocation();
 
 		//Replication
@@ -199,8 +201,11 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 			Modes WantedMode;
 		UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Enum)
 			Action CurrentAction;
-		float InvisibleLimitedTime;
-		float InvisibleCoolDown;
+
+		UPROPERTY(Replicated)
+			float InvisibleLimitedTime;
+		UPROPERTY(Replicated)
+			float InvisibleCoolDown;
 		float PrepareChangingModeTime;
 
 		//Assets

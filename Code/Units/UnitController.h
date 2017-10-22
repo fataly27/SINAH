@@ -19,9 +19,11 @@ class SINAH_API AUnitController : public AAIController
 		AUnitController();
 
 		void Tick( float DeltaSeconds ) override;
-		void BeginMove();
 		void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult & Result) override;
 
 	protected:
 		TScriptInterface<IGameElementInterface> LastTarget;
+		FVector LastDestination;
+
+		bool IsLastATarget;
 };

@@ -2,6 +2,7 @@
 
 #include "Sinah.h"
 #include "UnitController.h"
+#include "../MousePlayerController.h"
 #include "Unit.h"
 
 
@@ -75,20 +76,18 @@ void AUnit::Tick(float DeltaTime)
 		{
 			ChangeMode(Modes::Attack);
 			InvisibleCoolDown = 180.f;
-			Multicast_SetHidden(false, GetLocation(), GetActorRotation(), true);
+
+			Multicast_SetInvisibleAsset(GetMode() == Modes::Invisible);
 		}
 		if (WantedMode != Modes::None)
 			PrepareChangingModeTime -= DeltaTime;
 		SetMode();
 
-		bool OpponentDied(false);
 		TArray<TScriptInterface<IGameElementInterface>> NewSpecialTargets;
 		for (int i = 0; i < SpecialTargets.Num(); i++)
 		{
 			if (SpecialTargets[i]->GetOpponentVisibility() && !SpecialTargets[i]->IsPendingKill() && SpecialTargets[i]->GetSide() != GetSide())
 				NewSpecialTargets.Add(SpecialTargets[i]);
-			else if (SpecialTargets[i]->IsPendingKill())
-				OpponentDied = true;
 		}
 		SpecialTargets = NewSpecialTargets;
 
@@ -97,12 +96,8 @@ void AUnit::Tick(float DeltaTime)
 		{
 			if (BoxSpecialTargets[i]->GetOpponentVisibility() && !BoxSpecialTargets[i]->IsPendingKill() && BoxSpecialTargets[i]->GetSide() != GetSide())
 				NewBoxSpecialTargets.Add(BoxSpecialTargets[i]);
-			else if (BoxSpecialTargets[i]->IsPendingKill())
-				OpponentDied = true;
 		}
 		BoxSpecialTargets = NewBoxSpecialTargets;
-		if (OpponentDied)
-			Cast<AUnitController>(GetController())->BeginMove();
 
 		if (SpecialTargets.IsValidIndex(0))
 			FaceRotation(FRotationMatrix::MakeFromX(SpecialTargets[0]->GetLocation() - GetLocation()).Rotator());
@@ -250,8 +245,6 @@ void AUnit::SetSpeedMultiplicator(float Multiplicator)
 	SpeedMultiplicator = Multiplicator;
 
 	GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
-
-	ChangeLoopingAnimation();
 }
 
 //Destinations
@@ -265,8 +258,6 @@ void AUnit::AddDestination(FVector Destination, FRotator Rotation)
 		{
 			DesiredRotation = Rotation;
 			Destinations.Add(CorrectDestination.Location);
-			if (!Destinations.IsValidIndex(1) && !SpecialTargets.IsValidIndex(0) && !BoxSpecialTargets.IsValidIndex(0))
-				Multicast_SetIsMoving(Action::Moving);
 		}
 	}
 }
@@ -280,7 +271,6 @@ void AUnit::ClearDestinations()
 	if (Role == ROLE_Authority)
 	{
 		Destinations.Empty();
-		Multicast_SetIsMoving(Action::Idle);
 	}
 }
 TArray<FVector> AUnit::GetDestinations()
@@ -324,9 +314,6 @@ void AUnit::SetBoxSpecialTargets(TArray<TScriptInterface<IGameElementInterface>>
 		BoxSpecialTargets = CleanedNewTargets;
 		if (CurrentMode != Modes::Attack && CurrentMode != Modes::Defense && WantedMode != Modes::Attack && WantedMode != Modes::Defense && NewTargets.Num() != 0)
 			ChangeMode(Modes::Attack);
-
-		if (BoxSpecialTargets.IsValidIndex(0))
-			Multicast_SetIsMoving(Action::Idle);
 	}
 }
 void AUnit::ClearSpecialTargets()
@@ -372,7 +359,7 @@ void AUnit::ClearOpponentsInSight()
 //Attack
 void AUnit::Attack(const TScriptInterface<IGameElementInterface>& Target)
 {
-	if (Role == ROLE_Authority && (CurrentMode == Modes::Attack || CurrentMode == Modes::Defense))
+	if (Role == ROLE_Authority && (CurrentMode == Modes::Attack || CurrentMode == Modes::Defense) && Target->GetOpponentVisibility())
 		Target->ReceiveDamages(GetPhysicAttack(), GetMagicAttack(), MySide);
 }
 void AUnit::ReceiveDamages(int Physic, int Magic, Side AttackingSide)
@@ -436,9 +423,6 @@ void AUnit::SetMode()
 			ActualSpeed = DefaultSpeed;
 			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
 
-			if (!Destinations.IsValidIndex(1) && !SpecialTargets.IsValidIndex(0) && !BoxSpecialTargets.IsValidIndex(0))
-				Multicast_SetIsMoving(Action::Moving);
-
 			CurrentMode = Mode;
 		}
 		else if (Mode == Modes::Defense)
@@ -475,9 +459,6 @@ void AUnit::SetMode()
 
 			ActualSpeed = DefaultSpeed;
 			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
-
-			if (!Destinations.IsValidIndex(1) && !SpecialTargets.IsValidIndex(0) && !BoxSpecialTargets.IsValidIndex(0))
-				Multicast_SetIsMoving(Action::Moving);
 		}
 		else if (Mode == Modes::Movement)
 		{
@@ -496,9 +477,6 @@ void AUnit::SetMode()
 			ActualSpeed = DefaultSpeed * 1.6f;
 			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
 
-			if (!Destinations.IsValidIndex(1) && !SpecialTargets.IsValidIndex(0) && !BoxSpecialTargets.IsValidIndex(0))
-				Multicast_SetIsMoving(Action::Moving);
-
 			CurrentMode = Mode;
 		}
 		else if (Mode == Modes::Invisible)
@@ -509,7 +487,6 @@ void AUnit::SetMode()
 				ClearSpecialTargets();
 
 				InvisibleLimitedTime = 15.f;
-				Multicast_SetHidden(true, GetLocation(), GetActorRotation(), true);
 
 				ActualPhysicAttack = 0;
 				ActualMagicAttack = 0;
@@ -523,10 +500,9 @@ void AUnit::SetMode()
 				ActualSpeed = DefaultSpeed;
 				GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
 
-				if (!Destinations.IsValidIndex(1) && !SpecialTargets.IsValidIndex(0) && !BoxSpecialTargets.IsValidIndex(0))
-					Multicast_SetIsMoving(Action::Moving);
-
 				CurrentMode = Mode;
+
+				Multicast_SetInvisibleAsset(GetMode() == Modes::Invisible);
 			}
 		}
 	}
@@ -539,7 +515,10 @@ void AUnit::ChangeMode(Modes Mode)
 		{
 			InvisibleCoolDown = 180.f - InvisibleLimitedTime / 15.f * 180.f;
 			InvisibleLimitedTime = 0.f;
-			Multicast_SetHidden(false, GetLocation(), GetActorRotation(), true);
+
+			CurrentMode = Modes::None;
+
+			Multicast_SetInvisibleAsset(GetMode() == Modes::Invisible);
 		}
 
 		WantedMode = Mode;
@@ -555,7 +534,6 @@ void AUnit::ChangeMode(Modes Mode)
 
 		ActualSpeed = 0.f;
 		GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
-		Multicast_SetIsMoving(Action::Idle);
 
 		PrepareChangingModeTime = 2.f;
 	}
@@ -567,11 +545,6 @@ Modes AUnit::GetMode()
 void AUnit::Multicast_SetIsMoving_Implementation(Action NewAction)
 {
 	CurrentAction = NewAction;
-
-	if (NewAction != Action::Moving && Role == ROLE_Authority)
-		Cast<AUnitController>(GetController())->StopMovement();
-	else if(Role == ROLE_Authority)
-		Cast<AUnitController>(GetController())->BeginMove();
 }
 void AUnit::ChangeLoopingAnimation()
 {
@@ -584,9 +557,7 @@ void AUnit::ChangeLoopingAnimation()
 			NewAnimation = WalkingAnimation;
 	}
 	else if (CurrentAction == Action::Attacking)
-	{
 		NewAnimation = AttackingAnimation;
-	}
 	else
 	{
 		if (CurrentMode == Modes::Defense)
@@ -618,27 +589,24 @@ bool AUnit::GetOpponentVisibility()
 {
 	return IsVisibleForOpponent;
 }
-void AUnit::Multicast_SetHidden_Implementation(bool Hidden, FVector Position, FRotator Rotation, bool TurnIntoGhost)
+void AUnit::Multicast_SetVisibility_Implementation(bool Visibility, FVector Position, FRotator Rotation)
 {
-	IsVisibleForOpponent = !Hidden;
-	if ((MySide == Side::Blue && Role == ROLE_Authority) || (MySide == Side::Red && Role != ROLE_Authority))
-	{
-		if (TurnIntoGhost)
-		{
-			if (Hidden)
-				GetMesh()->SetSkeletalMesh(VisualAssetTransparent);
-			else
-				GetMesh()->SetSkeletalMesh(VisualAsset);
-
-			GetMesh()->PlayAnimation(CurrentAnimation, true);
-		}
-	}
-	else
+	IsVisibleForOpponent = Visibility;
+	if (Cast<AMousePlayerController>(GetWorld()->GetFirstPlayerController())->GetSide() != GetSide())
 	{
 		SetActorLocation(Position);
 		SetActorRotation(Rotation);
-		SetActorHiddenInGame(Hidden);
+		SetActorHiddenInGame(!Visibility);
 	}
+}
+void AUnit::Multicast_SetInvisibleAsset_Implementation(bool IsInvisible)
+{
+	if (IsInvisible)
+		GetMesh()->SetSkeletalMesh(VisualAssetTransparent);
+	else
+		GetMesh()->SetSkeletalMesh(VisualAsset);
+
+	GetMesh()->PlayAnimation(CurrentAnimation, true);
 }
 FVector AUnit::GetLocation()
 {
@@ -666,6 +634,9 @@ void AUnit::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetime
 	DOREPLIFETIME(AUnit, SpeedMultiplicator);
 	DOREPLIFETIME(AUnit, ActualFieldOfSight);
 	DOREPLIFETIME(AUnit, ActualRange);
+
+	DOREPLIFETIME(AUnit, InvisibleLimitedTime);
+	DOREPLIFETIME(AUnit, InvisibleCoolDown);
 
 	DOREPLIFETIME(AUnit, CurrentMode);
 	DOREPLIFETIME(AUnit, WantedMode);

@@ -20,6 +20,8 @@
 #include "Widgets/StatWidget.h"
 #include "Widgets/MapWidget.h"
 #include "Widgets/ModesWidget.h"
+#include "Widgets/LevelEconomicWidget.h"
+#include "Widgets/LevelMilitaryWidget.h"
 
 #include <cmath>
 #include <algorithm>
@@ -86,6 +88,10 @@ void AMousePlayerController::BeginPlay()
 			MyMapInterface = CreateWidget<UMapWidget>(this, wMapInterface);
 		if (wModesInterface)
 			MyModesInterface = CreateWidget<UModesWidget>(this, wModesInterface);
+		if (wEconomicLevelInterface)
+			MyEconomicLevelInterface = CreateWidget<ULevelEconomicWidget>(this, wEconomicLevelInterface);
+		if (wMilitaryLevelInterface)
+			MyMilitaryLevelInterface = CreateWidget<ULevelMilitaryWidget>(this, wMilitaryLevelInterface);
 
 		if (MyTopInterface)
 			MyTopInterface->AddToViewport();
@@ -95,6 +101,10 @@ void AMousePlayerController::BeginPlay()
 			MyMapInterface->AddToViewport();
 		if (MyModesInterface)
 			MyModesInterface->AddToViewport();
+		if (MyEconomicLevelInterface)
+			MyEconomicLevelInterface->AddToViewport();
+		if (MyMilitaryLevelInterface)
+			MyMilitaryLevelInterface->AddToViewport();
 
 		if (GetSide() == Side::Blue)
 			SetColorToBlue();
@@ -293,14 +303,20 @@ void AMousePlayerController::Tick(float DeltaTime)
 
 				if (AllActorsSelected[0]->GetSide() == Side::Blue)
 					Color = FLinearColor(0.5f, 0.5f, 1.f, 1.f);
-				if (AllActorsSelected[0]->GetSide() == Side::Red)
+				else if (AllActorsSelected[0]->GetSide() == Side::Red)
 					Color = FLinearColor(1.f, 0.5f, 0.5f, 1.f);
-				if (AllActorsSelected[0]->GetSide() == Side::Neutral)
+				else
 					Color = FLinearColor(0.5f, 0.5f, 0.5f, 1.f);
 
 				if (AllActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()))
 				{
 					Title = "Stats of the units";
+
+					if (MyEconomicLevelInterface && MyMilitaryLevelInterface)
+					{
+						MyEconomicLevelInterface->SetIsLevelVisible(false);
+						MyMilitaryLevelInterface->SetIsLevelVisible(false);
+					}
 
 					if (MyModesInterface)
 					{
@@ -410,6 +426,99 @@ void AMousePlayerController::Tick(float DeltaTime)
 					MyStatInterface->SetStatsVisibility(ESlateVisibility::Hidden, ESlateVisibility::Visible);
 					if (MyModesInterface)
 						MyModesInterface->SetModesVisibility(ESlateVisibility::Hidden);
+
+					if (MyEconomicLevelInterface && MyMilitaryLevelInterface)
+					{
+						ULevelWidget* LevelInterface;
+						bool IsAnEconomicPlunderedBuilding(false);
+
+						if (Building->IsA(AEconomicBuilding::StaticClass()))
+						{
+							AEconomicBuilding* EconomicBuilding = Cast<AEconomicBuilding>(Building);
+
+							MyEconomicLevelInterface->SetIsLevelVisible(true);
+							MyMilitaryLevelInterface->SetIsLevelVisible(false);
+
+							LevelInterface = MyEconomicLevelInterface;
+
+							int NextOutput = EconomicBuilding->GetOutputInHalfASecond();
+
+							MyEconomicLevelInterface->SetIsPlundered(EconomicBuilding->GetIsPlundered());
+							if (EconomicBuilding->GetIsPlundered())
+								IsAnEconomicPlunderedBuilding = true;
+							else if (EconomicBuilding->GetLevel() < EconomicBuilding->GetMaxLevel())
+								NextOutput = EconomicBuilding->GetOutputForLevel(EconomicBuilding->GetLevel() + 1);
+
+							MyEconomicLevelInterface->SetOutput(EconomicBuilding->GetOutputInHalfASecond() * 2, NextOutput * 2);
+
+							float RelativeCurrent = (float)EconomicBuilding->GetOutputInHalfASecond() / (float)EconomicBuilding->GetOutputForLevel(EconomicBuilding->GetMaxLevel());
+							float RelativeNext = (float)NextOutput / (float)EconomicBuilding->GetOutputForLevel(EconomicBuilding->GetMaxLevel());
+
+							MyEconomicLevelInterface->SetRelativeOutput(RelativeCurrent + 0.0001f, RelativeNext + 0.0001f);
+
+							if(Building->IsA(AFoodEconomicBuilding::StaticClass()))
+								MyEconomicLevelInterface->SetBuildingToFood();
+							else if (Building->IsA(ACellsEconomicBuilding::StaticClass()))
+								MyEconomicLevelInterface->SetBuildingToCells();
+							else if (Building->IsA(AMetalEconomicBuilding::StaticClass()))
+								MyEconomicLevelInterface->SetBuildingToMetal();
+							else
+								MyEconomicLevelInterface->SetBuildingToCristals();
+						}
+						else
+						{
+							AMilitaryBuilding* MilitaryBuilding = Cast<AMilitaryBuilding>(Building);
+
+							MyEconomicLevelInterface->SetIsLevelVisible(false);
+							MyMilitaryLevelInterface->SetIsLevelVisible(true);
+
+							LevelInterface = MyMilitaryLevelInterface;
+
+							MyMilitaryLevelInterface->SetPoints(MilitaryBuilding->GetPoints());
+
+							MyMilitaryLevelInterface->SetPlayerLifeEffect(MilitaryBuilding->GetPlayerLifeZone()->GetCurrentEffectLevel(), MilitaryBuilding->GetPlayerLifeZone()->GetMaxEffectLevel());
+							MyMilitaryLevelInterface->SetPlayerSpeedEffect(MilitaryBuilding->GetPlayerSpeedZone()->GetCurrentEffectLevel(), MilitaryBuilding->GetPlayerSpeedZone()->GetMaxEffectLevel());
+							MyMilitaryLevelInterface->SetOpponentLifeEffect(MilitaryBuilding->GetOpponentLifeZone()->GetCurrentEffectLevel(), MilitaryBuilding->GetOpponentLifeZone()->GetMaxEffectLevel());
+							MyMilitaryLevelInterface->SetOpponentSpeedEffect(MilitaryBuilding->GetOpponentSpeedZone()->GetCurrentEffectLevel(), MilitaryBuilding->GetOpponentSpeedZone()->GetMaxEffectLevel());
+
+							MyMilitaryLevelInterface->SetPlayerLifeReach(MilitaryBuilding->GetPlayerLifeZone()->GetCurrentReachLevel(), MilitaryBuilding->GetPlayerLifeZone()->GetMaxReachLevel());
+							MyMilitaryLevelInterface->SetPlayerSpeedReach(MilitaryBuilding->GetPlayerSpeedZone()->GetCurrentReachLevel(), MilitaryBuilding->GetPlayerSpeedZone()->GetMaxReachLevel());
+							MyMilitaryLevelInterface->SetOpponentLifeReach(MilitaryBuilding->GetOpponentLifeZone()->GetCurrentReachLevel(), MilitaryBuilding->GetOpponentLifeZone()->GetMaxReachLevel());
+							MyMilitaryLevelInterface->SetOpponentSpeedReach(MilitaryBuilding->GetOpponentSpeedZone()->GetCurrentReachLevel(), MilitaryBuilding->GetOpponentSpeedZone()->GetMaxReachLevel());
+						}
+
+						if (Building->GetSide() == GetSide())
+							LevelInterface->SetAreDetailsVisible(true);
+						else
+							LevelInterface->SetAreDetailsVisible(false);
+
+						if (Building->GetSide() == Side::Blue)
+							LevelInterface->SetLevel(Building->GetLevel(), Building->GetMaxLevel(), FLinearColor(0.5f, 0.5f, 1.f, 1.f));
+						else if (Building->GetSide() == Side::Red)
+							LevelInterface->SetLevel(Building->GetLevel(), Building->GetMaxLevel(), FLinearColor(1.f, 0.5f, 0.5f, 1.f));
+						else
+							LevelInterface->SetLevel(Building->GetLevel(), Building->GetMaxLevel(), FLinearColor(0.5f, 0.5f, 0.5f, 1.f));
+
+						if (Building->GetLevel() < Building->GetMaxLevel() && !IsAnEconomicPlunderedBuilding)
+						{
+							LevelInterface->SetIsLevelUpVisible(true);
+
+							int Food = Building->GetCostInFoodToLevel(Building->GetLevel() + 1);
+							int Cells = Building->GetCostInCellsToLevel(Building->GetLevel() + 1);
+							int Metal = Building->GetCostInMetalToLevel(Building->GetLevel() + 1);
+							int Cristals = Building->GetCostInCristalsToLevel(Building->GetLevel() + 1);
+
+							bool IsFoodOk = Food <= State->GetAmountOfFood();
+							bool IsCellsOk = Cells <= State->GetAmountOfCells();
+							bool IsMetalOk = Metal <= State->GetAmountOfMetal();
+							bool IsCristalsOk = Cristals <= State->GetAmountOfCristals();
+
+							LevelInterface->SetRessourcesRequired(Food, Cells, Metal, Cristals, IsFoodOk, IsCellsOk, IsMetalOk, IsCristalsOk);
+							LevelInterface->SetIsLevelUpPossible(IsFoodOk && IsCellsOk && IsMetalOk && IsCristalsOk);
+						}
+						else
+							LevelInterface->SetIsLevelUpVisible(false);
+					}
 				}
 			}
 			else
@@ -417,6 +526,11 @@ void AMousePlayerController::Tick(float DeltaTime)
 				MyStatInterface->SetStatsVisibility(ESlateVisibility::Hidden, ESlateVisibility::Hidden);
 				if (MyModesInterface)
 					MyModesInterface->SetModesVisibility(ESlateVisibility::Hidden);
+				if (MyEconomicLevelInterface && MyMilitaryLevelInterface)
+				{
+					MyEconomicLevelInterface->SetIsLevelVisible(false);
+					MyMilitaryLevelInterface->SetIsLevelVisible(false);
+				}
 			}
 
 			MyStatInterface->SetPVs(FinalCurrentLife, FinalMaxLife);
@@ -655,13 +769,15 @@ void AMousePlayerController::UpdateBoxSelection(TArray<TScriptInterface<IGameEle
 	AllSelectedBefore.Append(ActorsSelectedByCurrentBox);
 	TArray<TScriptInterface<IGameElementInterface>> FinalSelection;
 
-	// Removing doubles
-	for (int i(0); i < ActorsSelected.Num(); i++)
+	// Removing doubles and invisible actors
+	TArray<TScriptInterface<IGameElementInterface>> TempSelection;
+	for (int i(0); i < NewSelection.Num(); i++)
 	{
-		int index = NewSelection.Find(ActorsSelected[i]);
-		if (index != INDEX_NONE)
-			NewSelection.RemoveAt(index);
+		int index = ActorsSelected.Find(NewSelection[i]);
+		if (index == INDEX_NONE && (NewSelection[i]->GetOpponentVisibility() || NewSelection[i]->GetSide() == PlayerSide))
+			TempSelection.Add(NewSelection[i]);
 	}
+	NewSelection = TempSelection;
 
 	//Unselection and selection
 	for (int i(0); i < ActorsSelectedByCurrentBox.Num(); i++)
@@ -690,20 +806,6 @@ void AMousePlayerController::UpdateBoxSelection(TArray<TScriptInterface<IGameEle
 
 				SpawnUnit(MyBuilding, AKnight::StaticClass());
 				}
-
-				*/
-
-
-				/*
-
-				ABuilding* MyBuilding = Cast<ABuilding>(ActorsSelected.Top().GetObject());
-
-				SetAmountOfFood(5000);
-				SetAmountOfCells(5000);
-				SetAmountOfCristals(5000);
-				SetAmountOfMetal(5000);
-
-				LevelUpBuilding(MyBuilding);
 
 				*/
 
@@ -774,9 +876,7 @@ void AMousePlayerController::UpdateBoxTargeting(TArray<TScriptInterface<IGameEle
 				{
 					TArray<AActor*> UpdatedNewTargets;
 					for (int j(0); j < NewTargets.Num(); j++)
-					{
 						UpdatedNewTargets.Add(Cast<AActor>(NewTargets[j].GetObject()));
-					}
 
 					Server_SetBoxSpecialTargets(CurrentUnit, UpdatedNewTargets);
 				}
@@ -1181,7 +1281,7 @@ bool AMousePlayerController::Server_ClearSpecialTargets_Validate(AUnit *Unit)
 }
 
 //Costing functions
-void AMousePlayerController::LevelUpBuilding(ABuilding* Building)
+void AMousePlayerController::Server_LevelUpBuilding_Implementation(ABuilding* Building)
 {
 	if (Role == ROLE_Authority && Building->GetLevel() < Building->GetMaxLevel())
 	{
@@ -1194,7 +1294,7 @@ void AMousePlayerController::LevelUpBuilding(ABuilding* Building)
 
 		if (State->GetAmountOfCells() >= CostInCells && State->GetAmountOfMetal() >= CostInMetal && State->GetAmountOfFood() >= CostInFood && State->GetAmountOfCristals() >= CostInCristals)
 		{
-			Building->Server_LevelUp();
+			Building->LevelUp();
 
 			State->SetAmountOfCells(State->GetAmountOfCells() - CostInCells);
 			State->SetAmountOfMetal(State->GetAmountOfMetal() - CostInMetal);
@@ -1202,6 +1302,10 @@ void AMousePlayerController::LevelUpBuilding(ABuilding* Building)
 			State->SetAmountOfCristals(State->GetAmountOfCristals() - CostInCristals);
 		}
 	}
+}
+bool AMousePlayerController::Server_LevelUpBuilding_Validate(ABuilding* Building)
+{
+	return true;
 }
 void AMousePlayerController::SpawnUnit(AMilitaryBuilding* Spawner, UClass* Unit)
 {
@@ -1276,6 +1380,121 @@ void AMousePlayerController::SetModeToSight()
 void AMousePlayerController::SetModeToInvisible()
 {
 	SetMode(Modes::Invisible);
+}
+
+//LevelUp
+void AMousePlayerController::LevelUp()
+{
+	if (ActorsSelected[0].GetObject()->IsA(ABuilding::StaticClass()))
+	{
+		ABuilding* Building = Cast<ABuilding>(ActorsSelected[0].GetObject());
+
+		Server_LevelUpBuilding(Building);
+	}
+}
+void AMousePlayerController::Server_LevelUpZone_Implementation(AMilitaryBuilding* MilitaryBuilding, bool IsPlayer, bool IsLife, bool IsEffect)
+{
+	if (MilitaryBuilding->GetPoints() > 0)
+	{
+		if (IsPlayer)
+		{
+			if (IsLife)
+			{
+				if (IsEffect)
+				{
+					if (MilitaryBuilding->GetPlayerLifeZone()->GetCurrentEffectLevel() < MilitaryBuilding->GetPlayerLifeZone()->GetMaxEffectLevel())
+					{
+						MilitaryBuilding->UseOnePoint();
+						MilitaryBuilding->Multicast_LevelUpPlayerLifeZoneEffect();
+					}
+				}
+				else
+				{
+					if (MilitaryBuilding->GetPlayerLifeZone()->GetCurrentReachLevel() < MilitaryBuilding->GetPlayerLifeZone()->GetMaxReachLevel())
+					{
+						MilitaryBuilding->UseOnePoint();
+						MilitaryBuilding->Multicast_LevelUpPlayerLifeZoneReach();
+					}
+				}
+			}
+			else
+			{
+				if (IsEffect)
+				{
+					if (MilitaryBuilding->GetPlayerSpeedZone()->GetCurrentEffectLevel() < MilitaryBuilding->GetPlayerSpeedZone()->GetMaxEffectLevel())
+					{
+						MilitaryBuilding->UseOnePoint();
+						MilitaryBuilding->Multicast_LevelUpPlayerSpeedZoneEffect();
+					}
+				}
+				else
+				{
+					if (MilitaryBuilding->GetPlayerSpeedZone()->GetCurrentReachLevel() < MilitaryBuilding->GetPlayerSpeedZone()->GetMaxReachLevel())
+					{
+						MilitaryBuilding->UseOnePoint();
+						MilitaryBuilding->Multicast_LevelUpPlayerSpeedZoneReach();
+					}
+				}
+			}
+		}
+		else
+		{
+			if (IsLife)
+			{
+				if (IsEffect)
+				{
+					if (MilitaryBuilding->GetOpponentLifeZone()->GetCurrentEffectLevel() < MilitaryBuilding->GetOpponentLifeZone()->GetMaxEffectLevel())
+					{
+						MilitaryBuilding->UseOnePoint();
+						MilitaryBuilding->Multicast_LevelUpOpponentLifeZoneEffect();
+					}
+				}
+				else
+				{
+					if (MilitaryBuilding->GetOpponentLifeZone()->GetCurrentReachLevel() < MilitaryBuilding->GetOpponentLifeZone()->GetMaxReachLevel())
+					{
+						MilitaryBuilding->UseOnePoint();
+						MilitaryBuilding->Multicast_LevelUpOpponentLifeZoneReach();
+					}
+				}
+			}
+			else
+			{
+				if (IsEffect)
+				{
+					if (MilitaryBuilding->GetOpponentSpeedZone()->GetCurrentEffectLevel() < MilitaryBuilding->GetOpponentSpeedZone()->GetMaxEffectLevel())
+					{
+						MilitaryBuilding->UseOnePoint();
+						MilitaryBuilding->Multicast_LevelUpOpponentSpeedZoneEffect();
+					}
+				}
+				else
+				{
+					if (MilitaryBuilding->GetOpponentSpeedZone()->GetCurrentReachLevel() < MilitaryBuilding->GetOpponentSpeedZone()->GetMaxReachLevel())
+					{
+						MilitaryBuilding->UseOnePoint();
+						MilitaryBuilding->Multicast_LevelUpOpponentSpeedZoneReach();
+					}
+				}
+			}
+		}
+	}
+}
+bool AMousePlayerController::Server_LevelUpZone_Validate(AMilitaryBuilding* MilitaryBuilding, bool IsPlayer, bool IsLife, bool IsEffect)
+{
+	if (MilitaryBuilding)
+		return true;
+	else
+		return false;
+}
+void AMousePlayerController::LevelUpZone(bool IsPlayer, bool IsLife, bool IsEffect)
+{
+	if (ActorsSelected[0] && ActorsSelected[0].GetObject()->IsA(AMilitaryBuilding::StaticClass()))
+	{
+		AMilitaryBuilding* MilitaryBuilding = Cast<AMilitaryBuilding>(ActorsSelected[0].GetObject());
+
+		Server_LevelUpZone(MilitaryBuilding, IsPlayer, IsLife, IsEffect);
+	}
 }
 
 //Replication

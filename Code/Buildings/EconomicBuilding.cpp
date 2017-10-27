@@ -9,8 +9,8 @@ AEconomicBuilding::AEconomicBuilding() : Super(), TimeSinceCounterPlunder(0.f)
 	DefaultOutputInHalfASecond = 4;
 	ActualOutputInHalfASecond = DefaultOutputInHalfASecond;
 
-	DefaultMaxLife = 1000;
-	DefaultHeal = 10;
+	DefaultMaxLife = 300;
+	DefaultHeal = 3;
 	DefaultFieldOfSight = 5.f;
 
 	ActualMaxLife = DefaultMaxLife;
@@ -56,16 +56,24 @@ int AEconomicBuilding::GetOutputInHalfASecond()
 	else
 		return ActualOutputInHalfASecond;
 }
+bool AEconomicBuilding::GetIsPlundered()
+{
+	return IsPlundered;
+}
+int AEconomicBuilding::GetOutputForLevel(unsigned int Level)
+{
+	return DefaultOutputInHalfASecond * FGenericPlatformMath::Sqrt(Level);
+}
 
 
 void AEconomicBuilding::SetLevel(unsigned int Level)
 {
-	if (IsPlundered)
+	if (!IsPlundered)
 	{
 		Super::SetLevel(Level);
 
 		if (Role == ROLE_Authority)
-			ActualOutputInHalfASecond = DefaultOutputInHalfASecond * FGenericPlatformMath::Sqrt(CurrentLevel);
+			ActualOutputInHalfASecond = GetOutputForLevel(CurrentLevel);
 	}
 }
 

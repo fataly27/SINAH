@@ -21,9 +21,9 @@ void UZone::Init(bool IsPlayer, float Reach)
 	BaseReach = Reach;
 
 	MaxReachLevel = 5;
-	SetReachLevel(5);
+	SetReachLevel(1);
 	MaxEffectLevel = 4;
-	SetEffectLevel(4);
+	SetEffectLevel(0);
 }
 
 float UZone::GetReach()
@@ -57,15 +57,30 @@ void UZone::SetEffectLevel(unsigned int Level)
 		CurrentEffectLevel = Level;
 
 	if(MyDecalMaterial)
-		MyDecalMaterial->SetScalarParameterValue("Opacity", 1.f / FMath::Sqrt(MaxEffectLevel) * FMath::Sqrt(CurrentEffectLevel));
+		MyDecalMaterial->SetScalarParameterValue("Opacity", 0.4f * CurrentEffectLevel / MaxEffectLevel);
+}
+
+unsigned int UZone::GetCurrentEffectLevel()
+{
+	return CurrentEffectLevel;
+}
+unsigned int UZone::GetCurrentReachLevel()
+{
+	return CurrentReachLevel;
+}
+unsigned int UZone::GetMaxEffectLevel()
+{
+	return MaxEffectLevel;
+}
+unsigned int UZone::GetMaxReachLevel()
+{
+	return MaxReachLevel;
 }
 
 
 //Replication
 void UZone::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
-	DOREPLIFETIME(UZone, MyDecalMaterial);
-
 	DOREPLIFETIME(UZone, IsForPlayer);
 
 	DOREPLIFETIME(UZone, BaseReach);

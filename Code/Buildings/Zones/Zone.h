@@ -21,19 +21,23 @@ class SINAH_API UZone : public UDecalComponent
 		UZone();
 		void Init(bool IsPlayer, float Reach);
 
-		virtual float GetReach();
+		float GetReach();
 
-		virtual void SetReachLevel(unsigned int Level);
-		virtual void SetEffectLevel(unsigned int Level);
-		virtual void LevelUpReach();
-		virtual void LevelUpEffect();
+		void SetReachLevel(unsigned int Level);
+		void SetEffectLevel(unsigned int Level);
+		void LevelUpReach();
+		void LevelUpEffect();
+
+		unsigned int GetCurrentEffectLevel();
+		unsigned int GetCurrentReachLevel();
+		unsigned int GetMaxEffectLevel();
+		unsigned int GetMaxReachLevel();
 
 		//Replication
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
 
 	protected:
-		UPROPERTY(Replicated)
-			UMaterialInstanceDynamic* MyDecalMaterial;
+		UMaterialInstanceDynamic* MyDecalMaterial;
 		UMaterial* BaseDecalPlayerMaterial;
 		UMaterial* BaseDecalOpponentMaterial;
 

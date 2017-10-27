@@ -23,17 +23,43 @@ class SINAH_API AMilitaryBuilding : public ABuilding
 		virtual void BeginPlay() override;
 
 		//Zones
-		virtual void ChangeDecals();
+		void ChangeDecals(bool Normal = true);
+
+		UFUNCTION(NetMulticast, Reliable)
+			void Multicast_LevelUpPlayerLifeZoneEffect();
+		UFUNCTION(NetMulticast, Reliable)
+			void Multicast_LevelUpOpponentLifeZoneEffect();
+		UFUNCTION(NetMulticast, Reliable)
+			void Multicast_LevelUpPlayerSpeedZoneEffect();
+		UFUNCTION(NetMulticast, Reliable)
+			void Multicast_LevelUpOpponentSpeedZoneEffect();
+
+		UFUNCTION(NetMulticast, Reliable)
+			void Multicast_LevelUpPlayerLifeZoneReach();
+		UFUNCTION(NetMulticast, Reliable)
+			void Multicast_LevelUpOpponentLifeZoneReach();
+		UFUNCTION(NetMulticast, Reliable)
+			void Multicast_LevelUpPlayerSpeedZoneReach();
+		UFUNCTION(NetMulticast, Reliable)
+			void Multicast_LevelUpOpponentSpeedZoneReach();
 
 		ULifeZone* GetPlayerLifeZone();
 		ULifeZone* GetOpponentLifeZone();
 		USpeedZone* GetPlayerSpeedZone();
 		USpeedZone* GetOpponentSpeedZone();
 
+		//Points
+		int GetPoints();
+		void AddPoints(unsigned int Add);
+		void UseOnePoint();
+
+		//Level
+		virtual void LevelUp() override;
+
 		//Side
 		virtual void SetSide(Side NewSide) override;
 		UFUNCTION(NetMulticast, Reliable)
-			virtual void Multicast_ChangeDecals();
+			void Multicast_ChangeDecals();
 
 		//Replication
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
@@ -47,4 +73,7 @@ class SINAH_API AMilitaryBuilding : public ABuilding
 			USpeedZone* PlayerSpeedZone;
 		UPROPERTY(Replicated)
 			USpeedZone* OpponentSpeedZone;
+
+		UPROPERTY(Replicated)
+			int Points;
 };

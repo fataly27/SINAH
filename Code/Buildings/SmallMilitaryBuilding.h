@@ -16,7 +16,7 @@ class SINAH_API ASmallMilitaryBuilding : public AMilitaryBuilding
 	public:
 		ASmallMilitaryBuilding();
 
-		virtual float GetSize();
-		virtual float GetHalfHeight();
-		virtual unsigned int GetLifeBarWidth();
+		virtual float GetSize() override;
+		virtual float GetHalfHeight() override;
+		virtual unsigned int GetLifeBarWidth() override;
 };

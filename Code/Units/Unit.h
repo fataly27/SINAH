@@ -48,29 +48,29 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		virtual Side GetSide() override;
 		virtual void SetSide(Side NewSide) override;
 		UFUNCTION(NetMulticast, Reliable)
-			virtual void Multicast_SetSide(Side NewSide);
+			void Multicast_SetSide(Side NewSide);
 
 		//Destinations
-		virtual void AddDestination(FVector Destination, FRotator Rotation);
-		virtual void ClearOneDestination();
-		virtual void ClearDestinations();
-		virtual TArray<FVector> GetDestinations();
-		virtual void Rotate();
-		virtual FVector GetLocationAfterAllMoves();
+		void AddDestination(FVector Destination, FRotator Rotation);
+		void ClearOneDestination();
+		void ClearDestinations();
+		TArray<FVector> GetDestinations();
+		void Rotate();
+		FVector GetLocationAfterAllMoves();
 
 		//Target
-		virtual void AddSpecialTargets();
-		virtual void SetBoxSpecialTargets(TArray<TScriptInterface<IGameElementInterface>> NewTargets);
-		virtual void ClearSpecialTargets();
-		virtual TArray<TScriptInterface<IGameElementInterface>> GetSpecialTargets();
-		virtual void SetOpponentsInSight(TArray<TScriptInterface<IGameElementInterface>> Opponents);
-		virtual TArray<TScriptInterface<IGameElementInterface>> GetOpponentsInSight();
-		virtual void ClearOpponentsInSight();
+		void AddSpecialTargets();
+		void SetBoxSpecialTargets(TArray<TScriptInterface<IGameElementInterface>> NewTargets);
+		void ClearSpecialTargets();
+		TArray<TScriptInterface<IGameElementInterface>> GetSpecialTargets();
+		void SetOpponentsInSight(TArray<TScriptInterface<IGameElementInterface>> Opponents);
+		TArray<TScriptInterface<IGameElementInterface>> GetOpponentsInSight();
+		void ClearOpponentsInSight();
 
 		//Attack and heal
-		virtual void Attack(const TScriptInterface<IGameElementInterface>& Target);
+		void Attack(const TScriptInterface<IGameElementInterface>& Target);
 		virtual void ReceiveDamages(int Physic, int Magic, Side AttackingSide) override;
-		virtual void Heal(int Heal);
+		void Heal(int Heal);
 
 		//Dying
 		virtual bool IsPendingKill();
@@ -82,39 +82,39 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		virtual float GetHalfHeight() override;
 		virtual unsigned int GetLifeBarWidth() override;
 		virtual float GetSize() override;
-		virtual int GetPhysicAttack();
-		virtual int GetMagicAttack();
-		virtual int GetPhysicDefense();
-		virtual int GetMagicDefense();
-		virtual float GetSpeed();
-		virtual float GetRange();
-		virtual unsigned int GetBuildingLevelRequired();
+		int GetPhysicAttack();
+		int GetMagicAttack();
+		int GetPhysicDefense();
+		int GetMagicDefense();
+		float GetSpeed();
+		float GetRange();
+		unsigned int GetBuildingLevelRequired();
 
-		virtual int GetFoodEatenInHalfASecond();
-		virtual int GetCostInFood();
-		virtual int GetCostInCells();
-		virtual int GetCostInMetal();
-		virtual int GetCostInCristals();
+		int GetFoodEatenInHalfASecond();
+		int GetCostInFood();
+		int GetCostInCells();
+		int GetCostInMetal();
+		int GetCostInCristals();
 
-		virtual void SetSpeedMultiplicator(float Multiplicator);
+		void SetSpeedMultiplicator(float Multiplicator);
 
 		//Modes and animation
-		virtual void SetMode();
-		virtual void ChangeMode(Modes Mode);
-		virtual Modes GetMode();
+		void SetMode();
+		void ChangeMode(Modes Mode);
+		Modes GetMode();
 		UFUNCTION(NetMulticast, Reliable)
-			virtual void Multicast_SetIsMoving(Action NewAction);
-		virtual void ChangeLoopingAnimation();
+			void Multicast_SetIsMoving(Action NewAction);
+		void ChangeLoopingAnimation();
 
-		virtual float GetInvisibleCoolDown();
-		virtual float GetInvisibleTime();
+		float GetInvisibleCoolDown();
+		float GetInvisibleTime();
 
 		//Visibility
 		virtual bool GetOpponentVisibility() override;
 		UFUNCTION(NetMulticast, Reliable)
-			virtual void Multicast_SetVisibility(bool Visibility, FVector Position, FRotator Rotation);
+			void Multicast_SetVisibility(bool Visibility, FVector Position, FRotator Rotation);
 		UFUNCTION(NetMulticast, Reliable)
-			virtual void Multicast_SetInvisibleAsset(bool IsInvisible);
+			void Multicast_SetInvisibleAsset(bool IsInvisible);
 		virtual FVector GetLocation();
 
 		//Replication

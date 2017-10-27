@@ -17,12 +17,12 @@ void ULifeZone::Init(bool Player)
 	if (Player)
 	{
 		Super::Init(Player, 10.f);
-		BaseLifeModifier = 50;
+		BaseLifeModifier = 20;
 	}
 	else
 	{
 		Super::Init(Player, 5.f);
-		BaseLifeModifier = 20;
+		BaseLifeModifier = 8;
 	}
 }
 

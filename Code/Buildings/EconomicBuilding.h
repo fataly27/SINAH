@@ -21,13 +21,15 @@ class SINAH_API AEconomicBuilding : public ABuilding
 		// Called every frame
 		virtual void Tick(float DeltaTime) override;
 
-		virtual int GetOutputInHalfASecond();
+		int GetOutputInHalfASecond();
+		bool GetIsPlundered();
+		int GetOutputForLevel(unsigned int Level);
 
 		virtual void SetLevel(unsigned int Level) override;
 
-		virtual float GetSize();
-		virtual float GetHalfHeight();
-		virtual unsigned int GetLifeBarWidth();
+		virtual float GetSize() override;
+		virtual float GetHalfHeight() override;
+		virtual unsigned int GetLifeBarWidth() override;
 
 		//Attack
 		virtual void ReceiveDamages(int Physic, int Magic, Side AttackingSide) override;

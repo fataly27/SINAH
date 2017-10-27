@@ -100,7 +100,17 @@ void AUnit::Tick(float DeltaTime)
 		BoxSpecialTargets = NewBoxSpecialTargets;
 
 		if (SpecialTargets.IsValidIndex(0))
-			FaceRotation(FRotationMatrix::MakeFromX(SpecialTargets[0]->GetLocation() - GetLocation()).Rotator());
+		{
+			FVector NearestTarget = SpecialTargets[0]->GetLocation();
+
+			for (int i(1); i < SpecialTargets.Num(); i++)
+			{
+				if (FVector::Dist(GetLocation(), SpecialTargets[i]->GetLocation()) < FVector::Dist(GetLocation(), NearestTarget))
+					NearestTarget = SpecialTargets[i]->GetLocation();
+			}
+
+			FaceRotation(FRotationMatrix::MakeFromX(NearestTarget - GetLocation()).Rotator());
+		}
 		else if (Destinations.IsValidIndex(0))
 			FaceRotation(FRotationMatrix::MakeFromX(Destinations[0] - GetLocation()).Rotator());
 		else if (OpponentsInSight.IsValidIndex(0))

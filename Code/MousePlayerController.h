@@ -13,6 +13,8 @@ class UMapWidget;
 class UStatWidget;
 class UUpWidget;
 class UModesWidget;
+class ULevelEconomicWidget;
+class ULevelMilitaryWidget;
 
 /**
  * 
@@ -71,7 +73,8 @@ class SINAH_API AMousePlayerController : public APlayerController
 		void ApplyZoneEffects(TArray<AMilitaryBuilding*> MilitaryBuildings, TArray<AUnit*> Units);
 
 		//Costing functions
-		void LevelUpBuilding(ABuilding* Building);
+		UFUNCTION(Server, Reliable, WithValidation)
+			void Server_LevelUpBuilding(ABuilding* Building);
 		void SpawnUnit(AMilitaryBuilding* Spawner, UClass* Unit);
 
 		UFUNCTION(Server, Reliable, WithValidation)
@@ -113,6 +116,14 @@ class SINAH_API AMousePlayerController : public APlayerController
 		void SetMode(Modes Mode);
 		UFUNCTION(Server, Reliable, WithValidation)
 			void Server_ChangeMode(AUnit* Unit, Modes Mode);
+
+		//LevelUp
+		UFUNCTION(BlueprintCallable)
+			void LevelUp();
+		UFUNCTION(BlueprintCallable)
+			void LevelUpZone(bool IsPlayer, bool IsLife, bool IsEffect);
+		UFUNCTION(Server, Reliable, WithValidation)
+			void Server_LevelUpZone(AMilitaryBuilding* MilitaryBuilding, bool IsPlayer, bool IsLife, bool IsEffect);
 
 		UTexture* UnselectedTexture;
 		UTexture* SelectedTexture;
@@ -178,4 +189,14 @@ class SINAH_API AMousePlayerController : public APlayerController
 			TSubclassOf<class UModesWidget> wModesInterface;
 		UPROPERTY(Replicated, BlueprintReadWrite, Category = "ModesInterface")
 			UModesWidget* MyModesInterface;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EconomicLevelInterface")
+			TSubclassOf<class ULevelEconomicWidget> wEconomicLevelInterface;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "EconomicLevelInterface")
+			ULevelEconomicWidget* MyEconomicLevelInterface;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MilitaryLevelInterface")
+			TSubclassOf<class ULevelMilitaryWidget> wMilitaryLevelInterface;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "MilitaryLevelInterface")
+			ULevelMilitaryWidget* MyMilitaryLevelInterface;
 };

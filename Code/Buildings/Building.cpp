@@ -144,13 +144,9 @@ void ABuilding::Heal()
 }
 
 //LevelUp
-void ABuilding::Server_LevelUp_Implementation()
+void ABuilding::LevelUp()
 {
 	SetLevel(CurrentLevel + 1);
-}
-bool ABuilding::Server_LevelUp_Validate()
-{
-	return true;
 }
 void ABuilding::SetLevel(unsigned int Level)
 {

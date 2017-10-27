@@ -28,21 +28,20 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		virtual Side GetSide() override;
 		virtual void SetSide(Side NewSide) override;
 		UFUNCTION(NetMulticast, Reliable)
-			virtual void Multicast_SetSide(Side NewSide);
+			void Multicast_SetSide(Side NewSide);
 
 		//Attack
 		virtual void ReceiveDamages(int Physic, int Magic, Side AttackingSide) override;
 
 		//Heal
-		virtual void Heal();
+		void Heal();
 
 		//Level
-		UFUNCTION(Server, Reliable, WithValidation)
-			virtual void Server_LevelUp();
+		virtual void LevelUp();
 		virtual void SetLevel(unsigned int Level);
 
 		//Dying
-		virtual bool IsPendingKill();
+		virtual bool IsPendingKill() override;
 
 		//Statistics Getters
 		virtual int GetMaxLife() override;
@@ -51,14 +50,14 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		virtual float GetHalfHeight() override;
 		virtual unsigned int GetLifeBarWidth() override;
 		virtual float GetSize() override;
-		virtual float GetHeal();
-		virtual unsigned int GetLevel();
-		virtual unsigned int GetMaxLevel();
+		float GetHeal();
+		unsigned int GetLevel();
+		unsigned int GetMaxLevel();
 
-		virtual int GetCostInFoodToLevel(int WantedLevel);
-		virtual int GetCostInCellsToLevel(int WantedLevel);
-		virtual int GetCostInMetalToLevel(int WantedLevel);
-		virtual int GetCostInCristalsToLevel(int WantedLevel);
+		int GetCostInFoodToLevel(int WantedLevel);
+		int GetCostInCellsToLevel(int WantedLevel);
+		int GetCostInMetalToLevel(int WantedLevel);
+		int GetCostInCristalsToLevel(int WantedLevel);
 
 		//Visibility
 		virtual bool GetOpponentVisibility() override;

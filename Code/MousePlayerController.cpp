@@ -282,7 +282,6 @@ void AMousePlayerController::Tick(float DeltaTime)
 
 		if (MyStatInterface)
 		{
-			FString Title("");
 			FLinearColor Color(1.f, 1.f, 1.f, 1.f);
 
 			int FinalMaxLife(0);
@@ -310,8 +309,6 @@ void AMousePlayerController::Tick(float DeltaTime)
 
 				if (AllActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()))
 				{
-					Title = "Stats of the units";
-
 					if (MyEconomicLevelInterface && MyMilitaryLevelInterface)
 					{
 						MyEconomicLevelInterface->SetIsLevelVisible(false);
@@ -414,8 +411,6 @@ void AMousePlayerController::Tick(float DeltaTime)
 				}
 				else
 				{
-					Title = "Stats of the building";
-
 					ABuilding* Building = Cast<ABuilding>(AllActorsSelected[0].GetObject());
 
 					FinalMaxLife = Building->GetMaxLife();
@@ -542,7 +537,7 @@ void AMousePlayerController::Tick(float DeltaTime)
 			MyStatInterface->SetRange(FinalRange);
 			MyStatInterface->SetFoodEaten(FinalFoodEatenInHalfASecond * 2);
 
-			MyStatInterface->SetTitle(Title, Color);
+			MyStatInterface->SetColor(Color);
 		}
 	}
 

@@ -15,7 +15,7 @@ class SINAH_API UStatWidget : public UUserWidget
 	GENERATED_BODY()
 
 	public:
-		void SetTitle(FString NewTitle, FLinearColor NewColor);
+		void SetColor(FLinearColor NewColor);
 		void SetPVs(int Current, int Max);
 		void SetHeal(int NewHeal);
 		void SetTheAttack(int Physic, int Magic);
@@ -30,28 +30,45 @@ class SINAH_API UStatWidget : public UUserWidget
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
 
 	protected:
-		UPROPERTY(BlueprintReadWrite, Category = "Stats")
-			FString Title;
-		UPROPERTY(BlueprintReadWrite, Category = "Stats")
+		UPROPERTY(BlueprintReadWrite, Category = "StatsColor")
 			FLinearColor Color;
-		UPROPERTY(BlueprintReadWrite, Category = "Stats")
+
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContent")
 			FString PVs;
-		UPROPERTY(BlueprintReadWrite, Category = "Stats")
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContent")
 			FString Heal;
-		UPROPERTY(BlueprintReadWrite, Category = "Stats")
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContent")
 			FString TheAttack;
-		UPROPERTY(BlueprintReadWrite, Category = "Stats")
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContent")
 			FString Defense;
-		UPROPERTY(BlueprintReadWrite, Category = "Stats")
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContent")
 			FString Speed;
-		UPROPERTY(BlueprintReadWrite, Category = "Stats")
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContent")
 			FString FieldOfSight;
-		UPROPERTY(BlueprintReadWrite, Category = "Stats")
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContent")
 			FString Range;
-		UPROPERTY(BlueprintReadWrite, Category = "Stats")
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContent")
 			FString FoodEaten;
-		UPROPERTY(BlueprintReadWrite, Category = "Stats")
+
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContentVisibility")
+			ESlateVisibility PVsVisibility;
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContentVisibility")
+			ESlateVisibility HealVisibility;
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContentVisibility")
+			ESlateVisibility TheAttackVisibility;
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContentVisibility")
+			ESlateVisibility DefenseVisibility;
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContentVisibility")
+			ESlateVisibility SpeedVisibility;
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContentVisibility")
+			ESlateVisibility FieldOfSightVisibility;
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContentVisibility")
+			ESlateVisibility RangeVisibility;
+		UPROPERTY(BlueprintReadWrite, Category = "StatsContentVisibility")
+			ESlateVisibility FoodEatenVisibility;
+
+		UPROPERTY(BlueprintReadWrite, Category = "StatsGlobalVisibility")
 			ESlateVisibility UnitStats;
-		UPROPERTY(BlueprintReadWrite, Category = "Stats")
+		UPROPERTY(BlueprintReadWrite, Category = "StatsGlobalVisibility")
 			ESlateVisibility BuildingStats;
 };

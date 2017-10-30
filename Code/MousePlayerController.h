@@ -15,6 +15,8 @@ class UUpWidget;
 class UModesWidget;
 class ULevelEconomicWidget;
 class ULevelMilitaryWidget;
+class USpawnWidget;
+class USpawnEntityWidget;
 
 /**
  * 
@@ -75,7 +77,8 @@ class SINAH_API AMousePlayerController : public APlayerController
 		//Costing functions
 		UFUNCTION(Server, Reliable, WithValidation)
 			void Server_LevelUpBuilding(ABuilding* Building);
-		void SpawnUnit(AMilitaryBuilding* Spawner, UClass* Unit);
+		UFUNCTION(Server, Reliable, WithValidation)
+			void Server_SpawnUnit(AMilitaryBuilding* Spawner, TSubclassOf<AUnit> Unit);
 
 		UFUNCTION(Server, Reliable, WithValidation)
 			void Server_AddDestination(AUnit *Unit, FVector Destination, FRotator Rotation);
@@ -124,6 +127,11 @@ class SINAH_API AMousePlayerController : public APlayerController
 			void LevelUpZone(bool IsPlayer, bool IsLife, bool IsEffect);
 		UFUNCTION(Server, Reliable, WithValidation)
 			void Server_LevelUpZone(AMilitaryBuilding* MilitaryBuilding, bool IsPlayer, bool IsLife, bool IsEffect);
+
+		//Spawn
+		UFUNCTION(BlueprintCallable)
+			void SpawnUnit(TSubclassOf<AUnit> Unit);
+		USpawnEntityWidget* PrepareEntity(TSubclassOf<AUnit> UnitClass);
 
 		UTexture* UnselectedTexture;
 		UTexture* SelectedTexture;
@@ -199,4 +207,14 @@ class SINAH_API AMousePlayerController : public APlayerController
 			TSubclassOf<class ULevelMilitaryWidget> wMilitaryLevelInterface;
 		UPROPERTY(Replicated, BlueprintReadWrite, Category = "MilitaryLevelInterface")
 			ULevelMilitaryWidget* MyMilitaryLevelInterface;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnInterface")
+			TSubclassOf<class USpawnWidget> wSpawnInterface;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "SpawnInterface")
+			USpawnWidget* MySpawnInterface;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnEntityInterface")
+			TSubclassOf<class USpawnEntityWidget> wSpawnEntityInterface;
+
+		TArray<USpawnEntityWidget*> SpawnEntityWidgets;
 };

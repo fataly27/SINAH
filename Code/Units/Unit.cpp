@@ -12,7 +12,7 @@ AUnit::AUnit() : MySide(Side::Neutral), Selected(false), CurrentAction(Action::I
 	bReplicates = true;
 	bReplicateMovement = true;
 
-	InvisibleLimitedTime = 15.f;
+	InvisibleLimitedTime = 0.f;
 	InvisibleCoolDown = 0.f;
 	PrepareChangingModeTime = 0.f;
 
@@ -129,6 +129,16 @@ void AUnit::Tick(float DeltaTime)
 		}
 	}
 	ChangeLoopingAnimation();
+}
+
+//Unit
+FName AUnit::GetName()
+{
+	return Name;
+}
+UTexture* AUnit::GetUnitImage()
+{
+	return UnitImage;
 }
 
 //Selection and side

@@ -39,6 +39,10 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		// Called every frame
 		virtual void Tick( float DeltaSeconds ) override;
 
+		//Unit
+		FName GetName();
+		UTexture* GetUnitImage();
+
 		//Selection
 		virtual void Select() override;
 		virtual void Unselect() override;
@@ -122,6 +126,9 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		virtual void PreReplication(IRepChangedPropertyTracker &ChangedPropertyTracker);
 
 	protected:
+		//Unit
+		FName Name;
+		UTexture* UnitImage;
 
 		//Statistics
 		UPROPERTY(Replicated)

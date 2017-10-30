@@ -22,6 +22,8 @@
 #include "Widgets/ModesWidget.h"
 #include "Widgets/LevelEconomicWidget.h"
 #include "Widgets/LevelMilitaryWidget.h"
+#include "Widgets/SpawnWidget.h"
+#include "Widgets/SpawnEntityWidget.h"
 
 #include <cmath>
 #include <algorithm>
@@ -92,6 +94,8 @@ void AMousePlayerController::BeginPlay()
 			MyEconomicLevelInterface = CreateWidget<ULevelEconomicWidget>(this, wEconomicLevelInterface);
 		if (wMilitaryLevelInterface)
 			MyMilitaryLevelInterface = CreateWidget<ULevelMilitaryWidget>(this, wMilitaryLevelInterface);
+		if (wSpawnInterface)
+			MySpawnInterface = CreateWidget<USpawnWidget>(this, wSpawnInterface);
 
 		if (MyTopInterface)
 			MyTopInterface->AddToViewport();
@@ -105,6 +109,149 @@ void AMousePlayerController::BeginPlay()
 			MyEconomicLevelInterface->AddToViewport();
 		if (MyMilitaryLevelInterface)
 			MyMilitaryLevelInterface->AddToViewport();
+
+		if (MySpawnInterface && wSpawnEntityInterface)
+		{
+			MySpawnInterface->AddToViewport();
+
+			FLinearColor Color;
+
+			if (GetSide() == Side::Blue)
+				Color = FLinearColor(0.5f, 0.5f, 1.f, 1.f);
+			else
+				Color = FLinearColor(1.f, 0.5f, 0.5f, 1.f);
+
+			TArray<TSubclassOf<AUnit>> UnitClasses;
+			UnitClasses.Add(AKnight::StaticClass());
+			// ...
+
+			TArray<TSubclassOf<AUnit>> UnitClassesLevelOne;
+			TArray<TSubclassOf<AUnit>> UnitClassesLevelTwo;
+			TArray<TSubclassOf<AUnit>> UnitClassesLevelThree;
+			TArray<TSubclassOf<AUnit>> UnitClassesLevelFour;
+			TArray<TSubclassOf<AUnit>> UnitClassesLevelFive;
+			TArray<TSubclassOf<AUnit>> UnitClassesLevelSix;
+			TArray<TSubclassOf<AUnit>> UnitClassesLevelSeven;
+
+			for (int i(0); i < UnitClasses.Num(); i++)
+			{
+				switch (Cast<AUnit>(UnitClasses[i]->GetDefaultObject())->GetBuildingLevelRequired())
+				{
+					case 1:
+					{
+						UnitClassesLevelOne.Add(UnitClasses[i]);
+						break;
+					}
+					case 2:
+					{
+						UnitClassesLevelTwo.Add(UnitClasses[i]);
+						break;
+					}
+					case 3:
+					{
+						UnitClassesLevelThree.Add(UnitClasses[i]);
+						break;
+					}
+					case 4:
+					{
+						UnitClassesLevelFour.Add(UnitClasses[i]);
+						break;
+					}
+					case 5:
+					{
+						UnitClassesLevelFive.Add(UnitClasses[i]);
+						break;
+					}
+					case 6:
+					{
+						UnitClassesLevelSix.Add(UnitClasses[i]);
+						break;
+					}
+					case 7:
+					{
+						UnitClassesLevelSeven.Add(UnitClasses[i]);
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+			}
+
+			for (int i(0); i < UnitClassesLevelOne.Num(); i++)
+			{
+				USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesLevelOne[i]);
+				SpawnEntity->SetColor(Color);
+				SpawnEntity->SetMainInterface(MySpawnInterface);
+
+				SpawnEntityWidgets.Add(SpawnEntity);
+
+				MySpawnInterface->AddEntity(SpawnEntity, 1, i / 5);
+			}
+			for (int i(0); i < UnitClassesLevelTwo.Num(); i++)
+			{
+				USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesLevelTwo[i]);
+				SpawnEntity->SetColor(Color);
+				SpawnEntity->SetMainInterface(MySpawnInterface);
+
+				SpawnEntityWidgets.Add(SpawnEntity);
+
+				MySpawnInterface->AddEntity(SpawnEntity, 2, i / 5);
+			}
+			for (int i(0); i < UnitClassesLevelThree.Num(); i++)
+			{
+				USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesLevelThree[i]);
+				SpawnEntity->SetColor(Color);
+				SpawnEntity->SetMainInterface(MySpawnInterface);
+
+				SpawnEntityWidgets.Add(SpawnEntity);
+
+				MySpawnInterface->AddEntity(SpawnEntity, 3, i / 5);
+			}
+			for (int i(0); i < UnitClassesLevelFour.Num(); i++)
+			{
+				USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesLevelFour[i]);
+				SpawnEntity->SetColor(Color);
+				SpawnEntity->SetMainInterface(MySpawnInterface);
+
+				SpawnEntityWidgets.Add(SpawnEntity);
+
+				MySpawnInterface->AddEntity(SpawnEntity, 4, i / 5);
+			}
+			for (int i(0); i < UnitClassesLevelFive.Num(); i++)
+			{
+				USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesLevelFive[i]);
+				SpawnEntity->SetColor(Color);
+				SpawnEntity->SetMainInterface(MySpawnInterface);
+
+				SpawnEntityWidgets.Add(SpawnEntity);
+
+				MySpawnInterface->AddEntity(SpawnEntity, 5, i / 5);
+			}
+			for (int i(0); i < UnitClassesLevelSix.Num(); i++)
+			{
+				USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesLevelSix[i]);
+				SpawnEntity->SetColor(Color);
+				SpawnEntity->SetMainInterface(MySpawnInterface);
+
+				SpawnEntityWidgets.Add(SpawnEntity);
+
+				MySpawnInterface->AddEntity(SpawnEntity, 6, i / 5);
+			}
+			for (int i(0); i < UnitClassesLevelSeven.Num(); i++)
+			{
+				USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesLevelSeven[i]);
+				SpawnEntity->SetColor(Color);
+				SpawnEntity->SetMainInterface(MySpawnInterface);
+
+				SpawnEntityWidgets.Add(SpawnEntity);
+
+				MySpawnInterface->AddEntity(SpawnEntity, 7, i / 5);
+			}
+
+			SpawnEntityWidgets[0]->TransferData();
+		}
 
 		if (GetSide() == Side::Blue)
 			SetColorToBlue();
@@ -408,6 +555,9 @@ void AMousePlayerController::Tick(float DeltaTime)
 						if (Unit->GetRange() > FinalRange)
 							FinalRange = Unit->GetRange();
 					}
+
+					if (MySpawnInterface)
+						MySpawnInterface->SetSpawnVisibility(false);
 				}
 				else
 				{
@@ -459,6 +609,9 @@ void AMousePlayerController::Tick(float DeltaTime)
 								MyEconomicLevelInterface->SetBuildingToMetal();
 							else
 								MyEconomicLevelInterface->SetBuildingToCristals();
+
+							if (MySpawnInterface)
+								MySpawnInterface->SetSpawnVisibility(false);
 						}
 						else
 						{
@@ -480,6 +633,19 @@ void AMousePlayerController::Tick(float DeltaTime)
 							MyMilitaryLevelInterface->SetPlayerSpeedReach(MilitaryBuilding->GetPlayerSpeedZone()->GetCurrentReachLevel(), MilitaryBuilding->GetPlayerSpeedZone()->GetMaxReachLevel());
 							MyMilitaryLevelInterface->SetOpponentLifeReach(MilitaryBuilding->GetOpponentLifeZone()->GetCurrentReachLevel(), MilitaryBuilding->GetOpponentLifeZone()->GetMaxReachLevel());
 							MyMilitaryLevelInterface->SetOpponentSpeedReach(MilitaryBuilding->GetOpponentSpeedZone()->GetCurrentReachLevel(), MilitaryBuilding->GetOpponentSpeedZone()->GetMaxReachLevel());
+
+							if (MySpawnInterface)
+							{
+								MySpawnInterface->SetSpawnVisibility(true);
+								MySpawnInterface->SetBuildingLevel(MilitaryBuilding->GetLevel());
+								MySpawnInterface->SetColor(Color);
+								MySpawnInterface->SetSpawnDetailsEnabled(State->GetAmountOfFood(), State->GetAmountOfCells(), State->GetAmountOfMetal(), State->GetAmountOfCristals());
+
+								for (int i(0); i < SpawnEntityWidgets.Num(); i++)
+								{
+									SpawnEntityWidgets[i]->SetEntityIsEnabled(MilitaryBuilding->GetLevel(), State->GetAmountOfFood(), State->GetAmountOfCells(), State->GetAmountOfMetal(), State->GetAmountOfCristals());
+								}
+							}
 						}
 
 						if (Building->GetSide() == GetSide())
@@ -488,11 +654,11 @@ void AMousePlayerController::Tick(float DeltaTime)
 							LevelInterface->SetAreDetailsVisible(false);
 
 						if (Building->GetSide() == Side::Blue)
-							LevelInterface->SetLevel(Building->GetLevel(), Building->GetMaxLevel(), FLinearColor(0.5f, 0.5f, 1.f, 1.f));
+							LevelInterface->SetLevel(Building->GetLevel(), Building->GetMaxLevel(), Color);
 						else if (Building->GetSide() == Side::Red)
-							LevelInterface->SetLevel(Building->GetLevel(), Building->GetMaxLevel(), FLinearColor(1.f, 0.5f, 0.5f, 1.f));
+							LevelInterface->SetLevel(Building->GetLevel(), Building->GetMaxLevel(), Color);
 						else
-							LevelInterface->SetLevel(Building->GetLevel(), Building->GetMaxLevel(), FLinearColor(0.5f, 0.5f, 0.5f, 1.f));
+							LevelInterface->SetLevel(Building->GetLevel(), Building->GetMaxLevel(), Color);
 
 						if (Building->GetLevel() < Building->GetMaxLevel() && !IsAnEconomicPlunderedBuilding)
 						{
@@ -521,6 +687,8 @@ void AMousePlayerController::Tick(float DeltaTime)
 				MyStatInterface->SetStatsVisibility(ESlateVisibility::Hidden, ESlateVisibility::Hidden);
 				if (MyModesInterface)
 					MyModesInterface->SetModesVisibility(ESlateVisibility::Hidden);
+				if (MySpawnInterface)
+					MySpawnInterface->SetSpawnVisibility(false);
 				if (MyEconomicLevelInterface && MyMilitaryLevelInterface)
 				{
 					MyEconomicLevelInterface->SetIsLevelVisible(false);
@@ -1302,9 +1470,9 @@ bool AMousePlayerController::Server_LevelUpBuilding_Validate(ABuilding* Building
 {
 	return true;
 }
-void AMousePlayerController::SpawnUnit(AMilitaryBuilding* Spawner, UClass* Unit)
+void AMousePlayerController::Server_SpawnUnit_Implementation(AMilitaryBuilding* Spawner, TSubclassOf<AUnit> Unit)
 {
-	if (Role == ROLE_Authority && Spawner->GetSide() == PlayerSide && Unit->IsChildOf(AUnit::StaticClass()) && Spawner->GetLevel() >= Cast<AUnit>(Unit->GetDefaultObject())->GetBuildingLevelRequired())
+	if (Role == ROLE_Authority && Spawner->GetSide() == PlayerSide && Spawner->GetLevel() >= Cast<AUnit>(Unit->GetDefaultObject())->GetBuildingLevelRequired())
 	{
 		int CostInCells = Cast<AUnit>(Unit->GetDefaultObject())->GetCostInCells();
 		int CostInMetal = Cast<AUnit>(Unit->GetDefaultObject())->GetCostInMetal();
@@ -1323,15 +1491,22 @@ void AMousePlayerController::SpawnUnit(AMilitaryBuilding* Spawner, UClass* Unit)
 				FRotator Rotation(0.f, 0.f, 0.f);
 
 				AUnit* NewUnit = GetWorld()->SpawnActor<AUnit>(Unit, Position, Rotation);
-				NewUnit->SetSide(PlayerSide);
+				if (NewUnit)
+				{
+					NewUnit->SetSide(PlayerSide);
 
-				State->SetAmountOfCells(State->GetAmountOfCells() - CostInCells);
-				State->SetAmountOfMetal(State->GetAmountOfMetal() - CostInMetal);
-				State->SetAmountOfFood(State->GetAmountOfFood() - CostInFood);
-				State->SetAmountOfCristals(State->GetAmountOfCristals() - CostInCristals);
+					State->SetAmountOfCells(State->GetAmountOfCells() - CostInCells);
+					State->SetAmountOfMetal(State->GetAmountOfMetal() - CostInMetal);
+					State->SetAmountOfFood(State->GetAmountOfFood() - CostInFood);
+					State->SetAmountOfCristals(State->GetAmountOfCristals() - CostInCristals);
+				}
 			}
 		}
 	}
+}
+bool AMousePlayerController::Server_SpawnUnit_Validate(AMilitaryBuilding* Spawner, TSubclassOf<AUnit> Unit)
+{
+	return true;
 }
 
 //Modes
@@ -1490,6 +1665,36 @@ void AMousePlayerController::LevelUpZone(bool IsPlayer, bool IsLife, bool IsEffe
 
 		Server_LevelUpZone(MilitaryBuilding, IsPlayer, IsLife, IsEffect);
 	}
+}
+
+//Spawn
+void AMousePlayerController::SpawnUnit(TSubclassOf<AUnit> Unit)
+{
+	if (ActorsSelected[0].GetObject()->IsA(AMilitaryBuilding::StaticClass()))
+	{
+		AMilitaryBuilding* Building = Cast<AMilitaryBuilding>(ActorsSelected[0].GetObject());
+
+		Server_SpawnUnit(Building, Unit);
+	}
+}
+USpawnEntityWidget* AMousePlayerController::PrepareEntity(TSubclassOf<AUnit> UnitClass)
+{
+	USpawnEntityWidget* SpawnEntity = CreateWidget<USpawnEntityWidget>(this, wSpawnEntityInterface);
+	AUnit* UnitDefaultObject = Cast<AUnit>(UnitClass->GetDefaultObject());
+
+	SpawnEntity->SetUnit(UnitClass, UnitDefaultObject->GetName(), UnitDefaultObject->GetUnitImage());
+	SpawnEntity->SetRessourcesRequired(UnitDefaultObject->GetCostInFood(), UnitDefaultObject->GetCostInCells(), UnitDefaultObject->GetCostInMetal(), UnitDefaultObject->GetCostInCristals());
+
+	SpawnEntity->SetLevelRequired(UnitDefaultObject->GetBuildingLevelRequired());
+	SpawnEntity->SetPVs(UnitDefaultObject->GetMaxLife());
+	SpawnEntity->SetTheAttack(UnitDefaultObject->GetPhysicAttack(), UnitDefaultObject->GetMagicAttack());
+	SpawnEntity->SetDefense(UnitDefaultObject->GetPhysicDefense(), UnitDefaultObject->GetMagicDefense());
+	SpawnEntity->SetSpeed(UnitDefaultObject->GetSpeed());
+	SpawnEntity->SetFieldOfSight(UnitDefaultObject->GetFieldOfSight());
+	SpawnEntity->SetRange(UnitDefaultObject->GetRange());
+	SpawnEntity->SetFoodEaten(UnitDefaultObject->GetFoodEatenInHalfASecond());
+
+	return SpawnEntity;
 }
 
 //Replication

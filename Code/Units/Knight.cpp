@@ -5,6 +5,8 @@
 
 AKnight::AKnight() : Super()
 {
+	Name = FName(TEXT("Paladin"));
+
 	DefaultMaxLife = 300;
 	DefaultPhysicAttack = 20;
 	DefaultMagicAttack = 0;
@@ -63,6 +65,9 @@ AKnight::AKnight() : Super()
 	GetCapsuleComponent()->SetCapsuleRadius(50.0f);
 	GetCapsuleComponent()->SetCapsuleHalfHeight(88.f);
 	GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -88.f));
+
+	static ConstructorHelpers::FObjectFinder<UTexture> ImageAsset(TEXT("Texture'/Game/Textures/Units/Paladin.Paladin'"));
+	UnitImage = ImageAsset.Object;
 }
 
 float AKnight::GetSize()

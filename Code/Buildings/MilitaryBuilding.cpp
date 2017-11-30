@@ -171,8 +171,9 @@ void AMilitaryBuilding::SetSide(Side NewSide)
 		OpponentSpeedZone->SetReachLevel(1);
 		OpponentSpeedZone->SetEffectLevel(0);
 
-		Points = 2;
 	}
+
+	Points = 2;
 	
 	Multicast_ChangeDecals();
 }

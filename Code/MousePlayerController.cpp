@@ -853,6 +853,17 @@ void AMousePlayerController::AddDirect()
 	if (BoxDisplayed == TypeBox::Target && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
 	{
 		TArray<TScriptInterface<IGameElementInterface>> NewTargets = HUD->GetActorsBeingSelected();
+
+		TArray<TScriptInterface<IGameElementInterface>> TempNewTargets;
+		for (int i(0); i < NewTargets.Num(); i++)
+		{
+			if (NewTargets[i]->GetSide() != GetSide())
+			{
+				TempNewTargets.Add(NewTargets[i]);
+			}
+		}
+		NewTargets = TempNewTargets;
+
 		UpdateBoxTargeting(NewTargets, true);
 
 		if (NewTargets.Num() == 0 && HUD->IsBoxTiny())
@@ -956,22 +967,6 @@ void AMousePlayerController::UpdateBoxSelection(TArray<TScriptInterface<IGameEle
 			// Si le premier acteur sélectionné est un bâtiment, on le supprime de la sélection
 			if (ActorsSelected.IsValidIndex(0) && ActorsSelected.Top().GetObject()->IsA(ABuilding::StaticClass()))
 			{
-				/*
-
-				if (ActorsSelected.Top().GetObject()->IsA(AMilitaryBuilding::StaticClass()))
-				{
-				AMilitaryBuilding* MyBuilding = Cast<AMilitaryBuilding>(ActorsSelected.Top().GetObject());
-
-				SetAmountOfFood(50);
-				SetAmountOfCells(50);
-				SetAmountOfCristals(50);
-				SetAmountOfMetal(50);
-
-				SpawnUnit(MyBuilding, AKnight::StaticClass());
-				}
-
-				*/
-
 				ActorsSelected[0]->Unselect();
 				ActorsSelected.RemoveAt(0);
 			}
@@ -1472,7 +1467,7 @@ bool AMousePlayerController::Server_LevelUpBuilding_Validate(ABuilding* Building
 }
 void AMousePlayerController::Server_SpawnUnit_Implementation(AMilitaryBuilding* Spawner, TSubclassOf<AUnit> Unit)
 {
-	if (Role == ROLE_Authority && Spawner->GetSide() == PlayerSide && Spawner->GetLevel() >= Cast<AUnit>(Unit->GetDefaultObject())->GetBuildingLevelRequired())
+	if (Spawner->GetSide() == PlayerSide && Spawner->GetLevel() >= Cast<AUnit>(Unit->GetDefaultObject())->GetBuildingLevelRequired())
 	{
 		int CostInCells = Cast<AUnit>(Unit->GetDefaultObject())->GetCostInCells();
 		int CostInMetal = Cast<AUnit>(Unit->GetDefaultObject())->GetCostInMetal();
@@ -1483,22 +1478,30 @@ void AMousePlayerController::Server_SpawnUnit_Implementation(AMilitaryBuilding* 
 
 		if (State->GetAmountOfCells() >= CostInCells && State->GetAmountOfMetal() >= CostInMetal && State->GetAmountOfFood() >= CostInFood && State->GetAmountOfCristals() >= CostInCristals)
 		{
-			FNavLocation Location;
+			AUnit* NewUnit = NULL;
 
-			if (GetWorld()->GetNavigationSystem()->ProjectPointToNavigation(Spawner->GetLocation(), Location, FVector(Spawner->GetSize() + 50.f, Spawner->GetSize() + 50.f, 500.f)))
+			for (int i(0); i < 30 && !NewUnit; i++)
 			{
-				FVector Position(Location.Location.X, Location.Location.Y, Location.Location.Z + Cast<AUnit>(Unit->GetDefaultObject())->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
-				FRotator Rotation(0.f, 0.f, 0.f);
+				FNavLocation Location;
 
-				AUnit* NewUnit = GetWorld()->SpawnActor<AUnit>(Unit, Position, Rotation);
-				if (NewUnit)
+				FVector TrySpawnLocation = Spawner->GetLocation();
+				TrySpawnLocation.Y += Spawner->GetSize() + FMath::FRandRange(250.f, 1000.f);
+
+				if (GetWorld()->GetNavigationSystem()->ProjectPointToNavigation(TrySpawnLocation, Location, FVector(50.f, 50.f, 500.f)))
 				{
-					NewUnit->SetSide(PlayerSide);
+					FVector Position(Location.Location.X, Location.Location.Y, Location.Location.Z + Cast<AUnit>(Unit->GetDefaultObject())->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+					FRotator Rotation(0.f, 0.f, 0.f);
 
-					State->SetAmountOfCells(State->GetAmountOfCells() - CostInCells);
-					State->SetAmountOfMetal(State->GetAmountOfMetal() - CostInMetal);
-					State->SetAmountOfFood(State->GetAmountOfFood() - CostInFood);
-					State->SetAmountOfCristals(State->GetAmountOfCristals() - CostInCristals);
+					NewUnit = GetWorld()->SpawnActor<AUnit>(Unit, Position, Rotation);
+					if (NewUnit)
+					{
+						NewUnit->SetSide(PlayerSide);
+
+						State->SetAmountOfCells(State->GetAmountOfCells() - CostInCells);
+						State->SetAmountOfMetal(State->GetAmountOfMetal() - CostInMetal);
+						State->SetAmountOfFood(State->GetAmountOfFood() - CostInFood);
+						State->SetAmountOfCristals(State->GetAmountOfCristals() - CostInCristals);
+					}
 				}
 			}
 		}

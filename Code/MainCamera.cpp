@@ -5,7 +5,7 @@
 
 
 // Sets default values
-AMainCamera::AMainCamera() : ZoomMin(15.f), ZoomMax(45.f), XMin(-50.f), XMax(40.f), YMin(-45.f), YMax(45.f), DefaultZoom(33.f), Angle(40.f), MoveScale(300.f), ZoomScale(100.f), CurrentLocation(0.f, 0.f, 0.f), Right(0.f, 0.f, 0.f), Forward(0.f, 0.f, 0.f)
+AMainCamera::AMainCamera() : ZoomMin(15.f), ZoomMax(45.f), XMin(-60.f), XMax(50.f), YMin(-55.f), YMax(55.f), DefaultZoom(33.f), Angle(40.f), MoveScale(250.f), ZoomScale(100.f), CurrentLocation(0.f, 0.f, 0.f), Right(0.f, 0.f, 0.f), Forward(0.f, 0.f, 0.f)
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -35,22 +35,33 @@ void AMainCamera::BeginPlay()
 	Super::BeginPlay();
 
 	FRotator Rotation;
+	FVector Location = -GetActorForwardVector() * CurrentZoom * ZoomScale;
 
 	if (Role == ROLE_Authority)
 	{
+		Right.X = 1.0f;
 		Right.Y = 1.0f;
 		Forward.X = 1.0f;
-		Rotation = FRotator(-90.0f + Angle, 0.0f, 0.0f);
+		Forward.Y = -1.0f;
+		Rotation = FRotator(-90.0f + Angle, -45.f, 0.f);
+
+		CurrentLocation.X -= 11000.f;
+		CurrentLocation.Y += 11000.f;
 	}
 	else
 	{
+		Right.X = -1.0f;
 		Right.Y = -1.0f;
 		Forward.X = -1.0f;
-		Rotation = FRotator(-90.0f - Angle, 0.0f, 180.0f);
+		Forward.Y = 1.0f;
+		Rotation = FRotator(-90.0f - Angle, -45.f, 180.f);
+
+		CurrentLocation.X += 11000.f;
+		CurrentLocation.Y -= 11000.f;
 	}
 
-	this->SetActorRotation(Rotation);
-	this->SetActorLocation(-GetActorForwardVector() * CurrentZoom * ZoomScale);
+	SetActorRotation(Rotation);
+	SetActorLocation(CurrentLocation - GetActorForwardVector() * CurrentZoom * ZoomScale);
 }
 
 // Called every frame

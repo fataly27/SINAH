@@ -178,7 +178,7 @@ void AUnit::Multicast_SetSide_Implementation(Side NewSide)
 	else
 		Color = STENCIL_GREY_OUTLINE
 
-		GetMesh()->SetCustomDepthStencilValue(Color);
+	GetMesh()->SetCustomDepthStencilValue(Color);
 }
 Side AUnit::GetSide()
 {

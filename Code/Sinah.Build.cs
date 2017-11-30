@@ -4,7 +4,7 @@ using UnrealBuildTool;
 
 public class Sinah : ModuleRules
 {
-	public Sinah(TargetInfo Target)
+	public Sinah(ReadOnlyTargetRules ROTargetRules) : base(ROTargetRules)
 	{
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "RHI", "RenderCore" });
 
@@ -14,13 +14,7 @@ public class Sinah : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[] { "UMG", "Slate", "SlateCore" });
 		
 		// Uncomment if you are using online features
-		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
-		// if ((Target.Platform == UnrealTargetPlatform.Win32) || (Target.Platform == UnrealTargetPlatform.Win64))
-		// {
-		//		if (UEBuildConfiguration.bCompileSteamOSS == true)
-		//		{
-		//			DynamicallyLoadedModuleNames.Add("OnlineSubsystemSteam");
-		//		}
-		// }
+		PrivateDependencyModuleNames.AddRange(new string[] {"OnlineSubsystem", "OnlineSubsystemUtils"});
+		DynamicallyLoadedModuleNames.Add("OnlineSubsystemSteam");
 	}
 }

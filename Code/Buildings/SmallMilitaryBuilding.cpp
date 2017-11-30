@@ -31,7 +31,7 @@ ASmallMilitaryBuilding::ASmallMilitaryBuilding() : Super()
 
 float ASmallMilitaryBuilding::GetSize()
 {
-	return 300.f;
+	return 354.f;
 }
 float ASmallMilitaryBuilding::GetHalfHeight()
 {

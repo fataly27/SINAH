@@ -32,7 +32,7 @@ void AMultiplayerGameState::Tick(float DeltaTime)
 	}
 
 	TActorIterator<AMilitaryBuilding> Building(GetWorld());
-	Side FirstSide;
+	Side FirstSide = Side::Neutral;
 	bool IsGameEnded(true);
 	bool FirstTime(true);
 	for (Building; Building; ++Building)

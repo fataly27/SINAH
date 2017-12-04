@@ -6,7 +6,7 @@
 #include "GameElementInterface.h"
 
 
-AMultiplayerGameState::AMultiplayerGameState() : Super(), GameBegan(false), StateInfo("Waiting for your opponent"), CountDown(-1.f), CurrentTime(0.f)
+AMultiplayerGameState::AMultiplayerGameState() : Super(), GameBegan(false), StateInfo("Waiting for your opponent"), CountDown(-1.f), CurrentTime(0.f), Winner(Side::Neutral)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -39,10 +39,10 @@ void AMultiplayerGameState::Tick(float DeltaTime)
 	{
 		if (!FirstTime)
 		{
-			if (Building->GetSide() != FirstSide)
+			if (Building->GetSide() != FirstSide && Building->GetSide() != Side::Neutral)
 				IsGameEnded = false;
 		}
-		else
+		else if (Building->GetSide() != Side::Neutral)
 		{
 			FirstTime = false;
 			FirstSide = Building->GetSide();
@@ -55,11 +55,18 @@ void AMultiplayerGameState::Tick(float DeltaTime)
 	if (IsGameEnded)
 	{
 		GameBegan = false;
+		GameEnded = true;
 
-		if(FirstSide == Side::Blue)
+		if (FirstSide == Side::Blue)
+		{
 			SetStatusInfo("Blue player has won !");
+			Winner = Side::Blue;
+		}
 		else if (FirstSide == Side::Red)
+		{
 			SetStatusInfo("Red player has won !");
+			Winner = Side::Red;
+		}
 	}
 }
 

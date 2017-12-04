@@ -133,6 +133,12 @@ class SINAH_API AMousePlayerController : public APlayerController
 			void SpawnUnit(TSubclassOf<AUnit> Unit);
 		USpawnEntityWidget* PrepareEntity(TSubclassOf<AUnit> UnitClass);
 
+		//Give in
+		UFUNCTION(BlueprintCallable)
+			void GiveIn();
+		UFUNCTION(Server, Reliable, WithValidation)
+			void Server_GiveIn();
+
 		UTexture* UnselectedTexture;
 		UTexture* SelectedTexture;
 		UTexture* SelectedAmidSeveralTexture;

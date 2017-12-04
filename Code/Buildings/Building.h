@@ -77,7 +77,8 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 
 		//Level
 		unsigned int LevelMax;
-		unsigned int CurrentLevel;
+		UPROPERTY(Replicated)
+			unsigned int CurrentLevel;
 		TArray<int> COST_IN_FOOD;
 		TArray<int> COST_IN_CELLS;
 		TArray<int> COST_IN_METAL;

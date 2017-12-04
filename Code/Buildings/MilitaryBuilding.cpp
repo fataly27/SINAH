@@ -159,27 +159,27 @@ void AMilitaryBuilding::SetSide(Side NewSide)
 {
 	Super::SetSide(NewSide);
 
-	if (Role == ROLE_Authority)
-	{
-		PlayerLifeZone->SetReachLevel(1);
-		PlayerLifeZone->SetEffectLevel(0);
-		PlayerSpeedZone->SetReachLevel(1);
-		PlayerSpeedZone->SetEffectLevel(0);
-
-		OpponentLifeZone->SetReachLevel(1);
-		OpponentLifeZone->SetEffectLevel(0);
-		OpponentSpeedZone->SetReachLevel(1);
-		OpponentSpeedZone->SetEffectLevel(0);
-
-	}
-
 	Points = 2;
-	
+
+	Multicast_SetMilitarySide();
 	Multicast_ChangeDecals();
+}
+void AMilitaryBuilding::Multicast_SetMilitarySide_Implementation()
+{
+	PlayerLifeZone->SetReachLevel(1);
+	PlayerLifeZone->SetEffectLevel(0);
+	PlayerSpeedZone->SetReachLevel(1);
+	PlayerSpeedZone->SetEffectLevel(0);
+
+	OpponentLifeZone->SetReachLevel(1);
+	OpponentLifeZone->SetEffectLevel(0);
+	OpponentSpeedZone->SetReachLevel(1);
+	OpponentSpeedZone->SetEffectLevel(0);
 }
 void AMilitaryBuilding::Multicast_ChangeDecals_Implementation()
 {
-	ChangeDecals();
+	ChangeDecals(false);
+	ChangeDecals(true);
 }
 
 //Replication
@@ -187,9 +187,5 @@ void AMilitaryBuilding::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AMilitaryBuilding, PlayerLifeZone);
-	DOREPLIFETIME(AMilitaryBuilding, OpponentLifeZone);
-	DOREPLIFETIME(AMilitaryBuilding, PlayerSpeedZone);
-	DOREPLIFETIME(AMilitaryBuilding, OpponentSpeedZone);
 	DOREPLIFETIME(AMilitaryBuilding, Points);
 }

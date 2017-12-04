@@ -59,20 +59,18 @@ class SINAH_API AMilitaryBuilding : public ABuilding
 		//Side
 		virtual void SetSide(Side NewSide) override;
 		UFUNCTION(NetMulticast, Reliable)
+			void Multicast_SetMilitarySide();
+		UFUNCTION(NetMulticast, Reliable)
 			void Multicast_ChangeDecals();
 
 		//Replication
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
 
 	protected:
-		UPROPERTY(Replicated)
-			ULifeZone* PlayerLifeZone;
-		UPROPERTY(Replicated)
-			ULifeZone* OpponentLifeZone;
-		UPROPERTY(Replicated)
-			USpeedZone* PlayerSpeedZone;
-		UPROPERTY(Replicated)
-			USpeedZone* OpponentSpeedZone;
+		ULifeZone* PlayerLifeZone;
+		ULifeZone* OpponentLifeZone;
+		USpeedZone* PlayerSpeedZone;
+		USpeedZone* OpponentSpeedZone;
 
 		UPROPERTY(Replicated)
 			int Points;

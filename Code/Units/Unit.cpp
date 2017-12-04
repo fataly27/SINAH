@@ -58,14 +58,17 @@ void AUnit::BeginPlay()
 
 	SpawnDefaultController();
 
-	if ((MySide == Side::Blue && Role != ROLE_Authority) || (MySide == Side::Red && Role == ROLE_Authority))
-		SetActorHiddenInGame(!IsVisibleForOpponent);
+	if (Role == ROLE_Authority)
+		Multicast_SetVisibility(false, GetLocation(), GetActorRotation());
 }
 
 // Called every frame
 void AUnit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (Cast<AMousePlayerController>(GetWorld()->GetFirstPlayerController())->GetSide() == GetSide() && bHidden == true)
+		SetActorHiddenInGame(false);
 
 	if (Role == ROLE_Authority)
 	{
@@ -637,12 +640,11 @@ FVector AUnit::GetLocation()
 //Replication
 void AUnit::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
 	DOREPLIFETIME_CONDITION(AUnit, SpecialTargetsActors, COND_Custom);
 	DOREPLIFETIME_CONDITION(AUnit, BoxSpecialTargetsActors, COND_Custom);
 	DOREPLIFETIME_CONDITION(AUnit, Destinations, COND_Custom);
-
-	DOREPLIFETIME_CONDITION(AUnit, ReplicatedMovement, COND_Custom);
-	DOREPLIFETIME_CONDITION(AUnit, ReplicatedMovement, COND_Custom);
 
 	DOREPLIFETIME(AUnit, CurrentLife);
 	DOREPLIFETIME(AUnit, ActualMaxLife);
@@ -668,5 +670,4 @@ void AUnit::PreReplication(IRepChangedPropertyTracker &ChangedPropertyTracker)
 	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, SpecialTargetsActors, MySide == Side::Red);
 	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, BoxSpecialTargetsActors, MySide == Side::Red);
 	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, Destinations, MySide == Side::Red);
-	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, ReplicatedMovement, MySide == Side::Red || IsVisibleForOpponent);
 }

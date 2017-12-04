@@ -8,6 +8,7 @@
 ABuilding::ABuilding() : IsVisibleForOpponent(true), MySide(Side::Neutral), Selected(false)
 {
 	bReplicates = true;
+	bAlwaysRelevant = true;
 
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -251,10 +252,14 @@ FVector ABuilding::GetLocation()
 //Replication
 void ABuilding::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
 	DOREPLIFETIME(ABuilding, CurrentLife);
 	DOREPLIFETIME(ABuilding, ActualMaxLife);
 	DOREPLIFETIME(ABuilding, ActualFieldOfSight);
 	DOREPLIFETIME(ABuilding, ActualHeal);
+
+	DOREPLIFETIME(ABuilding, CurrentLevel);
 
 	DOREPLIFETIME(ABuilding, IsVisibleForOpponent);
 }

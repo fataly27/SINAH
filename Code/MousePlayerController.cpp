@@ -636,7 +636,6 @@ void AMousePlayerController::Tick(float DeltaTime)
 
 							if (MySpawnInterface)
 							{
-								MySpawnInterface->SetSpawnVisibility(true);
 								MySpawnInterface->SetBuildingLevel(MilitaryBuilding->GetLevel());
 								MySpawnInterface->SetColor(Color);
 								MySpawnInterface->SetSpawnDetailsEnabled(State->GetAmountOfFood(), State->GetAmountOfCells(), State->GetAmountOfMetal(), State->GetAmountOfCristals());
@@ -648,10 +647,19 @@ void AMousePlayerController::Tick(float DeltaTime)
 							}
 						}
 
-						if (Building->GetSide() == GetSide())
-							LevelInterface->SetAreDetailsVisible(true);
-						else
-							LevelInterface->SetAreDetailsVisible(false);
+						if (MySpawnInterface && LevelInterface)
+						{
+							if (Building->GetSide() == GetSide())
+							{
+								MySpawnInterface->SetSpawnVisibility(true);
+								LevelInterface->SetAreDetailsVisible(true);
+							}
+							else
+							{
+								MySpawnInterface->SetSpawnVisibility(false);
+								LevelInterface->SetAreDetailsVisible(false);
+							}
+						}
 
 						if (Building->GetSide() == Side::Blue)
 							LevelInterface->SetLevel(Building->GetLevel(), Building->GetMaxLevel(), Color);
@@ -1698,6 +1706,26 @@ USpawnEntityWidget* AMousePlayerController::PrepareEntity(TSubclassOf<AUnit> Uni
 	SpawnEntity->SetFoodEaten(UnitDefaultObject->GetFoodEatenInHalfASecond());
 
 	return SpawnEntity;
+}
+
+//Give in
+void AMousePlayerController::GiveIn()
+{
+	Server_GiveIn();
+}
+
+void AMousePlayerController::Server_GiveIn_Implementation()
+{
+	TActorIterator<ABuilding> Building(GetWorld());
+	for (Building; Building; ++Building)
+	{
+		if (Building->GetSide() == GetSide())
+			Building->SetSide(Side::Neutral);
+	}
+}
+bool AMousePlayerController::Server_GiveIn_Validate()
+{
+	return true;
 }
 
 //Replication

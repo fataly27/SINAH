@@ -35,6 +35,10 @@ class SINAH_API AMultiplayerGameState : public AGameState
 		UPROPERTY(Replicated)
 			bool GameBegan;
 		UPROPERTY(Replicated)
+			bool GameEnded;
+		UPROPERTY(Replicated)
+			Side Winner;
+		UPROPERTY(Replicated)
 			FString StateInfo;
 		float CurrentTime;
 		float CountDown;

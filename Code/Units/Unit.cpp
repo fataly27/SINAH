@@ -335,7 +335,7 @@ void AUnit::SetBoxSpecialTargets(TArray<TScriptInterface<IGameElementInterface>>
 				CleanedNewTargets.Add(NewTargets[i]);
 		}
 		BoxSpecialTargets = CleanedNewTargets;
-		if (CurrentMode != Modes::Attack && CurrentMode != Modes::Defense && WantedMode != Modes::Attack && WantedMode != Modes::Defense && NewTargets.Num() != 0)
+		if (CurrentMode != Modes::Attack && CurrentMode != Modes::Defense && WantedMode != Modes::Attack && WantedMode != Modes::Defense && CleanedNewTargets.Num() != 0)
 			ChangeMode(Modes::Attack);
 	}
 }

@@ -30,8 +30,6 @@ void APlayerHUD::BeginPlay()
 	Super::BeginPlay();
 
 	SetPlayerSide(Side::Blue);
-
-	
 }
 
 void APlayerHUD::DrawHUD()

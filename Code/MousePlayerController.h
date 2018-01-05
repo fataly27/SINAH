@@ -138,6 +138,7 @@ class SINAH_API AMousePlayerController : public APlayerController
 			void GiveIn();
 		UFUNCTION(Server, Reliable, WithValidation)
 			void Server_GiveIn();
+		virtual void Destroyed() override;
 
 		UTexture* UnselectedTexture;
 		UTexture* SelectedTexture;

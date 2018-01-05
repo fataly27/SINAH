@@ -125,129 +125,27 @@ void AMousePlayerController::BeginPlay()
 			UnitClasses.Add(AKnight::StaticClass());
 			// ...
 
-			TArray<TSubclassOf<AUnit>> UnitClassesLevelOne;
-			TArray<TSubclassOf<AUnit>> UnitClassesLevelTwo;
-			TArray<TSubclassOf<AUnit>> UnitClassesLevelThree;
-			TArray<TSubclassOf<AUnit>> UnitClassesLevelFour;
-			TArray<TSubclassOf<AUnit>> UnitClassesLevelFive;
-			TArray<TSubclassOf<AUnit>> UnitClassesLevelSix;
-			TArray<TSubclassOf<AUnit>> UnitClassesLevelSeven;
+			TArray<TArray<TSubclassOf<AUnit>>> UnitClassesByLevel;
+			UnitClassesByLevel.Init(TArray<TSubclassOf<AUnit>>(), 7);
 
 			for (int i(0); i < UnitClasses.Num(); i++)
 			{
-				switch (Cast<AUnit>(UnitClasses[i]->GetDefaultObject())->GetBuildingLevelRequired())
+				if (Cast<AUnit>(UnitClasses[i]->GetDefaultObject())->GetBuildingLevelRequired() <= 7)
+				UnitClassesByLevel[Cast<AUnit>(UnitClasses[i]->GetDefaultObject())->GetBuildingLevelRequired() - 1].Add(UnitClasses[i]);
+			}
+
+			for (int n(0); n < 7; n++)
+			{
+				for (int i(0); i < UnitClassesByLevel[n].Num(); i++)
 				{
-					case 1:
-					{
-						UnitClassesLevelOne.Add(UnitClasses[i]);
-						break;
-					}
-					case 2:
-					{
-						UnitClassesLevelTwo.Add(UnitClasses[i]);
-						break;
-					}
-					case 3:
-					{
-						UnitClassesLevelThree.Add(UnitClasses[i]);
-						break;
-					}
-					case 4:
-					{
-						UnitClassesLevelFour.Add(UnitClasses[i]);
-						break;
-					}
-					case 5:
-					{
-						UnitClassesLevelFive.Add(UnitClasses[i]);
-						break;
-					}
-					case 6:
-					{
-						UnitClassesLevelSix.Add(UnitClasses[i]);
-						break;
-					}
-					case 7:
-					{
-						UnitClassesLevelSeven.Add(UnitClasses[i]);
-						break;
-					}
-					default:
-					{
-						break;
-					}
+					USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesByLevel[n][i]);
+					SpawnEntity->SetColor(Color);
+					SpawnEntity->SetMainInterface(MySpawnInterface);
+
+					SpawnEntityWidgets.Add(SpawnEntity);
+
+					MySpawnInterface->AddEntity(SpawnEntity, n + 1, i / 5);
 				}
-			}
-
-			for (int i(0); i < UnitClassesLevelOne.Num(); i++)
-			{
-				USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesLevelOne[i]);
-				SpawnEntity->SetColor(Color);
-				SpawnEntity->SetMainInterface(MySpawnInterface);
-
-				SpawnEntityWidgets.Add(SpawnEntity);
-
-				MySpawnInterface->AddEntity(SpawnEntity, 1, i / 5);
-			}
-			for (int i(0); i < UnitClassesLevelTwo.Num(); i++)
-			{
-				USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesLevelTwo[i]);
-				SpawnEntity->SetColor(Color);
-				SpawnEntity->SetMainInterface(MySpawnInterface);
-
-				SpawnEntityWidgets.Add(SpawnEntity);
-
-				MySpawnInterface->AddEntity(SpawnEntity, 2, i / 5);
-			}
-			for (int i(0); i < UnitClassesLevelThree.Num(); i++)
-			{
-				USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesLevelThree[i]);
-				SpawnEntity->SetColor(Color);
-				SpawnEntity->SetMainInterface(MySpawnInterface);
-
-				SpawnEntityWidgets.Add(SpawnEntity);
-
-				MySpawnInterface->AddEntity(SpawnEntity, 3, i / 5);
-			}
-			for (int i(0); i < UnitClassesLevelFour.Num(); i++)
-			{
-				USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesLevelFour[i]);
-				SpawnEntity->SetColor(Color);
-				SpawnEntity->SetMainInterface(MySpawnInterface);
-
-				SpawnEntityWidgets.Add(SpawnEntity);
-
-				MySpawnInterface->AddEntity(SpawnEntity, 4, i / 5);
-			}
-			for (int i(0); i < UnitClassesLevelFive.Num(); i++)
-			{
-				USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesLevelFive[i]);
-				SpawnEntity->SetColor(Color);
-				SpawnEntity->SetMainInterface(MySpawnInterface);
-
-				SpawnEntityWidgets.Add(SpawnEntity);
-
-				MySpawnInterface->AddEntity(SpawnEntity, 5, i / 5);
-			}
-			for (int i(0); i < UnitClassesLevelSix.Num(); i++)
-			{
-				USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesLevelSix[i]);
-				SpawnEntity->SetColor(Color);
-				SpawnEntity->SetMainInterface(MySpawnInterface);
-
-				SpawnEntityWidgets.Add(SpawnEntity);
-
-				MySpawnInterface->AddEntity(SpawnEntity, 6, i / 5);
-			}
-			for (int i(0); i < UnitClassesLevelSeven.Num(); i++)
-			{
-				USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesLevelSeven[i]);
-				SpawnEntity->SetColor(Color);
-				SpawnEntity->SetMainInterface(MySpawnInterface);
-
-				SpawnEntityWidgets.Add(SpawnEntity);
-
-				MySpawnInterface->AddEntity(SpawnEntity, 7, i / 5);
 			}
 
 			SpawnEntityWidgets[0]->TransferData();
@@ -296,79 +194,93 @@ void AMousePlayerController::Tick(float DeltaTime)
 		}
 	}
 
-	if (Role == ROLE_Authority && GetWorld()->GetAuthGameMode() && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
+	if (Role == ROLE_Authority)
 	{
-		TimeSinceLastHarvest += DeltaTime;
-
-		if (TimeSinceLastHarvest >= 0.5f)
+		if (!GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 		{
-			TimeSinceLastHarvest -= 0.5f;
-
-			TActorIterator<AFoodEconomicBuilding> Food(GetWorld());
-			int AmountOfFoodToAdd(0);
-			for (Food; Food; ++Food)
-			{
-				if (Food->GetSide() == PlayerSide)
-					AmountOfFoodToAdd += Food->GetOutputInHalfASecond();
-			}
-
-			TActorIterator<ACristalsEconomicBuilding> Cristals(GetWorld());
-			int AmountOfCristalsToAdd(0);
-			for (Cristals; Cristals; ++Cristals)
-			{
-				if (Cristals->GetSide() == PlayerSide)
-					AmountOfCristalsToAdd += Cristals->GetOutputInHalfASecond();
-			}
-
-			TActorIterator<ACellsEconomicBuilding> Cells(GetWorld());
-			int AmountOfCellsToAdd(0);
-			for (Cells; Cells; ++Cells)
-			{
-				if (Cells->GetSide() == PlayerSide)
-					AmountOfCellsToAdd += Cells->GetOutputInHalfASecond();
-			}
-
-			TActorIterator<AMetalEconomicBuilding> Metal(GetWorld());
-			int AmountOfMetalToAdd(0);
-			for (Metal; Metal; ++Metal)
-			{
-				if (Metal->GetSide() == PlayerSide)
-					AmountOfMetalToAdd += Metal->GetOutputInHalfASecond();
-			}
-
-			AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
-
-			State->SetAmountOfFood(State->GetAmountOfFood() + AmountOfFoodToAdd);
-			State->SetAmountOfMetal(State->GetAmountOfMetal() + AmountOfMetalToAdd);
-			State->SetAmountOfCells(State->GetAmountOfCells() + AmountOfCellsToAdd);
-			State->SetAmountOfCristals(State->GetAmountOfCristals() + AmountOfCristalsToAdd);
-
-			int CurrentFood(State->GetAmountOfFood());
-			int NeededFood(0);
-			int GlobalNeededFood(0);
-
 			TActorIterator<AUnit> UnitItr(GetWorld());
 			for (UnitItr; UnitItr; ++UnitItr)
 			{
-				if (UnitItr->GetSide() == GetSide())
-				{
-					int FoodNeededByUnit(UnitItr->GetFoodEatenInHalfASecond());
-
-					if (CurrentFood - NeededFood - FoodNeededByUnit >= 0)
-						NeededFood += FoodNeededByUnit;
-					else
-						UnitItr->Heal(-2 * FoodNeededByUnit);
-
-					GlobalNeededFood += FoodNeededByUnit;
-				}
+				//If the game is not active, we delete all the orders taken by units
+				UnitItr->ClearDestinations();
+				UnitItr->ClearOpponentsInSight();
+				UnitItr->ClearSpecialTargets();
 			}
+		}
+		else
+		{
+			TimeSinceLastHarvest += DeltaTime;
 
-			State->SetAmountOfFood(CurrentFood - NeededFood);
+			if (TimeSinceLastHarvest >= 0.5f)
+			{
+				TimeSinceLastHarvest -= 0.5f;
 
-			State->SetFoodChange(2 * (AmountOfFoodToAdd - GlobalNeededFood));
-			State->SetMetalChange(2 * AmountOfMetalToAdd);
-			State->SetCellsChange(2 * AmountOfCellsToAdd);
-			State->SetCristalsChange(2 * AmountOfCristalsToAdd);
+				TActorIterator<AFoodEconomicBuilding> Food(GetWorld());
+				int AmountOfFoodToAdd(0);
+				for (Food; Food; ++Food)
+				{
+					if (Food->GetSide() == PlayerSide)
+						AmountOfFoodToAdd += Food->GetOutputInHalfASecond();
+				}
+
+				TActorIterator<ACristalsEconomicBuilding> Cristals(GetWorld());
+				int AmountOfCristalsToAdd(0);
+				for (Cristals; Cristals; ++Cristals)
+				{
+					if (Cristals->GetSide() == PlayerSide)
+						AmountOfCristalsToAdd += Cristals->GetOutputInHalfASecond();
+				}
+
+				TActorIterator<ACellsEconomicBuilding> Cells(GetWorld());
+				int AmountOfCellsToAdd(0);
+				for (Cells; Cells; ++Cells)
+				{
+					if (Cells->GetSide() == PlayerSide)
+						AmountOfCellsToAdd += Cells->GetOutputInHalfASecond();
+				}
+
+				TActorIterator<AMetalEconomicBuilding> Metal(GetWorld());
+				int AmountOfMetalToAdd(0);
+				for (Metal; Metal; ++Metal)
+				{
+					if (Metal->GetSide() == PlayerSide)
+						AmountOfMetalToAdd += Metal->GetOutputInHalfASecond();
+				}
+
+				AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
+
+				State->SetAmountOfFood(State->GetAmountOfFood() + AmountOfFoodToAdd);
+				State->SetAmountOfMetal(State->GetAmountOfMetal() + AmountOfMetalToAdd);
+				State->SetAmountOfCells(State->GetAmountOfCells() + AmountOfCellsToAdd);
+				State->SetAmountOfCristals(State->GetAmountOfCristals() + AmountOfCristalsToAdd);
+
+				int CurrentFood(State->GetAmountOfFood());
+				int NeededFood(0);
+				int GlobalNeededFood(0);
+
+				TActorIterator<AUnit> UnitItr(GetWorld());
+				for (UnitItr; UnitItr; ++UnitItr)
+				{
+					if (UnitItr->GetSide() == GetSide())
+					{
+						int FoodNeededByUnit(UnitItr->GetFoodEatenInHalfASecond());
+
+						if (CurrentFood - NeededFood - FoodNeededByUnit >= 0)
+							NeededFood += FoodNeededByUnit;
+						else
+							UnitItr->Heal(-2 * FoodNeededByUnit);
+
+						GlobalNeededFood += FoodNeededByUnit;
+					}
+				}
+
+				State->SetAmountOfFood(CurrentFood - NeededFood);
+
+				State->SetFoodChange(2 * (AmountOfFoodToAdd - GlobalNeededFood));
+				State->SetMetalChange(2 * AmountOfMetalToAdd);
+				State->SetCellsChange(2 * AmountOfCellsToAdd);
+				State->SetCristalsChange(2 * AmountOfCristalsToAdd);
+			}
 		}
 	}
 
@@ -406,6 +318,9 @@ void AMousePlayerController::Tick(float DeltaTime)
 
 		AllActorsSelected.Append(ActorsSelectedByCurrentBox);
 		HUD->SetActorsSelected(AllActorsSelected);
+
+		if (AllActorsSelected.Num() == 0 && BoxDisplayed == TypeBox::Target)
+			Direct();
 
 		if (MyPawn)
 			HUD->SetZoom(MyPawn->GetZoom());
@@ -734,8 +649,6 @@ void AMousePlayerController::SetupInputComponent()
 	InputComponent->BindAction("AddDirect", IE_Pressed, this, &AMousePlayerController::StartAddDirect);
 	InputComponent->BindAction("Direct", IE_Released, this, &AMousePlayerController::Direct);
 	InputComponent->BindAction("AddDirect", IE_Released, this, &AMousePlayerController::AddDirect);
-	InputComponent->BindAction("Direct", IE_Released, this, &AMousePlayerController::Direct);
-	InputComponent->BindAction("AddDirect", IE_Released, this, &AMousePlayerController::AddDirect);
 
 	InputComponent->BindAction("OpponentView", IE_Pressed, this, &AMousePlayerController::EnableOpponentView);
 	InputComponent->BindAction("OpponentView", IE_Released, this, &AMousePlayerController::DisableOpponentView);
@@ -770,7 +683,7 @@ void AMousePlayerController::Zoom(float AxisValue)
 
 void AMousePlayerController::StartSelect()
 {
-	if (BoxDisplayed != TypeBox::Target && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
+	if (BoxDisplayed != TypeBox::Target && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		ClearSelection();
 		StartAddSelect();
@@ -778,7 +691,7 @@ void AMousePlayerController::StartSelect()
 }
 void AMousePlayerController::StartAddSelect()
 {
-	if (BoxDisplayed != TypeBox::Target && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
+	if (BoxDisplayed != TypeBox::Target && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		float LocationX;
 		float LocationY;
@@ -800,7 +713,7 @@ void AMousePlayerController::Select()
 }
 void AMousePlayerController::AddSelect()
 {
-	if (BoxDisplayed == TypeBox::Select && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
+	if (BoxDisplayed == TypeBox::Select && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		UpdateBoxSelection(HUD->GetActorsBeingSelected());
 		ActorsSelected.Append(ActorsSelectedByCurrentBox);
@@ -812,7 +725,7 @@ void AMousePlayerController::AddSelect()
 }
 void AMousePlayerController::StartDirect()
 {
-	if (BoxDisplayed != TypeBox::Select && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
+	if (BoxDisplayed != TypeBox::Select && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		for (int i(0); i < ActorsSelected.Num(); i++)
 		{
@@ -836,7 +749,7 @@ void AMousePlayerController::StartDirect()
 }
 void AMousePlayerController::StartAddDirect()
 {
-	if (BoxDisplayed != TypeBox::Select && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
+	if (BoxDisplayed != TypeBox::Select && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		float LocationX;
 		float LocationY;
@@ -858,76 +771,79 @@ void AMousePlayerController::Direct()
 }
 void AMousePlayerController::AddDirect()
 {
-	if (BoxDisplayed == TypeBox::Target && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
+	if (BoxDisplayed == TypeBox::Target && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
-		TArray<TScriptInterface<IGameElementInterface>> NewTargets = HUD->GetActorsBeingSelected();
-
-		TArray<TScriptInterface<IGameElementInterface>> TempNewTargets;
-		for (int i(0); i < NewTargets.Num(); i++)
+		if (ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()))
 		{
-			if (NewTargets[i]->GetSide() != GetSide())
+			TArray<TScriptInterface<IGameElementInterface>> NewTargets = HUD->GetActorsBeingSelected();
+
+			TArray<TScriptInterface<IGameElementInterface>> TempNewTargets;
+			for (int i(0); i < NewTargets.Num(); i++)
 			{
-				TempNewTargets.Add(NewTargets[i]);
-			}
-		}
-		NewTargets = TempNewTargets;
-
-		UpdateBoxTargeting(NewTargets, true);
-
-		if (NewTargets.Num() == 0 && HUD->IsBoxTiny())
-		{
-			FHitResult HitResult;
-			GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1), false, HitResult);
-
-			if (HitResult.bBlockingHit)
-			{
-				//Creates a formation with the units
-
-				TArray<AUnit*> Units;
-				FVector Direction(0.f);
-				for (int i(0); i < ActorsSelected.Num(); i++)
+				if (NewTargets[i]->GetSide() != GetSide())
 				{
-					AUnit* CurrentUnit = Cast<AUnit>(ActorsSelected[i].GetObject());
-					if (CurrentUnit->GetSide() == PlayerSide && CurrentUnit->GetMode() != Modes::Defense)
-					{
-						Units.Add(CurrentUnit);
-						Direction += HitResult.ImpactPoint - CurrentUnit->GetLocationAfterAllMoves();
-					}
+					TempNewTargets.Add(NewTargets[i]);
 				}
-				Direction.Normalize();
-				FRotator Rotation = Direction.Rotation();
+			}
+			NewTargets = TempNewTargets;
 
-				int NumberUnits = Units.Num();
-				int NumberLines = FMath::RoundToZero(FGenericPlatformMath::Sqrt(NumberUnits + 1)) - 1;
-				if (NumberLines == 0)
-					NumberLines++;
-				int NumberColumns = FMath::DivideAndRoundUp(NumberUnits, NumberLines);
+			UpdateBoxTargeting(NewTargets, true);
 
-				float MidWidth = 250.f * (NumberColumns - 1) / 2;
+			if (NewTargets.Num() == 0 && HUD->IsBoxTiny())
+			{
+				FHitResult HitResult;
+				GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1), false, HitResult);
 
-				FVector2D Position(0.f, MidWidth);
-				int k = 0;
-				for (int i(0); i < NumberLines; i++)
+				if (HitResult.bBlockingHit)
 				{
-					if (i == (NumberLines - 1) && NumberUnits % NumberLines != 0)
+					//Creates a formation with the units
+
+					TArray<AUnit*> Units;
+					FVector Direction(0.f);
+					for (int i(0); i < ActorsSelected.Num(); i++)
 					{
-						NumberColumns = NumberUnits % NumberColumns;
-						MidWidth = 250.f * (NumberColumns - 1) / 2;
+						AUnit* CurrentUnit = Cast<AUnit>(ActorsSelected[i].GetObject());
+						if (CurrentUnit->GetSide() == PlayerSide && CurrentUnit->GetMode() != Modes::Defense)
+						{
+							Units.Add(CurrentUnit);
+							Direction += HitResult.ImpactPoint - CurrentUnit->GetLocationAfterAllMoves();
+						}
 					}
-					Position.Y = MidWidth;
+					Direction.Normalize();
+					FRotator Rotation = Direction.Rotation();
 
-					for (int j(0); j < NumberColumns; j++)
+					int NumberUnits = Units.Num();
+					int NumberLines = FMath::RoundToZero(FGenericPlatformMath::Sqrt(NumberUnits + 1)) - 1;
+					if (NumberLines == 0)
+						NumberLines++;
+					int NumberColumns = FMath::DivideAndRoundUp(NumberUnits, NumberLines);
+
+					float MidWidth = 250.f * (NumberColumns - 1) / 2;
+
+					FVector2D Position(0.f, MidWidth);
+					int k = 0;
+					for (int i(0); i < NumberLines; i++)
 					{
-						if (PlayerSide == Side::Blue)
-							Units[k]->AddDestination(HitResult.ImpactPoint + FVector(Position.GetRotated(Rotation.Yaw), 0.f), Rotation);
-						else if (PlayerSide == Side::Red)
-							Server_AddDestination(Units[k], HitResult.ImpactPoint + FVector(Position.GetRotated(Rotation.Yaw), 0.f), Rotation);
+						if (i == (NumberLines - 1) && NumberUnits % NumberLines != 0)
+						{
+							NumberColumns = NumberUnits % NumberColumns;
+							MidWidth = 250.f * (NumberColumns - 1) / 2;
+						}
+						Position.Y = MidWidth;
 
-						Position.Y -= 250.f;
-						k++;
+						for (int j(0); j < NumberColumns; j++)
+						{
+							if (PlayerSide == Side::Blue)
+								Units[k]->AddDestination(HitResult.ImpactPoint + FVector(Position.GetRotated(Rotation.Yaw), 0.f), Rotation);
+							else if (PlayerSide == Side::Red)
+								Server_AddDestination(Units[k], HitResult.ImpactPoint + FVector(Position.GetRotated(Rotation.Yaw), 0.f), Rotation);
+
+							Position.Y -= 250.f;
+							k++;
+						}
+
+						Position.X -= 250.f;
 					}
-
-					Position.X -= 250.f;
 				}
 			}
 		}
@@ -1122,7 +1038,7 @@ void AMousePlayerController::FogOfWar()
 
 
 	bool ShouldBeVisible(false);
-	if (Role == ROLE_Authority)
+	if (Role == ROLE_Authority && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		ApplyZoneEffects(MilitaryBuildings, Units);
 
@@ -1369,7 +1285,7 @@ void AMousePlayerController::UpdateTextureRegions(UTexture2D* Texture, int32 Mip
 }
 void AMousePlayerController::ApplyZoneEffects(TArray<AMilitaryBuilding*> MilitaryBuildings, TArray<AUnit*> Units)
 {
-	if (Role == ROLE_Authority && GetWorld()->GetAuthGameMode() && GetWorld()->GetGameState<AMultiplayerGameState>()->DidGameBegin())
+	if (Role == ROLE_Authority && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		for (int j(0); j < Units.Num(); j++)
 		{
@@ -1726,6 +1642,13 @@ void AMousePlayerController::Server_GiveIn_Implementation()
 bool AMousePlayerController::Server_GiveIn_Validate()
 {
 	return true;
+}
+void AMousePlayerController::Destroyed()
+{
+	if (Role == ROLE_Authority && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
+		Server_GiveIn();
+
+	Super::Destroyed();
 }
 
 //Replication

@@ -17,12 +17,21 @@ AMultiplayerSinahMode::AMultiplayerSinahMode()
 	GameStateClass = AMultiplayerGameState::StaticClass();
 }
 
-void AMultiplayerSinahMode::PostLogin(APlayerController* NewPlayer)
+void AMultiplayerSinahMode::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
 {
-	Super::PostLogin(NewPlayer);
+	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
 
-	if(NumPlayers == 2)
+	if (NumPlayers == 2 && !HasMatchEnded() && GetMatchState() != "Aborted")
 		GetGameState<AMultiplayerGameState>()->PreBeginGame();
+}
+
+void AMultiplayerSinahMode::HandleMatchHasEnded()
+{
+	Super::HandleMatchHasEnded();
+}
+void AMultiplayerSinahMode::HandleLeavingMap()
+{
+	Super::HandleLeavingMap();
 }
 
 Side AMultiplayerSinahMode::GetPlayerSide(int ID)

@@ -19,7 +19,7 @@ class SINAH_API AMultiplayerGameState : public AGameState
 
 		void Tick(float DeltaTime) override;
 
-		bool DidGameBegin();
+		bool IsGameActive();
 		void PreBeginGame();
 		void BeginGame();
 
@@ -33,13 +33,12 @@ class SINAH_API AMultiplayerGameState : public AGameState
 
 	private:
 		UPROPERTY(Replicated)
-			bool GameBegan;
-		UPROPERTY(Replicated)
-			bool GameEnded;
+			bool GameActive;
 		UPROPERTY(Replicated)
 			Side Winner;
 		UPROPERTY(Replicated)
 			FString StateInfo;
-		float CurrentTime;
+		UPROPERTY(Replicated)
+			float CurrentTime;
 		float CountDown;
 };

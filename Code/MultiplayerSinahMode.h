@@ -17,7 +17,9 @@ class SINAH_API AMultiplayerSinahMode : public AGameMode
 	public:
 		AMultiplayerSinahMode();
 
-		void PostLogin(APlayerController* NewPlayer) override;
+		void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
+		void HandleMatchHasEnded() override;
+		void HandleLeavingMap() override;
 
 		Side GetPlayerSide(int ID);
 

@@ -18,8 +18,6 @@ class SINAH_API AMultiplayerSinahMode : public AGameMode
 		AMultiplayerSinahMode();
 
 		void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
-		void HandleMatchHasEnded() override;
-		void HandleLeavingMap() override;
 
 		Side GetPlayerSide(int ID);
 

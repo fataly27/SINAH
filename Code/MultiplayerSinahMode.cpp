@@ -25,15 +25,6 @@ void AMultiplayerSinahMode::HandleStartingNewPlayer_Implementation(APlayerContro
 		GetGameState<AMultiplayerGameState>()->PreBeginGame();
 }
 
-void AMultiplayerSinahMode::HandleMatchHasEnded()
-{
-	Super::HandleMatchHasEnded();
-}
-void AMultiplayerSinahMode::HandleLeavingMap()
-{
-	Super::HandleLeavingMap();
-}
-
 Side AMultiplayerSinahMode::GetPlayerSide(int ID)
 {
 	PlayersIDs.AddUnique(ID);

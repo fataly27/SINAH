@@ -293,8 +293,6 @@ void AMousePlayerController::Tick(float DeltaTime)
 
 		if (BoxDisplayed == TypeBox::Select)
 			UpdateBoxSelection(HUD->GetActorsBeingSelected());
-		else if (BoxDisplayed == TypeBox::Target)
-			UpdateBoxTargeting(HUD->GetActorsBeingSelected(), false);
 
 		TArray<TScriptInterface<IGameElementInterface>> AllActorsSelected;
 		for (int i = 0; i < ActorsSelected.Num(); i++)
@@ -318,6 +316,9 @@ void AMousePlayerController::Tick(float DeltaTime)
 
 		AllActorsSelected.Append(ActorsSelectedByCurrentBox);
 		HUD->SetActorsSelected(AllActorsSelected);
+
+		if (BoxDisplayed == TypeBox::Target)
+			UpdateBoxTargeting(HUD->GetActorsBeingSelected(), false);
 
 		if (AllActorsSelected.Num() == 0 && BoxDisplayed == TypeBox::Target)
 			Direct();

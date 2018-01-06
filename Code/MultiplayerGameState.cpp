@@ -7,7 +7,7 @@
 #include "GameElementInterface.h"
 
 
-AMultiplayerGameState::AMultiplayerGameState() : Super(), GameActive(false), StateInfo("Waiting for your opponent"), CountDown(-1.f), CurrentTime(0.f), Winner(Side::Neutral)
+AMultiplayerGameState::AMultiplayerGameState() : Super(), bGameActive(false), StateInfo("Waiting for your opponent"), CountDown(-1.f), CurrentTime(0.f), Winner(ESide::Neutral)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -35,42 +35,42 @@ void AMultiplayerGameState::Tick(float DeltaTime)
 	if(Role == ROLE_Authority && (IsMatchInProgress() || GetMatchState() == "Aborted"))
 	{
 		TActorIterator<AMilitaryBuilding> Building(GetWorld());
-		Side FirstSide = Side::Neutral;
-		bool IsGameEnded(true);
-		bool FirstTime(true);
+		ESide FirstSide = ESide::Neutral;
+		bool bGameEnded(true);
+		bool bFirstTime(true);
 		for (Building; Building; ++Building)
 		{
-			if (!FirstTime)
+			if (!bFirstTime)
 			{
-				if (Building->GetSide() != FirstSide && Building->GetSide() != Side::Neutral)
-					IsGameEnded = false;
+				if (Building->GetSide() != FirstSide && Building->GetSide() != ESide::Neutral)
+					bGameEnded = false;
 			}
-			else if (Building->GetSide() != Side::Neutral)
+			else if (Building->GetSide() != ESide::Neutral)
 			{
-				FirstTime = false;
+				bFirstTime = false;
 				FirstSide = Building->GetSide();
 			}
 		}
 
-		if (GameActive)
+		if (bGameActive)
 			CurrentTime += DeltaTime;
 
-		if (IsGameEnded && CountDown < -1.f)
+		if (bGameEnded && CountDown < -1.f)
 		{
-			GameActive = false;
+			bGameActive = false;
 
 			AMultiplayerSinahMode* Mode = Cast<AMultiplayerSinahMode>(GetWorld()->GetAuthGameMode());
 			Mode->EndMatch();
 
-			if (FirstSide == Side::Blue)
+			if (FirstSide == ESide::Blue)
 			{
 				SetStatusInfo("Blue player has won !");
-				Winner = Side::Blue;
+				Winner = ESide::Blue;
 			}
-			else if (FirstSide == Side::Red)
+			else if (FirstSide == ESide::Red)
 			{
 				SetStatusInfo("Red player has won !");
-				Winner = Side::Red;
+				Winner = ESide::Red;
 			}
 		}
 	}
@@ -78,7 +78,7 @@ void AMultiplayerGameState::Tick(float DeltaTime)
 
 bool AMultiplayerGameState::IsGameActive()
 {
-	return GameActive;
+	return bGameActive;
 }
 
 void AMultiplayerGameState::PreBeginGame()
@@ -88,7 +88,7 @@ void AMultiplayerGameState::PreBeginGame()
 
 void AMultiplayerGameState::BeginGame()
 {
-	GameActive = true;
+	bGameActive = true;
 }
 
 FString AMultiplayerGameState::GetStatusInfo()
@@ -111,7 +111,7 @@ void AMultiplayerGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AMultiplayerGameState, GameActive);
+	DOREPLIFETIME(AMultiplayerGameState, bGameActive);
 	DOREPLIFETIME(AMultiplayerGameState, StateInfo);
 	DOREPLIFETIME(AMultiplayerGameState, CurrentTime);
 }

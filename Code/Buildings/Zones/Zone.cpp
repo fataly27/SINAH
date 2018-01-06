@@ -7,11 +7,11 @@ UZone::UZone()
 {
 	SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
 }
-void UZone::Init(bool IsPlayer, float Reach)
+void UZone::Init(bool bPlayer, float Reach)
 {
-	IsForPlayer = IsPlayer;
+	bForPlayer = bPlayer;
 
-	if(IsForPlayer)
+	if(bForPlayer)
 		MyDecalMaterial = UMaterialInstanceDynamic::Create(BaseDecalPlayerMaterial, this);
 	else
 		MyDecalMaterial = UMaterialInstanceDynamic::Create(BaseDecalOpponentMaterial, this);
@@ -81,7 +81,7 @@ unsigned int UZone::GetMaxReachLevel()
 //Replication
 void UZone::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
-	DOREPLIFETIME(UZone, IsForPlayer);
+	DOREPLIFETIME(UZone, bForPlayer);
 
 	DOREPLIFETIME(UZone, BaseReach);
 	DOREPLIFETIME(UZone, MaxEffectLevel);

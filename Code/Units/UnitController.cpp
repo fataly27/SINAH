@@ -4,13 +4,13 @@
 #include "Unit.h"
 #include "UnitController.h"
 
-AUnitController::AUnitController() : Super(), IsLastATarget(false) {}
+AUnitController::AUnitController() : Super(), bLastATarget(false) {}
 
 void AUnitController::Tick(float DeltaSeconds)
 {
-	Modes UnitMode(Cast<AUnit>(GetPawn())->GetMode());
+	EModes UnitMode(Cast<AUnit>(GetPawn())->GetMode());
 
-	if ((Cast<AUnit>(GetPawn())->GetSpecialTargets().IsValidIndex(0) || (Cast<AUnit>(GetPawn())->GetOpponentsInSight().IsValidIndex(0) && !Cast<AUnit>(GetPawn())->GetDestinations().IsValidIndex(0))) && (UnitMode == Modes::Attack || UnitMode == Modes::Defense))
+	if ((Cast<AUnit>(GetPawn())->GetSpecialTargets().IsValidIndex(0) || (Cast<AUnit>(GetPawn())->GetOpponentsInSight().IsValidIndex(0) && !Cast<AUnit>(GetPawn())->GetDestinations().IsValidIndex(0))) && (UnitMode == EModes::Attack || UnitMode == EModes::Defense))
 	{
 		TArray<TScriptInterface<IGameElementInterface>> EffectiveTargets;
 		if (Cast<AUnit>(GetPawn())->GetSpecialTargets().IsValidIndex(0))
@@ -32,14 +32,14 @@ void AUnitController::Tick(float DeltaSeconds)
 		if (Distance <= Cast<AUnit>(GetPawn())->GetRange() * 100 + ClosestTarget->GetSize())
 		{
 			StopMovement();
-			Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(Action::Attacking);
+			Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(EAction::Attacking);
 			Cast<AUnit>(GetPawn())->Attack(ClosestTarget);
 		}
-		else if (ClosestTarget != LastTarget || GetMoveStatus() != EPathFollowingStatus::Moving || !IsLastATarget)
+		else if (ClosestTarget != LastTarget || GetMoveStatus() != EPathFollowingStatus::Moving || !bLastATarget)
 		{
-			IsLastATarget = true;
+			bLastATarget = true;
 
-			if (UnitMode == Modes::Attack)
+			if (UnitMode == EModes::Attack)
 			{
 				StopMovement();
 
@@ -62,32 +62,32 @@ void AUnitController::Tick(float DeltaSeconds)
 				if (GetWorld()->GetNavigationSystem()->ProjectPointToNavigation(NewDestination, ReachableDestination, FVector(Cast<AUnit>(GetPawn())->GetRange() * 100 * FGenericPlatformMath::Sqrt(2), Cast<AUnit>(GetPawn())->GetRange() * 100 * FGenericPlatformMath::Sqrt(2), 500.f)))
 				{
 					MoveToLocation(ReachableDestination.Location, 20.f, false, true, false);
-					Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(Action::Moving);
+					Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(EAction::Moving);
 				}
 			}
 			else
 			{
 				StopMovement();
 				Cast<AUnit>(GetPawn())->Rotate();
-				Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(Action::Idle);
+				Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(EAction::Idle);
 			}
 		}
 		LastTarget = ClosestTarget;
 	}
-	else if (Cast<AUnit>(GetPawn())->GetDestinations().IsValidIndex(0) && UnitMode != Modes::Defense && UnitMode != Modes::None)
+	else if (Cast<AUnit>(GetPawn())->GetDestinations().IsValidIndex(0) && UnitMode != EModes::Defense && UnitMode != EModes::None)
 	{
-		if (Cast<AUnit>(GetPawn())->GetDestinations()[0] != LastDestination || GetMoveStatus() != EPathFollowingStatus::Moving || IsLastATarget)
+		if (Cast<AUnit>(GetPawn())->GetDestinations()[0] != LastDestination || GetMoveStatus() != EPathFollowingStatus::Moving || bLastATarget)
 		{
-			IsLastATarget = false;
+			bLastATarget = false;
 			MoveToLocation(Cast<AUnit>(GetPawn())->GetDestinations()[0], 10.f, false, true, true, false);
-			Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(Action::Moving);
+			Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(EAction::Moving);
 		}
 	}
 	else
 	{
 		StopMovement();
 		Cast<AUnit>(GetPawn())->Rotate();
-		Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(Action::Idle);
+		Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(EAction::Idle);
 	}
 }
 

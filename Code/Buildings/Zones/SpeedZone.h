@@ -15,7 +15,7 @@ class SINAH_API USpeedZone : public UZone
 	
 	public:
 		USpeedZone();
-		void Init(bool Player);
+		void Init(bool bPlayer);
 
 		float GetSpeedMultiplicator(AUnit* Unit, AMilitaryBuilding* Building);
 

@@ -25,16 +25,16 @@ void AMultiplayerSinahMode::HandleStartingNewPlayer_Implementation(APlayerContro
 		GetGameState<AMultiplayerGameState>()->PreBeginGame();
 }
 
-Side AMultiplayerSinahMode::GetPlayerSide(int ID)
+ESide AMultiplayerSinahMode::GetPlayerSide(int ID)
 {
 	PlayersIDs.AddUnique(ID);
 
 	int Index = PlayersIDs.Find(ID);
 
 	if (Index == 0)
-		return Side::Blue;
+		return ESide::Blue;
 	else if (Index == 1)
-		return Side::Red;
+		return ESide::Red;
 	else
-		return Side::Neutral;
+		return ESide::Neutral;
 }

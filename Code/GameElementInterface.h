@@ -6,7 +6,7 @@
 
 
 UENUM(BlueprintType)
-	enum class Side : uint8
+	enum class ESide : uint8
 	{
 		Blue,
 		Red,
@@ -34,12 +34,12 @@ class SINAH_API IGameElementInterface
 		virtual void Unselect() = 0;
 		virtual bool IsSelected() = 0;
 
-		//Side
-		virtual void SetSide(Side NewSide) = 0;
-		virtual Side GetSide() = 0;
+		//ESide
+		virtual void SetSide(ESide NewSide) = 0;
+		virtual ESide GetSide() = 0;
 
 		//Attack
-		virtual void ReceiveDamages(int Physic, int Magic, Side AttackingSide) = 0;
+		virtual void ReceiveDamages(int Physic, int Magic, ESide AttackingSide) = 0;
 		virtual float GetSize() = 0;
 
 		//Statistics Getters

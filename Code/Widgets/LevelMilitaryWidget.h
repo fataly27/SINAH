@@ -67,19 +67,19 @@ class SINAH_API ULevelMilitaryWidget : public ULevelWidget
 			FString MaxOpponentSpeedReach;
 
 		UPROPERTY(BlueprintReadWrite, Category = "LevelMilitary")
-			bool PlayerLifePossibleEffect;
+			bool bPlayerLifePossibleEffect;
 		UPROPERTY(BlueprintReadWrite, Category = "LevelMilitary")
-			bool PlayerSpeedPossibleEffect;
+			bool bPlayerSpeedPossibleEffect;
 		UPROPERTY(BlueprintReadWrite, Category = "LevelMilitary")
-			bool OpponentLifePossibleEffect;
+			bool bOpponentLifePossibleEffect;
 		UPROPERTY(BlueprintReadWrite, Category = "LevelMilitary")
-			bool OpponentSpeedPossibleEffect;
+			bool bOpponentSpeedPossibleEffect;
 		UPROPERTY(BlueprintReadWrite, Category = "LevelMilitary")
-			bool PlayerLifePossibleReach;
+			bool bPlayerLifePossibleReach;
 		UPROPERTY(BlueprintReadWrite, Category = "LevelMilitary")
-			bool PlayerSpeedPossibleReach;
+			bool bPlayerSpeedPossibleReach;
 		UPROPERTY(BlueprintReadWrite, Category = "LevelMilitary")
-			bool OpponentLifePossibleReach;
+			bool bOpponentLifePossibleReach;
 		UPROPERTY(BlueprintReadWrite, Category = "LevelMilitary")
-			bool OpponentSpeedPossibleReach;
+			bool bOpponentSpeedPossibleReach;
 };

@@ -14,10 +14,10 @@ ASmallMilitaryBuilding::ASmallMilitaryBuilding() : Super()
 	ActualHeal = DefaultHeal;
 	ActualFieldOfSight = DefaultFieldOfSight;
 
-	COST_IN_FOOD = { 150, 300, 1000 };
-	COST_IN_CELLS = { 400, 800, 2000 };
-	COST_IN_METAL = { 1000, 2000, 4000 };
-	COST_IN_CRISTALS = { 50, 250, 1000 };
+	CostInFood = { 150, 300, 1000 };
+	CostInCells = { 400, 800, 2000 };
+	CostInMetal = { 1000, 2000, 4000 };
+	CostInCristals = { 50, 250, 1000 };
 
 	SetActorScale3D(FVector(1.f));
 

@@ -15,9 +15,9 @@ void ULevelMilitaryWidget::SetPlayerLifeEffect(int Current, int Max)
 	MaxPlayerLifeEffect = FString::FromInt(Max);
 
 	if (Current < Max && Points > 0)
-		PlayerLifePossibleEffect = true;
+		bPlayerLifePossibleEffect = true;
 	else
-		PlayerLifePossibleEffect = false;
+		bPlayerLifePossibleEffect = false;
 }
 void ULevelMilitaryWidget::SetPlayerSpeedEffect(int Current, int Max)
 {
@@ -25,9 +25,9 @@ void ULevelMilitaryWidget::SetPlayerSpeedEffect(int Current, int Max)
 	MaxPlayerSpeedEffect = FString::FromInt(Max);
 
 	if (Current < Max && Points > 0)
-		PlayerSpeedPossibleEffect = true;
+		bPlayerSpeedPossibleEffect = true;
 	else
-		PlayerSpeedPossibleEffect = false;
+		bPlayerSpeedPossibleEffect = false;
 }
 void ULevelMilitaryWidget::SetOpponentLifeEffect(int Current, int Max)
 {
@@ -35,9 +35,9 @@ void ULevelMilitaryWidget::SetOpponentLifeEffect(int Current, int Max)
 	MaxOpponentLifeEffect = FString::FromInt(Max);
 
 	if (Current < Max && Points > 0)
-		OpponentLifePossibleEffect = true;
+		bOpponentLifePossibleEffect = true;
 	else
-		OpponentLifePossibleEffect = false;
+		bOpponentLifePossibleEffect = false;
 }
 void ULevelMilitaryWidget::SetOpponentSpeedEffect(int Current, int Max)
 {
@@ -45,9 +45,9 @@ void ULevelMilitaryWidget::SetOpponentSpeedEffect(int Current, int Max)
 	MaxOpponentSpeedEffect = FString::FromInt(Max);
 
 	if (Current < Max && Points > 0)
-		OpponentSpeedPossibleEffect = true;
+		bOpponentSpeedPossibleEffect = true;
 	else
-		OpponentSpeedPossibleEffect = false;
+		bOpponentSpeedPossibleEffect = false;
 }
 
 void ULevelMilitaryWidget::SetPlayerLifeReach(int Current, int Max)
@@ -56,9 +56,9 @@ void ULevelMilitaryWidget::SetPlayerLifeReach(int Current, int Max)
 	MaxPlayerLifeReach = FString::FromInt(Max);
 
 	if (Current < Max && Points > 0)
-		PlayerLifePossibleReach = true;
+		bPlayerLifePossibleReach = true;
 	else
-		PlayerLifePossibleReach = false;
+		bPlayerLifePossibleReach = false;
 }
 void ULevelMilitaryWidget::SetPlayerSpeedReach(int Current, int Max)
 {
@@ -66,9 +66,9 @@ void ULevelMilitaryWidget::SetPlayerSpeedReach(int Current, int Max)
 	MaxPlayerSpeedReach = FString::FromInt(Max);
 
 	if (Current < Max && Points > 0)
-		PlayerSpeedPossibleReach = true;
+		bPlayerSpeedPossibleReach = true;
 	else
-		PlayerSpeedPossibleReach = false;
+		bPlayerSpeedPossibleReach = false;
 }
 void ULevelMilitaryWidget::SetOpponentLifeReach(int Current, int Max)
 {
@@ -76,9 +76,9 @@ void ULevelMilitaryWidget::SetOpponentLifeReach(int Current, int Max)
 	MaxOpponentLifeReach = FString::FromInt(Max);
 
 	if (Current < Max && Points > 0)
-		OpponentLifePossibleReach = true;
+		bOpponentLifePossibleReach = true;
 	else
-		OpponentLifePossibleReach = false;
+		bOpponentLifePossibleReach = false;
 }
 void ULevelMilitaryWidget::SetOpponentSpeedReach(int Current, int Max)
 {
@@ -86,7 +86,7 @@ void ULevelMilitaryWidget::SetOpponentSpeedReach(int Current, int Max)
 	MaxOpponentSpeedReach = FString::FromInt(Max);
 
 	if (Current < Max && Points > 0)
-		OpponentSpeedPossibleReach = true;
+		bOpponentSpeedPossibleReach = true;
 	else
-		OpponentSpeedPossibleReach = false;
+		bOpponentSpeedPossibleReach = false;
 }

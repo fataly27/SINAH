@@ -25,5 +25,5 @@ class SINAH_API AUnitController : public AAIController
 		TScriptInterface<IGameElementInterface> LastTarget;
 		FVector LastDestination;
 
-		bool IsLastATarget;
+		bool bLastATarget;
 };

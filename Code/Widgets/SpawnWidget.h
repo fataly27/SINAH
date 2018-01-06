@@ -19,7 +19,7 @@ class SINAH_API USpawnWidget : public UUserWidget
 	public:
 		void SetBuildingLevel(int Level);
 		void SetColor(FLinearColor NewColor);
-		void SetSpawnVisibility(bool Visible);
+		void SetSpawnVisibility(bool bVisible);
 
 		void SetSpawnDetailsEnabled(int CurrentFood, int CurrentCells, int CurrentMetal, int CurrentCristals);
 

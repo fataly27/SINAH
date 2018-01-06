@@ -9,7 +9,7 @@ void ULevelEconomicWidget::SetOutput(int Current, int Next)
 	CurrentOutput = FString::FromInt(Current).Append(" / s");
 	OutputAfterUpgrade = FString::FromInt(Next).Append(" / s");
 }
-void ULevelEconomicWidget::SetIsPlundered(bool Plundered)
+void ULevelEconomicWidget::SetIsPlundered(bool bPlunder)
 {
-	IsPlundered = Plundered;
+	bPlundered = bPlunder;
 }

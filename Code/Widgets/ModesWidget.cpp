@@ -8,14 +8,14 @@ void UModesWidget::SetModesVisibility(ESlateVisibility Unit)
 {
 	ModesVisibility = Unit;
 }
-void UModesWidget::SetAllButtonsEnabled(bool All)
+void UModesWidget::SetAllButtonsEnabled(bool bAll)
 {
-	InvisibleButtonEnabled = All;
-	OtherButtonsEnabled = All;
+	InvisibleButtonEnabled = bAll;
+	OtherButtonsEnabled = bAll;
 }
-void UModesWidget::SetInvisibleButtonEnabled(bool Invisible)
+void UModesWidget::SetInvisibleButtonEnabled(bool bInvisible)
 {
-	InvisibleButtonEnabled = Invisible;
+	InvisibleButtonEnabled = bInvisible;
 }
 
 void UModesWidget::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const

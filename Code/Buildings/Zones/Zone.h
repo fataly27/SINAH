@@ -19,7 +19,7 @@ class SINAH_API UZone : public UDecalComponent
 	
 	public:
 		UZone();
-		void Init(bool IsPlayer, float Reach);
+		void Init(bool bPlayer, float Reach);
 
 		float GetReach();
 
@@ -42,7 +42,7 @@ class SINAH_API UZone : public UDecalComponent
 		UMaterial* BaseDecalOpponentMaterial;
 
 		UPROPERTY(Replicated)
-			bool IsForPlayer;
+			bool bForPlayer;
 
 		UPROPERTY(Replicated)
 			float BaseReach;

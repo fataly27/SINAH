@@ -5,7 +5,7 @@
 
 
 // Sets default values
-ABuilding::ABuilding() : IsVisibleForOpponent(true), MySide(Side::Neutral), Selected(false)
+ABuilding::ABuilding() : bVisibleForOpponent(true), MySide(ESide::Neutral), bSelected(false)
 {
 	bReplicates = true;
 	bAlwaysRelevant = true;
@@ -60,37 +60,37 @@ void ABuilding::Tick(float DeltaTime)
 //Selection
 void ABuilding::Select()
 {
-	Selected = true;
+	bSelected = true;
 	BuildingMesh->SetRenderCustomDepth(true);
 }
 void ABuilding::Unselect()
 {
-	Selected = false;
+	bSelected = false;
 	BuildingMesh->SetRenderCustomDepth(false);
 }
 bool ABuilding::IsSelected()
 {
-	return Selected;
+	return bSelected;
 }
 
-//Side
-void ABuilding::SetSide(Side NewSide)
+//ESide
+void ABuilding::SetSide(ESide NewSide)
 {
 	Multicast_SetSide(NewSide);
 }
-void ABuilding::Multicast_SetSide_Implementation(Side NewSide)
+void ABuilding::Multicast_SetSide_Implementation(ESide NewSide)
 {
 	Unselect();
 	MySide = NewSide;
 
-	if (MySide == Side::Blue)
+	if (MySide == ESide::Blue)
 	{
 		BuildingMesh->CustomDepthStencilValue = STENCIL_BLUE_OUTLINE;
 
 		for (int i = 0; i < BuildingMesh->GetNumMaterials(); i++)
 			BuildingMesh->SetMaterial(i, BuildingBlueMaterial);
 	}
-	else if (MySide == Side::Red)
+	else if (MySide == ESide::Red)
 	{
 		BuildingMesh->CustomDepthStencilValue = STENCIL_RED_OUTLINE;
 
@@ -107,13 +107,13 @@ void ABuilding::Multicast_SetSide_Implementation(Side NewSide)
 
 	CurrentLife = ActualMaxLife;
 }
-Side ABuilding::GetSide()
+ESide ABuilding::GetSide()
 {
 	return MySide;
 }
 
 //Attack
-void ABuilding::ReceiveDamages(int Physic, int Magic, Side AttackingSide)
+void ABuilding::ReceiveDamages(int Physic, int Magic, ESide AttackingSide)
 {
 	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
@@ -213,28 +213,28 @@ unsigned int ABuilding::GetMaxLevel()
 int ABuilding::GetCostInFoodToLevel(int WantedLevel)
 {
 	if (WantedLevel > 1)
-		return COST_IN_FOOD[WantedLevel - 2];
+		return CostInFood[WantedLevel - 2];
 	else
 		return 0;
 }
 int ABuilding::GetCostInCellsToLevel(int WantedLevel)
 {
 	if (WantedLevel > 1)
-		return COST_IN_CELLS[WantedLevel - 2];
+		return CostInCells[WantedLevel - 2];
 	else
 		return 0;
 }
 int ABuilding::GetCostInMetalToLevel(int WantedLevel)
 {
 	if (WantedLevel > 1)
-		return COST_IN_METAL[WantedLevel - 2];
+		return CostInMetal[WantedLevel - 2];
 	else
 		return 0;
 }
 int ABuilding::GetCostInCristalsToLevel(int WantedLevel)
 {
 	if (WantedLevel > 1)
-		return COST_IN_CRISTALS[WantedLevel - 2];
+		return CostInCristals[WantedLevel - 2];
 	else
 		return 0;
 }
@@ -242,7 +242,7 @@ int ABuilding::GetCostInCristalsToLevel(int WantedLevel)
 //Visibility
 bool ABuilding::GetOpponentVisibility()
 {
-	return IsVisibleForOpponent;
+	return bVisibleForOpponent;
 }
 FVector ABuilding::GetLocation()
 {
@@ -261,5 +261,5 @@ void ABuilding::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLife
 
 	DOREPLIFETIME(ABuilding, CurrentLevel);
 
-	DOREPLIFETIME(ABuilding, IsVisibleForOpponent);
+	DOREPLIFETIME(ABuilding, bVisibleForOpponent);
 }

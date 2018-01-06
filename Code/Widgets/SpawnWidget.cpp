@@ -17,9 +17,9 @@ void USpawnWidget::SetColor(FLinearColor NewColor)
 {
 	Color = NewColor;
 }
-void USpawnWidget::SetSpawnVisibility(bool Visible)
+void USpawnWidget::SetSpawnVisibility(bool bVisible)
 {
-	if (Visible)
+	if (bVisible)
 	{
 		ListVisibility = ESlateVisibility::Visible;
 		DetailsVisibility = ESlateVisibility::Visible;

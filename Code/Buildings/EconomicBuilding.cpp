@@ -5,7 +5,7 @@
 
 AEconomicBuilding::AEconomicBuilding() : Super(), TimeSinceCounterPlunder(0.f)
 {
-	IsPlundered = false;
+	bPlundered = false;
 	DefaultOutputInHalfASecond = 4;
 	ActualOutputInHalfASecond = DefaultOutputInHalfASecond;
 
@@ -36,10 +36,10 @@ void AEconomicBuilding::Tick(float DeltaTime)
 	{
 		TimeSinceCounterPlunder += DeltaTime;
 
-		if (IsPlundered && RelatedMilitaryBuilding)
+		if (bPlundered && RelatedMilitaryBuilding)
 		{
 			if (RelatedMilitaryBuilding->GetSide() == MySide)
-				IsPlundered = false;
+				bPlundered = false;
 			else if (TimeSinceCounterPlunder >= 0.5f)
 			{
 				ReceiveDamages(ActualHeal, 0, RelatedMilitaryBuilding->GetSide());
@@ -51,14 +51,14 @@ void AEconomicBuilding::Tick(float DeltaTime)
 
 int AEconomicBuilding::GetOutputInHalfASecond()
 {
-	if (IsPlundered)
+	if (bPlundered)
 		return ActualOutputInHalfASecond / 2;
 	else
 		return ActualOutputInHalfASecond;
 }
 bool AEconomicBuilding::GetIsPlundered()
 {
-	return IsPlundered;
+	return bPlundered;
 }
 int AEconomicBuilding::GetOutputForLevel(unsigned int Level)
 {
@@ -68,7 +68,7 @@ int AEconomicBuilding::GetOutputForLevel(unsigned int Level)
 
 void AEconomicBuilding::SetLevel(unsigned int Level)
 {
-	if (!IsPlundered)
+	if (!bPlundered)
 	{
 		Super::SetLevel(Level);
 
@@ -91,7 +91,7 @@ unsigned int AEconomicBuilding::GetLifeBarWidth()
 }
 
 //Attack
-void AEconomicBuilding::ReceiveDamages(int Physic, int Magic, Side AttackingSide)
+void AEconomicBuilding::ReceiveDamages(int Physic, int Magic, ESide AttackingSide)
 {
 	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
@@ -102,14 +102,14 @@ void AEconomicBuilding::ReceiveDamages(int Physic, int Magic, Side AttackingSide
 		{
 			if (RelatedMilitaryBuilding && AttackingSide == RelatedMilitaryBuilding->GetSide())
 			{
-				if (!IsPlundered)
+				if (!bPlundered)
 					SetLevel(1);
-				IsPlundered = false;
+				bPlundered = false;
 			}
 			else if (RelatedMilitaryBuilding)
 			{
 				SetLevel(CurrentLevel - 1);
-				IsPlundered = true;
+				bPlundered = true;
 				TimeSinceCounterPlunder = 0.f;
 			}
 			SetSide(AttackingSide);
@@ -124,7 +124,7 @@ void AEconomicBuilding::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AEconomicBuilding, IsPlundered);
+	DOREPLIFETIME(AEconomicBuilding, bPlundered);
 	DOREPLIFETIME(AEconomicBuilding, DefaultOutputInHalfASecond);
 	DOREPLIFETIME(AEconomicBuilding, ActualOutputInHalfASecond);
 }

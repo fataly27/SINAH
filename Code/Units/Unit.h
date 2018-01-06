@@ -7,7 +7,7 @@
 #include "Unit.generated.h"
 
 UENUM(BlueprintType)
-	enum class Modes : uint8
+	enum class EModes : uint8
 	{
 		Attack,
 		Defense,
@@ -17,7 +17,7 @@ UENUM(BlueprintType)
 		None
 	};
 UENUM(BlueprintType)
-	enum class Action : uint8
+	enum class EAction : uint8
 	{
 		Idle,
 		Moving,
@@ -48,11 +48,11 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		virtual void Unselect() override;
 		virtual bool IsSelected() override;
 
-		//Side
-		virtual Side GetSide() override;
-		virtual void SetSide(Side NewSide) override;
+		//ESide
+		virtual ESide GetSide() override;
+		virtual void SetSide(ESide NewSide) override;
 		UFUNCTION(NetMulticast, Reliable)
-			void Multicast_SetSide(Side NewSide);
+			void Multicast_SetSide(ESide NewSide);
 
 		//Destinations
 		void AddDestination(FVector Destination, FRotator Rotation);
@@ -73,7 +73,7 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 
 		//Attack and heal
 		void Attack(const TScriptInterface<IGameElementInterface>& Target);
-		virtual void ReceiveDamages(int Physic, int Magic, Side AttackingSide) override;
+		virtual void ReceiveDamages(int Physic, int Magic, ESide AttackingSide) override;
 		void Heal(int Heal);
 
 		//Dying
@@ -102,12 +102,12 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 
 		void SetSpeedMultiplicator(float Multiplicator);
 
-		//Modes and animation
+		//EModes and animation
 		void SetMode();
-		void ChangeMode(Modes Mode);
-		Modes GetMode();
+		void ChangeMode(EModes Mode);
+		EModes GetMode();
 		UFUNCTION(NetMulticast, Reliable)
-			void Multicast_SetIsMoving(Action NewAction);
+			void Multicast_SetIsMoving(EAction NewAction);
 		void ChangeLoopingAnimation();
 
 		float GetInvisibleCoolDown();
@@ -116,9 +116,9 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		//Visibility
 		virtual bool GetOpponentVisibility() override;
 		UFUNCTION(NetMulticast, Reliable)
-			void Multicast_SetVisibility(bool Visibility, FVector Position, FRotator Rotation);
+			void Multicast_SetVisibility(bool bVisibility, FVector Position, FRotator Rotation);
 		UFUNCTION(NetMulticast, Reliable)
-			void Multicast_SetInvisibleAsset(bool IsInvisible);
+			void Multicast_SetInvisibleAsset(bool bInvisible);
 		virtual FVector GetLocation();
 
 		//Replication
@@ -154,7 +154,7 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 			float ActualRange;
 
 		UPROPERTY(Replicated)
-			bool IsVisibleForOpponent;
+			bool bVisibleForOpponent;
 		unsigned int BuildingLevelRequired;
 
 		UPROPERTY(EditAnywhere)
@@ -176,15 +176,15 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 
 		int FoodEatenInHalfASecond;
 
-		int COST_IN_FOOD;
-		int COST_IN_CELLS;
-		int COST_IN_METAL;
-		int COST_IN_CRISTALS;
+		int CostInFood;
+		int CostInCells;
+		int CostInMetal;
+		int CostInCristal;
 
 		//Selection
-		UPROPERTY(EditAnywhere)
-			Side MySide;
-		bool Selected;
+		UPROPERTY(EditAnywhere, Replicated)
+			ESide MySide;
+		bool bSelected;
 
 		//Target
 		UPROPERTY(Replicated)
@@ -201,13 +201,13 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		UPROPERTY(Replicated)
 			TArray<FVector> Destinations;
 
-		//Modes and animation
+		//EModes and animation
 		UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Enum)
-			Modes CurrentMode;
+			EModes CurrentMode;
 		UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Enum)
-			Modes WantedMode;
+			EModes WantedMode;
 		UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Enum)
-			Action CurrentAction;
+			EAction CurrentAction;
 
 		UPROPERTY(Replicated)
 			float InvisibleLimitedTime;

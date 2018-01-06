@@ -16,12 +16,12 @@ class SINAH_API ULevelWidget : public UUserWidget
 	
 	public:
 		void SetLevel(int CurrentLevel, int MaxLevel, FLinearColor NewColor);
-		void SetRessourcesRequired(int Food, int Cells, int Metal, int Cristals, bool IsFood, bool IsCells, bool IsMetal, bool IsCristals);
-		void SetIsLevelUpPossible(bool Possible);
+		void SetRessourcesRequired(int Food, int Cells, int Metal, int Cristals, bool bFood, bool bCells, bool bMetal, bool bCristals);
+		void SetIsLevelUpPossible(bool bPossible);
 
-		void SetIsLevelVisible(bool Visible);
-		void SetAreDetailsVisible(bool Visible);
-		void SetIsLevelUpVisible(bool Visible);
+		void SetIsLevelVisible(bool bVisible);
+		void SetAreDetailsVisible(bool bVisible);
+		void SetIsLevelUpVisible(bool bVisible);
 
 	protected:
 		UPROPERTY(BlueprintReadWrite, Category = "Level")

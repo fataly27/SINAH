@@ -7,10 +7,11 @@
 
 
 // Sets default values
-AUnit::AUnit() : MySide(Side::Neutral), Selected(false), CurrentAction(Action::Idle), IsVisibleForOpponent(false)
+AUnit::AUnit() : MySide(ESide::Neutral), bSelected(false), CurrentAction(EAction::Idle), bVisibleForOpponent(false)
 {
 	bReplicates = true;
 	bReplicateMovement = true;
+	bAlwaysRelevant = true;
 
 	InvisibleLimitedTime = 0.f;
 	InvisibleCoolDown = 0.f;
@@ -43,6 +44,7 @@ AUnit::AUnit() : MySide(Side::Neutral), Selected(false), CurrentAction(Action::I
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	AIControllerClass = AUnitController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	GetMesh()->bReceivesDecals = false;
 	GetMesh()->SetRenderCustomDepth(false);
@@ -53,7 +55,7 @@ void AUnit::BeginPlay()
 {
 	Super::BeginPlay();
 	Unselect();
-	WantedMode = Modes::Attack;
+	WantedMode = EModes::Attack;
 	SetSide(MySide);
 
 	SpawnDefaultController();
@@ -75,14 +77,14 @@ void AUnit::Tick(float DeltaTime)
 		InvisibleCoolDown -= DeltaTime;
 		InvisibleLimitedTime -= DeltaTime;
 
-		if (InvisibleLimitedTime <= 0.f && CurrentMode == Modes::Invisible)
+		if (InvisibleLimitedTime <= 0.f && CurrentMode == EModes::Invisible)
 		{
-			ChangeMode(Modes::Attack);
+			ChangeMode(EModes::Attack);
 			InvisibleCoolDown = 180.f;
 
-			Multicast_SetInvisibleAsset(GetMode() == Modes::Invisible);
+			Multicast_SetInvisibleAsset(GetMode() == EModes::Invisible);
 		}
-		if (WantedMode != Modes::None)
+		if (WantedMode != EModes::None)
 			PrepareChangingModeTime -= DeltaTime;
 		SetMode();
 
@@ -147,34 +149,34 @@ UTexture* AUnit::GetUnitImage()
 //Selection and side
 void AUnit::Select()
 {
-	Selected = true;
+	bSelected = true;
 	GetMesh()->SetRenderCustomDepth(true);
 }
 void AUnit::Unselect()
 {
-	Selected = false;
+	bSelected = false;
 	GetMesh()->SetRenderCustomDepth(false);
 }
 bool AUnit::IsSelected()
 {
-	return Selected;
+	return bSelected;
 }
-void AUnit::SetSide(Side NewSide)
+void AUnit::SetSide(ESide NewSide)
 {
 	Multicast_SetSide(NewSide);
 }
-void AUnit::Multicast_SetSide_Implementation(Side NewSide)
+void AUnit::Multicast_SetSide_Implementation(ESide NewSide)
 {
 	Unselect();
 	MySide = NewSide;
 
 	int Color(0);
 
-	if (MySide == Side::Blue)
+	if (MySide == ESide::Blue)
 	{
 		Color = STENCIL_BLUE_OUTLINE;
 	}
-	else if (MySide == Side::Red)
+	else if (MySide == ESide::Red)
 	{
 		Color = STENCIL_RED_OUTLINE;
 	}
@@ -183,7 +185,7 @@ void AUnit::Multicast_SetSide_Implementation(Side NewSide)
 
 	GetMesh()->SetCustomDepthStencilValue(Color);
 }
-Side AUnit::GetSide()
+ESide AUnit::GetSide()
 {
 	return MySide;
 }
@@ -248,19 +250,19 @@ int AUnit::GetFoodEatenInHalfASecond()
 }
 int AUnit::GetCostInFood()
 {
-	return COST_IN_FOOD;
+	return CostInFood;
 }
 int AUnit::GetCostInCells()
 {
-	return COST_IN_CELLS;
+	return CostInCells;
 }
 int AUnit::GetCostInMetal()
 {
-	return COST_IN_METAL;
+	return CostInMetal;
 }
 int AUnit::GetCostInCristals()
 {
-	return COST_IN_CRISTALS;
+	return CostInCristal;
 }
 
 void AUnit::SetSpeedMultiplicator(float Multiplicator)
@@ -273,7 +275,7 @@ void AUnit::SetSpeedMultiplicator(float Multiplicator)
 //Destinations
 void AUnit::AddDestination(FVector Destination, FRotator Rotation)
 {
-	if (CurrentMode != Modes::Defense && Role == ROLE_Authority)
+	if (CurrentMode != EModes::Defense && Role == ROLE_Authority)
 	{
 		FNavLocation CorrectDestination;
 		FVector Extent = FVector(3500.f, 3500.f, 400.f);
@@ -335,8 +337,8 @@ void AUnit::SetBoxSpecialTargets(TArray<TScriptInterface<IGameElementInterface>>
 				CleanedNewTargets.Add(NewTargets[i]);
 		}
 		BoxSpecialTargets = CleanedNewTargets;
-		if (CurrentMode != Modes::Attack && CurrentMode != Modes::Defense && WantedMode != Modes::Attack && WantedMode != Modes::Defense && CleanedNewTargets.Num() != 0)
-			ChangeMode(Modes::Attack);
+		if (CurrentMode != EModes::Attack && CurrentMode != EModes::Defense && WantedMode != EModes::Attack && WantedMode != EModes::Defense && CleanedNewTargets.Num() != 0)
+			ChangeMode(EModes::Attack);
 	}
 }
 void AUnit::ClearSpecialTargets()
@@ -366,7 +368,7 @@ TArray<TScriptInterface<IGameElementInterface>> AUnit::GetSpecialTargets()
 }
 void AUnit::SetOpponentsInSight(TArray<TScriptInterface<IGameElementInterface>> Opponents)
 {
-	if (Role == ROLE_Authority && (CurrentMode == Modes::Attack || CurrentMode == Modes::Defense))
+	if (Role == ROLE_Authority && (CurrentMode == EModes::Attack || CurrentMode == EModes::Defense))
 		OpponentsInSight = Opponents;
 }
 TArray<TScriptInterface<IGameElementInterface>> AUnit::GetOpponentsInSight()
@@ -382,10 +384,10 @@ void AUnit::ClearOpponentsInSight()
 //Attack
 void AUnit::Attack(const TScriptInterface<IGameElementInterface>& Target)
 {
-	if (Role == ROLE_Authority && (CurrentMode == Modes::Attack || CurrentMode == Modes::Defense) && Target->GetOpponentVisibility())
+	if (Role == ROLE_Authority && (CurrentMode == EModes::Attack || CurrentMode == EModes::Defense) && Target->GetOpponentVisibility())
 		Target->ReceiveDamages(GetPhysicAttack(), GetMagicAttack(), MySide);
 }
-void AUnit::ReceiveDamages(int Physic, int Magic, Side AttackingSide)
+void AUnit::ReceiveDamages(int Physic, int Magic, ESide AttackingSide)
 {
 	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
@@ -426,14 +428,14 @@ bool AUnit::IsPendingKill()
 	return IsPendingKillPending();
 }
 
-//Modes and animation
+//EModes and animation
 void AUnit::SetMode()
 {
-	if (Role == ROLE_Authority && PrepareChangingModeTime <= 0.f && WantedMode != Modes::None)
+	if (Role == ROLE_Authority && PrepareChangingModeTime <= 0.f && WantedMode != EModes::None)
 	{
-		Modes Mode = WantedMode;
-		WantedMode = Modes::None;
-		if (Mode == Modes::Attack)
+		EModes Mode = WantedMode;
+		WantedMode = EModes::None;
+		if (Mode == EModes::Attack)
 		{
 			ActualPhysicAttack = DefaultPhysicAttack * 1.2f;
 			ActualMagicAttack = DefaultMagicAttack * 1.2f;
@@ -448,7 +450,7 @@ void AUnit::SetMode()
 
 			CurrentMode = Mode;
 		}
-		else if (Mode == Modes::Defense)
+		else if (Mode == EModes::Defense)
 		{
 			CurrentMode = Mode;
 
@@ -465,7 +467,7 @@ void AUnit::SetMode()
 
 			ClearDestinations();
 		}
-		else if (Mode == Modes::Alert)
+		else if (Mode == EModes::Alert)
 		{
 			ClearOpponentsInSight();
 			ClearSpecialTargets();
@@ -483,7 +485,7 @@ void AUnit::SetMode()
 			ActualSpeed = DefaultSpeed;
 			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
 		}
-		else if (Mode == Modes::Movement)
+		else if (Mode == EModes::Movement)
 		{
 			ClearOpponentsInSight();
 			ClearSpecialTargets();
@@ -502,7 +504,7 @@ void AUnit::SetMode()
 
 			CurrentMode = Mode;
 		}
-		else if (Mode == Modes::Invisible)
+		else if (Mode == EModes::Invisible)
 		{
 			if (InvisibleCoolDown <= 0.f)
 			{
@@ -525,27 +527,27 @@ void AUnit::SetMode()
 
 				CurrentMode = Mode;
 
-				Multicast_SetInvisibleAsset(GetMode() == Modes::Invisible);
+				Multicast_SetInvisibleAsset(GetMode() == EModes::Invisible);
 			}
 		}
 	}
 }
-void AUnit::ChangeMode(Modes Mode)
+void AUnit::ChangeMode(EModes Mode)
 {
-	if ((Mode != Modes::Invisible || InvisibleCoolDown <= 0.f) && CurrentMode != Mode && Role == ROLE_Authority)
+	if ((Mode != EModes::Invisible || InvisibleCoolDown <= 0.f) && CurrentMode != Mode && Role == ROLE_Authority)
 	{
-		if (CurrentMode == Modes::Invisible)
+		if (CurrentMode == EModes::Invisible)
 		{
 			InvisibleCoolDown = 180.f - InvisibleLimitedTime / 15.f * 180.f;
 			InvisibleLimitedTime = 0.f;
 
-			CurrentMode = Modes::None;
+			CurrentMode = EModes::None;
 
-			Multicast_SetInvisibleAsset(GetMode() == Modes::Invisible);
+			Multicast_SetInvisibleAsset(GetMode() == EModes::Invisible);
 		}
 
 		WantedMode = Mode;
-		CurrentMode = Modes::None;
+		CurrentMode = EModes::None;
 
 		ActualPhysicAttack = 0;
 		ActualMagicAttack = 0;
@@ -561,29 +563,29 @@ void AUnit::ChangeMode(Modes Mode)
 		PrepareChangingModeTime = 2.f;
 	}
 }
-Modes AUnit::GetMode()
+EModes AUnit::GetMode()
 {
 	return CurrentMode;
 }
-void AUnit::Multicast_SetIsMoving_Implementation(Action NewAction)
+void AUnit::Multicast_SetIsMoving_Implementation(EAction NewAction)
 {
 	CurrentAction = NewAction;
 }
 void AUnit::ChangeLoopingAnimation()
 {
 	UAnimationAsset* NewAnimation;
-	if (CurrentAction == Action::Moving)
+	if (CurrentAction == EAction::Moving)
 	{
-		if (CurrentMode == Modes::Movement)
+		if (CurrentMode == EModes::Movement)
 			NewAnimation = RunningAnimation;
 		else
 			NewAnimation = WalkingAnimation;
 	}
-	else if (CurrentAction == Action::Attacking)
+	else if (CurrentAction == EAction::Attacking)
 		NewAnimation = AttackingAnimation;
 	else
 	{
-		if (CurrentMode == Modes::Defense)
+		if (CurrentMode == EModes::Defense)
 			NewAnimation = ReadyIdleAnimation;
 		else
 			NewAnimation = NeutralIdleAnimation;
@@ -610,21 +612,21 @@ float AUnit::GetInvisibleTime()
 //Visibility
 bool AUnit::GetOpponentVisibility()
 {
-	return IsVisibleForOpponent;
+	return bVisibleForOpponent;
 }
-void AUnit::Multicast_SetVisibility_Implementation(bool Visibility, FVector Position, FRotator Rotation)
+void AUnit::Multicast_SetVisibility_Implementation(bool bVisibility, FVector Position, FRotator Rotation)
 {
-	IsVisibleForOpponent = Visibility;
+	bVisibleForOpponent = bVisibility;
 	if (Cast<AMousePlayerController>(GetWorld()->GetFirstPlayerController())->GetSide() != GetSide())
 	{
 		SetActorLocation(Position);
 		SetActorRotation(Rotation);
-		SetActorHiddenInGame(!Visibility);
+		SetActorHiddenInGame(!bVisibility);
 	}
 }
-void AUnit::Multicast_SetInvisibleAsset_Implementation(bool IsInvisible)
+void AUnit::Multicast_SetInvisibleAsset_Implementation(bool bInvisible)
 {
-	if (IsInvisible)
+	if (bInvisible)
 		GetMesh()->SetSkeletalMesh(VisualAssetTransparent);
 	else
 		GetMesh()->SetSkeletalMesh(VisualAsset);
@@ -662,12 +664,12 @@ void AUnit::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetime
 
 	DOREPLIFETIME(AUnit, CurrentMode);
 	DOREPLIFETIME(AUnit, WantedMode);
-	DOREPLIFETIME(AUnit, IsVisibleForOpponent);
+	DOREPLIFETIME(AUnit, bVisibleForOpponent);
 }
 void AUnit::PreReplication(IRepChangedPropertyTracker &ChangedPropertyTracker)
 {
 	Super::PreReplication(ChangedPropertyTracker);
-	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, SpecialTargetsActors, MySide == Side::Red);
-	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, BoxSpecialTargetsActors, MySide == Side::Red);
-	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, Destinations, MySide == Side::Red);
+	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, SpecialTargetsActors, MySide == ESide::Red);
+	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, BoxSpecialTargetsActors, MySide == ESide::Red);
+	DOREPLIFETIME_ACTIVE_OVERRIDE(AUnit, Destinations, MySide == ESide::Red);
 }

@@ -9,7 +9,7 @@
 class ABuilding;
 
 UENUM(BlueprintType)
-	enum class TypeBox : uint8
+	enum class ETypeBox : uint8
 	{
 		Select,
 		Target,
@@ -29,8 +29,8 @@ class SINAH_API APlayerHUD : public AHUD
 
 		void SetStartMousePos(FVector2D Pos);
 		void SetCurrentMousePos(FVector2D Pos);
-		void ShouldDisplayBox(TypeBox Display);
-		void SetPlayerSide(Side NewSide);
+		void ShouldDisplayBox(ETypeBox Display);
+		void SetPlayerSide(ESide NewSide);
 		bool IsBoxTiny();
 
 		void SetActorsSelected(TArray<TScriptInterface<IGameElementInterface>> Units);
@@ -42,8 +42,8 @@ class SINAH_API APlayerHUD : public AHUD
 		FVector2D StartMousePos;
 		FVector2D CurrentMousePos;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum)
-			TypeBox BoxDisplayed;
-		Side PlayerSide;
+			ETypeBox BoxDisplayed;
+		ESide PlayerSide;
 		TArray<TScriptInterface<IGameElementInterface>> ActorsSelected;
 		TArray<TScriptInterface<IGameElementInterface>> ActorsBeingSelected;
 		

@@ -29,10 +29,10 @@ AKnight::AKnight() : Super()
 	BuildingLevelRequired = 1;
 
 	FoodEatenInHalfASecond = 1;
-	COST_IN_FOOD = 5;
-	COST_IN_CELLS = 50;
-	COST_IN_METAL = 30;
-	COST_IN_CRISTALS = 0;
+	CostInFood = 5;
+	CostInCells = 50;
+	CostInMetal = 30;
+	CostInCristal = 0;
 
 	GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * 100;
 

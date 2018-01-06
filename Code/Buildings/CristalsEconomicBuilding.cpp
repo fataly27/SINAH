@@ -5,8 +5,8 @@
 
 ACristalsEconomicBuilding::ACristalsEconomicBuilding() : Super()
 {
-	COST_IN_FOOD = { 200, 400, 600 };
-	COST_IN_CELLS = { 600, 1000, 1400 };
-	COST_IN_METAL = { 400, 700, 1000 };
-	COST_IN_CRISTALS = { 800, 1700, 2400 };
+	CostInFood = { 200, 400, 600 };
+	CostInCells = { 600, 1000, 1400 };
+	CostInMetal = { 400, 700, 1000 };
+	CostInCristals = { 800, 1700, 2400 };
 }

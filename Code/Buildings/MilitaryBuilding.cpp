@@ -38,33 +38,33 @@ void AMilitaryBuilding::BeginPlay()
 }
 
 //Zones
-void AMilitaryBuilding::ChangeDecals(bool Normal)
+void AMilitaryBuilding::ChangeDecals(bool bNormal)
 {
 	bool IsPlayer(Cast<AMousePlayerController>(GetWorld()->GetFirstPlayerController())->GetSide() == GetSide());
 	bool Reverse(Cast<AMousePlayerController>(GetWorld()->GetFirstPlayerController())->IsOpponentViewEnabled());
 
 	if ((IsPlayer && !Reverse) || (!IsPlayer && Reverse))
 	{
-		OpponentLifeZone->SetHiddenInGame(Normal);
-		OpponentSpeedZone->SetHiddenInGame(Normal);
+		OpponentLifeZone->SetHiddenInGame(bNormal);
+		OpponentSpeedZone->SetHiddenInGame(bNormal);
 
-		if (MySide == Side::Neutral)
+		if (MySide == ESide::Neutral)
 		{
-			PlayerLifeZone->SetHiddenInGame(Normal);
-			PlayerSpeedZone->SetHiddenInGame(Normal);
+			PlayerLifeZone->SetHiddenInGame(bNormal);
+			PlayerSpeedZone->SetHiddenInGame(bNormal);
 		}
 		else
 		{
-			PlayerLifeZone->SetHiddenInGame(!Normal);
-			PlayerSpeedZone->SetHiddenInGame(!Normal);
+			PlayerLifeZone->SetHiddenInGame(!bNormal);
+			PlayerSpeedZone->SetHiddenInGame(!bNormal);
 		}
 	}
 	else
 	{
-		OpponentLifeZone->SetHiddenInGame(!Normal);
-		OpponentSpeedZone->SetHiddenInGame(!Normal);
-		PlayerLifeZone->SetHiddenInGame(Normal);
-		PlayerSpeedZone->SetHiddenInGame(Normal);
+		OpponentLifeZone->SetHiddenInGame(!bNormal);
+		OpponentSpeedZone->SetHiddenInGame(!bNormal);
+		PlayerLifeZone->SetHiddenInGame(bNormal);
+		PlayerSpeedZone->SetHiddenInGame(bNormal);
 	}
 }
 
@@ -154,8 +154,8 @@ void AMilitaryBuilding::LevelUp()
 	Super::LevelUp();
 }
 
-//Side
-void AMilitaryBuilding::SetSide(Side NewSide)
+//ESide
+void AMilitaryBuilding::SetSide(ESide NewSide)
 {
 	Super::SetSide(NewSide);
 

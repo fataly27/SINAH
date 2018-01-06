@@ -23,7 +23,7 @@ class SINAH_API AMilitaryBuilding : public ABuilding
 		virtual void BeginPlay() override;
 
 		//Zones
-		void ChangeDecals(bool Normal = true);
+		void ChangeDecals(bool bNormal = true);
 
 		UFUNCTION(NetMulticast, Reliable)
 			void Multicast_LevelUpPlayerLifeZoneEffect();
@@ -56,8 +56,8 @@ class SINAH_API AMilitaryBuilding : public ABuilding
 		//Level
 		virtual void LevelUp() override;
 
-		//Side
-		virtual void SetSide(Side NewSide) override;
+		//ESide
+		virtual void SetSide(ESide NewSide) override;
 		UFUNCTION(NetMulticast, Reliable)
 			void Multicast_SetMilitarySide();
 		UFUNCTION(NetMulticast, Reliable)

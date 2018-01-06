@@ -32,7 +32,7 @@ class SINAH_API AEconomicBuilding : public ABuilding
 		virtual unsigned int GetLifeBarWidth() override;
 
 		//Attack
-		virtual void ReceiveDamages(int Physic, int Magic, Side AttackingSide) override;
+		virtual void ReceiveDamages(int Physic, int Magic, ESide AttackingSide) override;
 
 		//Replication
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
@@ -40,7 +40,7 @@ class SINAH_API AEconomicBuilding : public ABuilding
 	protected:
 
 		UPROPERTY(Replicated)
-			bool IsPlundered;
+			bool bPlundered;
 		UPROPERTY(Replicated)
 			int DefaultOutputInHalfASecond;
 		UPROPERTY(Replicated)

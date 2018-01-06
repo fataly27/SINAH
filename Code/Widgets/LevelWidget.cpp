@@ -8,39 +8,39 @@ void ULevelWidget::SetLevel(int CurrentLevel, int MaxLevel, FLinearColor NewColo
 	Level = FString("Level ").Append(FString::FromInt(CurrentLevel)).Append(" / ").Append(FString::FromInt(MaxLevel));
 	Color = NewColor;
 }
-void ULevelWidget::SetRessourcesRequired(int Food, int Cells, int Metal, int Cristals, bool IsFood, bool IsCells, bool IsMetal, bool IsCristals)
+void ULevelWidget::SetRessourcesRequired(int Food, int Cells, int Metal, int Cristals, bool bFood, bool bCells, bool bMetal, bool bCristals)
 {
 	FoodRequired = FString::FromInt(Food);
 	CellsRequired = FString::FromInt(Cells);
 	MetalRequired = FString::FromInt(Metal);
 	CristalsRequired = FString::FromInt(Cristals);
 
-	IsThereEnoughFood = IsFood;
-	IsThereEnoughCells = IsCells;
-	IsThereEnoughMetal = IsMetal;
-	IsThereEnoughCristals = IsCristals;
+	IsThereEnoughFood = bFood;
+	IsThereEnoughCells = bCells;
+	IsThereEnoughMetal = bMetal;
+	IsThereEnoughCristals = bCristals;
 }
-void ULevelWidget::SetIsLevelUpPossible(bool Possible)
+void ULevelWidget::SetIsLevelUpPossible(bool bPossible)
 {
-	IsLevelUpPossible = Possible;
+	IsLevelUpPossible = bPossible;
 }
-void ULevelWidget::SetIsLevelVisible(bool Visible)
+void ULevelWidget::SetIsLevelVisible(bool bVisible)
 {
-	if (Visible)
+	if (bVisible)
 		IsLevelVisible = ESlateVisibility::SelfHitTestInvisible;
 	else
 		IsLevelVisible = ESlateVisibility::Hidden;
 }
-void ULevelWidget::SetAreDetailsVisible(bool Visible)
+void ULevelWidget::SetAreDetailsVisible(bool bVisible)
 {
-	if (Visible)
+	if (bVisible)
 		AreDetailsVisible = ESlateVisibility::SelfHitTestInvisible;
 	else
 		AreDetailsVisible = ESlateVisibility::Hidden;
 }
-void ULevelWidget::SetIsLevelUpVisible(bool Visible)
+void ULevelWidget::SetIsLevelUpVisible(bool bVisible)
 {
-	if (Visible)
+	if (bVisible)
 		IsLevelUpVisible = ESlateVisibility::SelfHitTestInvisible;
 	else
 		IsLevelUpVisible = ESlateVisibility::Hidden;

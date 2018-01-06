@@ -33,9 +33,9 @@ class SINAH_API AMultiplayerGameState : public AGameState
 
 	private:
 		UPROPERTY(Replicated)
-			bool GameActive;
+			bool bGameActive;
 		UPROPERTY(Replicated)
-			Side Winner;
+			ESide Winner;
 		UPROPERTY(Replicated)
 			FString StateInfo;
 		UPROPERTY(Replicated)

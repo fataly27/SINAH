@@ -6,8 +6,8 @@
 
 AFoodEconomicBuilding::AFoodEconomicBuilding() : Super()
 {
-	COST_IN_FOOD = { 800, 1700, 2400 };
-	COST_IN_CELLS = { 600, 1000, 1400 };
-	COST_IN_METAL = { 400, 700, 1000 };
-	COST_IN_CRISTALS = { 200, 400, 600 };
+	CostInFood = { 800, 1700, 2400 };
+	CostInCells = { 600, 1000, 1400 };
+	CostInMetal = { 400, 700, 1000 };
+	CostInCristals = { 200, 400, 600 };
 }

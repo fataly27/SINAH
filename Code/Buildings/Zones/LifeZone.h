@@ -15,7 +15,7 @@ class SINAH_API ULifeZone : public UZone
 	
 	public:
 		ULifeZone();
-		void Init(bool Player);
+		void Init(bool bPlayer);
 
 		int GetLifeModifier(AUnit* Unit, AMilitaryBuilding* Building);
 

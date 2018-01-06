@@ -6,8 +6,8 @@
 
 ACellsEconomicBuilding::ACellsEconomicBuilding() : Super()
 {
-	COST_IN_FOOD = { 200, 400, 600 };
-	COST_IN_CELLS = { 1200, 2300, 3400 };
-	COST_IN_METAL = { 400, 700, 1000 };
-	COST_IN_CRISTALS = { 200, 400, 600 };
+	CostInFood = { 200, 400, 600 };
+	CostInCells = { 1200, 2300, 3400 };
+	CostInMetal = { 400, 700, 1000 };
+	CostInCristals = { 200, 400, 600 };
 }

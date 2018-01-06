@@ -18,7 +18,7 @@ class SINAH_API ULevelEconomicWidget : public ULevelWidget
 		UFUNCTION(BlueprintImplementableEvent, Category = "Invisible")
 			void SetRelativeOutput(const float Current, const float Next);
 		void SetOutput(int Current, int Next);
-		void SetIsPlundered(bool Plundered);
+		void SetIsPlundered(bool bPlunder);
 
 		UFUNCTION(BlueprintImplementableEvent, Category = "BuildingTypes")
 			void SetBuildingToFood();
@@ -31,7 +31,7 @@ class SINAH_API ULevelEconomicWidget : public ULevelWidget
 
 	protected:
 		UPROPERTY(BlueprintReadWrite, Category = "LevelEconomic")
-			bool IsPlundered;
+			bool bPlundered;
 		UPROPERTY(BlueprintReadWrite, Category = "LevelEconomic")
 			FString CurrentOutput;
 		UPROPERTY(BlueprintReadWrite, Category = "LevelEconomic")

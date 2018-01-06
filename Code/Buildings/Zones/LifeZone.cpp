@@ -12,16 +12,16 @@ ULifeZone::ULifeZone()
 	static ConstructorHelpers::FObjectFinder<UMaterial> DecalOpponentMaterialAsset(TEXT("/Game/Materials/Zones/OpponentLifeZone.OpponentLifeZone"));
 	BaseDecalOpponentMaterial = DecalOpponentMaterialAsset.Object;
 }
-void ULifeZone::Init(bool Player)
+void ULifeZone::Init(bool bPlayer)
 {
-	if (Player)
+	if (bPlayer)
 	{
-		Super::Init(Player, 10.f);
+		Super::Init(bPlayer, 10.f);
 		BaseLifeModifier = 20;
 	}
 	else
 	{
-		Super::Init(Player, 5.f);
+		Super::Init(bPlayer, 5.f);
 		BaseLifeModifier = 8;
 	}
 }
@@ -32,7 +32,7 @@ int ULifeZone::GetLifeModifier(AUnit* Unit, AMilitaryBuilding* Building)
 		return 0;
 	else
 	{
-		if(IsForPlayer)
+		if(bForPlayer)
 			return BaseLifeModifier * FGenericPlatformMath::Sqrt(CurrentEffectLevel);
 		else
 			return -BaseLifeModifier * FGenericPlatformMath::Sqrt(CurrentEffectLevel);

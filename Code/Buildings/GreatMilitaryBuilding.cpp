@@ -14,10 +14,10 @@ AGreatMilitaryBuilding::AGreatMilitaryBuilding() : Super()
 	ActualHeal = DefaultHeal;
 	ActualFieldOfSight = DefaultFieldOfSight;
 
-	COST_IN_FOOD = { 150, 300, 1000, 2000, 5000, 10000};
-	COST_IN_CELLS = { 400, 800, 2000, 4000, 10000, 20000 };
-	COST_IN_METAL = { 1000, 2000, 4000, 8000, 20000, 40000 };
-	COST_IN_CRISTALS = { 50, 250, 1000, 2000, 5000, 15000 };
+	CostInFood = { 150, 300, 1000, 2000, 5000, 10000};
+	CostInCells = { 400, 800, 2000, 4000, 10000, 20000 };
+	CostInMetal = { 1000, 2000, 4000, 8000, 20000, 40000 };
+	CostInCristals = { 50, 250, 1000, 2000, 5000, 15000 };
 
 	SetActorRotation(FRotator(0.f, 45.f, 0.f));
 	SetActorScale3D(FVector(1.f));

@@ -30,7 +30,7 @@
 
 #include "MousePlayerController.h"
 
-AMousePlayerController::AMousePlayerController() : TimeSinceLastHarvest(0.f), OpponentView(false), OldString(""), IsThrobberEnabled(true), IsExitEnabled(false)
+AMousePlayerController::AMousePlayerController() : TimeSinceLastHarvest(0.f), bOpponentView(false), OldString(""), bThrobberEnabled(true), bExitEnabled(false)
 {
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;
@@ -116,7 +116,7 @@ void AMousePlayerController::BeginPlay()
 
 			FLinearColor Color;
 
-			if (GetSide() == Side::Blue)
+			if (GetSide() == ESide::Blue)
 				Color = FLinearColor(0.5f, 0.5f, 1.f, 1.f);
 			else
 				Color = FLinearColor(1.f, 0.5f, 0.5f, 1.f);
@@ -151,9 +151,9 @@ void AMousePlayerController::BeginPlay()
 			SpawnEntityWidgets[0]->TransferData();
 		}
 
-		if (GetSide() == Side::Blue)
+		if (GetSide() == ESide::Blue)
 			SetColorToBlue();
-		if (GetSide() == Side::Red)
+		if (GetSide() == ESide::Red)
 			SetColorToRed();
 	}
 
@@ -181,22 +181,22 @@ void AMousePlayerController::Tick(float DeltaTime)
 			OldString = String;
 		}
 
-		if (GetWorld()->GetGameState<AMultiplayerGameState>()->GetStatusInfo() != "Waiting for your opponent" && IsThrobberEnabled)
+		if (GetWorld()->GetGameState<AMultiplayerGameState>()->GetStatusInfo() != "Waiting for your opponent" && bThrobberEnabled)
 		{
 			DisableLoading();
-			IsThrobberEnabled = false;
+			bThrobberEnabled = false;
 		}
 
-		if ((GetWorld()->GetGameState<AMultiplayerGameState>()->GetStatusInfo() == "Blue player has won !" || GetWorld()->GetGameState<AMultiplayerGameState>()->GetStatusInfo() == "Red player has won !") && !IsExitEnabled)
+		if ((GetWorld()->GetGameState<AMultiplayerGameState>()->GetStatusInfo() == "Blue player has won !" || GetWorld()->GetGameState<AMultiplayerGameState>()->GetStatusInfo() == "Red player has won !") && !bExitEnabled)
 		{
 			EnableExit();
-			IsExitEnabled = true;
+			bExitEnabled = true;
 		}
 	}
 
 	if (Role == ROLE_Authority)
 	{
-		if (!GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
+		if (GetWorld()->GetGameState<AMultiplayerGameState>() && !GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 		{
 			TActorIterator<AUnit> UnitItr(GetWorld());
 			for (UnitItr; UnitItr; ++UnitItr)
@@ -249,37 +249,40 @@ void AMousePlayerController::Tick(float DeltaTime)
 
 				AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
 
-				State->SetAmountOfFood(State->GetAmountOfFood() + AmountOfFoodToAdd);
-				State->SetAmountOfMetal(State->GetAmountOfMetal() + AmountOfMetalToAdd);
-				State->SetAmountOfCells(State->GetAmountOfCells() + AmountOfCellsToAdd);
-				State->SetAmountOfCristals(State->GetAmountOfCristals() + AmountOfCristalsToAdd);
-
-				int CurrentFood(State->GetAmountOfFood());
-				int NeededFood(0);
-				int GlobalNeededFood(0);
-
-				TActorIterator<AUnit> UnitItr(GetWorld());
-				for (UnitItr; UnitItr; ++UnitItr)
+				if (State)
 				{
-					if (UnitItr->GetSide() == GetSide())
+					State->SetAmountOfFood(State->GetAmountOfFood() + AmountOfFoodToAdd);
+					State->SetAmountOfMetal(State->GetAmountOfMetal() + AmountOfMetalToAdd);
+					State->SetAmountOfCells(State->GetAmountOfCells() + AmountOfCellsToAdd);
+					State->SetAmountOfCristals(State->GetAmountOfCristals() + AmountOfCristalsToAdd);
+
+					int CurrentFood(State->GetAmountOfFood());
+					int NeededFood(0);
+					int GlobalNeededFood(0);
+
+					TActorIterator<AUnit> UnitItr(GetWorld());
+					for (UnitItr; UnitItr; ++UnitItr)
 					{
-						int FoodNeededByUnit(UnitItr->GetFoodEatenInHalfASecond());
+						if (UnitItr->GetSide() == GetSide())
+						{
+							int FoodNeededByUnit(UnitItr->GetFoodEatenInHalfASecond());
 
-						if (CurrentFood - NeededFood - FoodNeededByUnit >= 0)
-							NeededFood += FoodNeededByUnit;
-						else
-							UnitItr->Heal(-2 * FoodNeededByUnit);
+							if (CurrentFood - NeededFood - FoodNeededByUnit >= 0)
+								NeededFood += FoodNeededByUnit;
+							else
+								UnitItr->Heal(-2 * FoodNeededByUnit);
 
-						GlobalNeededFood += FoodNeededByUnit;
+							GlobalNeededFood += FoodNeededByUnit;
+						}
 					}
+
+					State->SetAmountOfFood(CurrentFood - NeededFood);
+
+					State->SetFoodChange(2 * (AmountOfFoodToAdd - GlobalNeededFood));
+					State->SetMetalChange(2 * AmountOfMetalToAdd);
+					State->SetCellsChange(2 * AmountOfCellsToAdd);
+					State->SetCristalsChange(2 * AmountOfCristalsToAdd);
 				}
-
-				State->SetAmountOfFood(CurrentFood - NeededFood);
-
-				State->SetFoodChange(2 * (AmountOfFoodToAdd - GlobalNeededFood));
-				State->SetMetalChange(2 * AmountOfMetalToAdd);
-				State->SetCellsChange(2 * AmountOfCellsToAdd);
-				State->SetCristalsChange(2 * AmountOfCristalsToAdd);
 			}
 		}
 	}
@@ -291,7 +294,7 @@ void AMousePlayerController::Tick(float DeltaTime)
 		GetMousePosition(LocationX, LocationY);
 		HUD->SetCurrentMousePos(FVector2D(LocationX, LocationY));
 
-		if (BoxDisplayed == TypeBox::Select)
+		if (BoxDisplayed == ETypeBox::Select)
 			UpdateBoxSelection(HUD->GetActorsBeingSelected());
 
 		TArray<TScriptInterface<IGameElementInterface>> AllActorsSelected;
@@ -317,10 +320,10 @@ void AMousePlayerController::Tick(float DeltaTime)
 		AllActorsSelected.Append(ActorsSelectedByCurrentBox);
 		HUD->SetActorsSelected(AllActorsSelected);
 
-		if (BoxDisplayed == TypeBox::Target)
+		if (BoxDisplayed == ETypeBox::Target)
 			UpdateBoxTargeting(HUD->GetActorsBeingSelected(), false);
 
-		if (AllActorsSelected.Num() == 0 && BoxDisplayed == TypeBox::Target)
+		if (AllActorsSelected.Num() == 0 && BoxDisplayed == ETypeBox::Target)
 			Direct();
 
 		if (MyPawn)
@@ -363,9 +366,9 @@ void AMousePlayerController::Tick(float DeltaTime)
 			{
 				MyStatInterface->SetStatsVisibility(ESlateVisibility::Visible, ESlateVisibility::Hidden);
 
-				if (AllActorsSelected[0]->GetSide() == Side::Blue)
+				if (AllActorsSelected[0]->GetSide() == ESide::Blue)
 					Color = FLinearColor(0.5f, 0.5f, 1.f, 1.f);
-				else if (AllActorsSelected[0]->GetSide() == Side::Red)
+				else if (AllActorsSelected[0]->GetSide() == ESide::Red)
 					Color = FLinearColor(1.f, 0.5f, 0.5f, 1.f);
 				else
 					Color = FLinearColor(0.5f, 0.5f, 0.5f, 1.f);
@@ -392,7 +395,7 @@ void AMousePlayerController::Tick(float DeltaTime)
 						{
 							AUnit* Unit = Cast<AUnit>(AllActorsSelected[i].GetObject());
 
-							if (Unit->GetMode() == Modes::None)
+							if (Unit->GetMode() == EModes::None)
 							{
 								MyModesInterface->SetAllButtonsEnabled(false);
 								break;
@@ -415,15 +418,15 @@ void AMousePlayerController::Tick(float DeltaTime)
 							if (1.f - (Unit->GetInvisibleCoolDown() / 180.f) < InvisibleCoolDownRatio)
 								InvisibleCoolDownRatio = 1.f - (Unit->GetInvisibleCoolDown() / 180.f);
 
-							if (Unit->GetMode() == Modes::Attack)
+							if (Unit->GetMode() == EModes::Attack)
 								UnitsPerMode[0] += 1;
-							else if (Unit->GetMode() == Modes::Defense)
+							else if (Unit->GetMode() == EModes::Defense)
 								UnitsPerMode[1] += 1;
-							else if (Unit->GetMode() == Modes::Movement)
+							else if (Unit->GetMode() == EModes::Movement)
 								UnitsPerMode[2] += 1;
-							else if (Unit->GetMode() == Modes::Alert)
+							else if (Unit->GetMode() == EModes::Alert)
 								UnitsPerMode[3] += 1;
-							else if (Unit->GetMode() == Modes::Invisible)
+							else if (Unit->GetMode() == EModes::Invisible)
 								UnitsPerMode[4] += 1;
 						}
 
@@ -577,9 +580,9 @@ void AMousePlayerController::Tick(float DeltaTime)
 							}
 						}
 
-						if (Building->GetSide() == Side::Blue)
+						if (Building->GetSide() == ESide::Blue)
 							LevelInterface->SetLevel(Building->GetLevel(), Building->GetMaxLevel(), Color);
-						else if (Building->GetSide() == Side::Red)
+						else if (Building->GetSide() == ESide::Red)
 							LevelInterface->SetLevel(Building->GetLevel(), Building->GetMaxLevel(), Color);
 						else
 							LevelInterface->SetLevel(Building->GetLevel(), Building->GetMaxLevel(), Color);
@@ -660,7 +663,7 @@ void AMousePlayerController::SetupInputComponent()
 
 }
 
-Side AMousePlayerController::GetSide()
+ESide AMousePlayerController::GetSide()
 {
 	return PlayerSide;
 }
@@ -684,7 +687,7 @@ void AMousePlayerController::Zoom(float AxisValue)
 
 void AMousePlayerController::StartSelect()
 {
-	if (BoxDisplayed != TypeBox::Target && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
+	if (BoxDisplayed != ETypeBox::Target && GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		ClearSelection();
 		StartAddSelect();
@@ -692,7 +695,7 @@ void AMousePlayerController::StartSelect()
 }
 void AMousePlayerController::StartAddSelect()
 {
-	if (BoxDisplayed != TypeBox::Target && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
+	if (BoxDisplayed != ETypeBox::Target && GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		float LocationX;
 		float LocationY;
@@ -703,9 +706,9 @@ void AMousePlayerController::StartAddSelect()
 
 		HUD->SetStartMousePos(StartMousePos);
 		HUD->SetPlayerSide(PlayerSide);
-		HUD->ShouldDisplayBox(TypeBox::Select);
+		HUD->ShouldDisplayBox(ETypeBox::Select);
 
-		BoxDisplayed = TypeBox::Select;
+		BoxDisplayed = ETypeBox::Select;
 	}
 }
 void AMousePlayerController::Select()
@@ -714,31 +717,31 @@ void AMousePlayerController::Select()
 }
 void AMousePlayerController::AddSelect()
 {
-	if (BoxDisplayed == TypeBox::Select && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
+	if (BoxDisplayed == ETypeBox::Select && GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		UpdateBoxSelection(HUD->GetActorsBeingSelected());
 		ActorsSelected.Append(ActorsSelectedByCurrentBox);
 
 		ActorsSelectedByCurrentBox.Empty();
-		HUD->ShouldDisplayBox(TypeBox::None);
-		BoxDisplayed = TypeBox::None;
+		HUD->ShouldDisplayBox(ETypeBox::None);
+		BoxDisplayed = ETypeBox::None;
 	}
 }
 void AMousePlayerController::StartDirect()
 {
-	if (BoxDisplayed != TypeBox::Select && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
+	if (BoxDisplayed != ETypeBox::Select && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		for (int i(0); i < ActorsSelected.Num(); i++)
 		{
 			AUnit* CurrentUnit = Cast<AUnit>(ActorsSelected[i].GetObject());
 			if (CurrentUnit->GetSide() == PlayerSide)
 			{
-				if (PlayerSide == Side::Blue)
+				if (PlayerSide == ESide::Blue)
 				{
 					CurrentUnit->ClearDestinations();
 					CurrentUnit->ClearSpecialTargets();
 				}
-				else if (PlayerSide == Side::Red)
+				else if (PlayerSide == ESide::Red)
 				{
 					Server_ClearDestinations(CurrentUnit);
 					Server_ClearSpecialTargets(CurrentUnit);
@@ -750,7 +753,7 @@ void AMousePlayerController::StartDirect()
 }
 void AMousePlayerController::StartAddDirect()
 {
-	if (BoxDisplayed != TypeBox::Select && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
+	if (BoxDisplayed != ETypeBox::Select && ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()) && GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		float LocationX;
 		float LocationY;
@@ -761,9 +764,9 @@ void AMousePlayerController::StartAddDirect()
 
 		HUD->SetStartMousePos(StartMousePos);
 		HUD->SetPlayerSide(PlayerSide);
-		HUD->ShouldDisplayBox(TypeBox::Target);
+		HUD->ShouldDisplayBox(ETypeBox::Target);
 
-		BoxDisplayed = TypeBox::Target;
+		BoxDisplayed = ETypeBox::Target;
 	}
 }
 void AMousePlayerController::Direct()
@@ -772,7 +775,7 @@ void AMousePlayerController::Direct()
 }
 void AMousePlayerController::AddDirect()
 {
-	if (BoxDisplayed == TypeBox::Target && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
+	if (BoxDisplayed == ETypeBox::Target && GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		if (ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()))
 		{
@@ -804,7 +807,7 @@ void AMousePlayerController::AddDirect()
 					for (int i(0); i < ActorsSelected.Num(); i++)
 					{
 						AUnit* CurrentUnit = Cast<AUnit>(ActorsSelected[i].GetObject());
-						if (CurrentUnit->GetSide() == PlayerSide && CurrentUnit->GetMode() != Modes::Defense)
+						if (CurrentUnit->GetSide() == PlayerSide && CurrentUnit->GetMode() != EModes::Defense)
 						{
 							Units.Add(CurrentUnit);
 							Direction += HitResult.ImpactPoint - CurrentUnit->GetLocationAfterAllMoves();
@@ -834,9 +837,9 @@ void AMousePlayerController::AddDirect()
 
 						for (int j(0); j < NumberColumns; j++)
 						{
-							if (PlayerSide == Side::Blue)
+							if (PlayerSide == ESide::Blue)
 								Units[k]->AddDestination(HitResult.ImpactPoint + FVector(Position.GetRotated(Rotation.Yaw), 0.f), Rotation);
-							else if (PlayerSide == Side::Red)
+							else if (PlayerSide == ESide::Red)
 								Server_AddDestination(Units[k], HitResult.ImpactPoint + FVector(Position.GetRotated(Rotation.Yaw), 0.f), Rotation);
 
 							Position.Y -= 250.f;
@@ -849,8 +852,8 @@ void AMousePlayerController::AddDirect()
 			}
 		}
 
-		HUD->ShouldDisplayBox(TypeBox::None);
-		BoxDisplayed = TypeBox::None;
+		HUD->ShouldDisplayBox(ETypeBox::None);
+		BoxDisplayed = ETypeBox::None;
 	}
 }
 
@@ -944,7 +947,7 @@ void AMousePlayerController::UpdateBoxSelection(TArray<TScriptInterface<IGameEle
 	}
 	ActorsSelectedByCurrentBox = FinalSelection;
 }
-void AMousePlayerController::UpdateBoxTargeting(TArray<TScriptInterface<IGameElementInterface>> NewTargets, bool IsFinal)
+void AMousePlayerController::UpdateBoxTargeting(TArray<TScriptInterface<IGameElementInterface>> NewTargets, bool bIsFinal)
 {
 	if (ActorsSelected.IsValidIndex(0) && ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()))
 	{
@@ -963,7 +966,7 @@ void AMousePlayerController::UpdateBoxTargeting(TArray<TScriptInterface<IGameEle
 
 					Server_SetBoxSpecialTargets(CurrentUnit, UpdatedNewTargets);
 				}
-				if (IsFinal)
+				if (bIsFinal)
 				{
 					if (Role == ROLE_Authority)
 						CurrentUnit->AddSpecialTargets();
@@ -976,9 +979,9 @@ void AMousePlayerController::UpdateBoxTargeting(TArray<TScriptInterface<IGameEle
 }
 
 //EnemyView
-void AMousePlayerController::SetOpponentView(bool Enable)
+void AMousePlayerController::SetOpponentView(bool bEnable)
 {
-	OpponentView = Enable;
+	bOpponentView = bEnable;
 
 	TActorIterator<AMilitaryBuilding> BuildingItr(GetWorld());
 	for (BuildingItr; BuildingItr; ++BuildingItr)
@@ -990,7 +993,7 @@ void AMousePlayerController::SetOpponentView(bool Enable)
 }
 bool AMousePlayerController::IsOpponentViewEnabled()
 {
-	return OpponentView;
+	return bOpponentView;
 }
 void AMousePlayerController::EnableOpponentView()
 {
@@ -1014,9 +1017,9 @@ void AMousePlayerController::FogOfWar()
 	TActorIterator<AUnit> UnitItr(GetWorld());
 	for (UnitItr; UnitItr; ++UnitItr)
 	{
-		if (UnitItr->GetSide() == Side::Blue)
+		if (UnitItr->GetSide() == ESide::Blue)
 			BlueActors.Add(TScriptInterface<IGameElementInterface>(*UnitItr));
-		else if (UnitItr->GetSide() == Side::Red)
+		else if (UnitItr->GetSide() == ESide::Red)
 			RedActors.Add(TScriptInterface<IGameElementInterface>(*UnitItr));
 		else
 			NeutralActors.Add(TScriptInterface<IGameElementInterface>(*UnitItr));
@@ -1026,9 +1029,9 @@ void AMousePlayerController::FogOfWar()
 	TActorIterator<ABuilding> BuildingItr(GetWorld());
 	for (BuildingItr; BuildingItr; ++BuildingItr)
 	{
-		if (BuildingItr->GetSide() == Side::Blue)
+		if (BuildingItr->GetSide() == ESide::Blue)
 			BlueActors.Add(TScriptInterface<IGameElementInterface>(*BuildingItr));
-		else if (BuildingItr->GetSide() == Side::Red)
+		else if (BuildingItr->GetSide() == ESide::Red)
 			RedActors.Add(TScriptInterface<IGameElementInterface>(*BuildingItr));
 		else
 			NeutralActors.Add(TScriptInterface<IGameElementInterface>(*BuildingItr));
@@ -1039,7 +1042,7 @@ void AMousePlayerController::FogOfWar()
 
 
 	bool ShouldBeVisible(false);
-	if (Role == ROLE_Authority && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
+	if (Role == ROLE_Authority && GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		ApplyZoneEffects(MilitaryBuildings, Units);
 
@@ -1055,16 +1058,16 @@ void AMousePlayerController::FogOfWar()
 				{
 					bool IsRedActorInvisible(false);
 					if (RedActors[j].GetObject()->IsA(AUnit::StaticClass()))
-						IsRedActorInvisible = Cast<AUnit>(RedActors[j].GetObject())->GetMode() == Modes::Invisible;
+						IsRedActorInvisible = Cast<AUnit>(RedActors[j].GetObject())->GetMode() == EModes::Invisible;
 
-					if (FVector(RedActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= RedActors[j]->GetFieldOfSight() * 100.f && BlueUnit->GetMode() != Modes::Invisible)
+					if (FVector(RedActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= RedActors[j]->GetFieldOfSight() * 100.f && BlueUnit->GetMode() != EModes::Invisible)
 						ShouldBeVisible = true;
 					if (FVector(RedActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= BlueActors[i]->GetFieldOfSight() * 100.f && !IsRedActorInvisible)
 						OpponentsInSight.Add(RedActors[j]);
 				}
 				for (int j = 0; j < NeutralActors.Num(); j++)
 				{
-					if (FVector(NeutralActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= BlueActors[i]->GetFieldOfSight() * 100.f && BlueUnit->GetMode() != Modes::Invisible)
+					if (FVector(NeutralActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= BlueActors[i]->GetFieldOfSight() * 100.f && BlueUnit->GetMode() != EModes::Invisible)
 						OpponentsInSight.Add(NeutralActors[j]);
 				}
 
@@ -1085,16 +1088,16 @@ void AMousePlayerController::FogOfWar()
 				{
 					bool IsBlueActorInvisible(false);
 					if (BlueActors[j].GetObject()->IsA(AUnit::StaticClass()))
-						IsBlueActorInvisible = Cast<AUnit>(BlueActors[j].GetObject())->GetMode() == Modes::Invisible;
+						IsBlueActorInvisible = Cast<AUnit>(BlueActors[j].GetObject())->GetMode() == EModes::Invisible;
 
-					if (FVector(BlueActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= BlueActors[j]->GetFieldOfSight() * 100.f && RedUnit->GetMode() != Modes::Invisible)
+					if (FVector(BlueActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= BlueActors[j]->GetFieldOfSight() * 100.f && RedUnit->GetMode() != EModes::Invisible)
 						ShouldBeVisible = true;
 					if (FVector(BlueActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= RedActors[i]->GetFieldOfSight() * 100.f && !IsBlueActorInvisible)
 						OpponentsInSight.Add(BlueActors[j]);
 				}
 				for (int j = 0; j < NeutralActors.Num(); j++)
 				{
-					if (FVector(NeutralActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= RedActors[i]->GetFieldOfSight() * 100.f && RedUnit->GetMode() != Modes::Invisible)
+					if (FVector(NeutralActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= RedActors[i]->GetFieldOfSight() * 100.f && RedUnit->GetMode() != EModes::Invisible)
 						OpponentsInSight.Add(NeutralActors[j]);
 				}
 
@@ -1105,16 +1108,16 @@ void AMousePlayerController::FogOfWar()
 		}
 	}
 
-	if (!OpponentView)
+	if (!IsOpponentViewEnabled())
 	{
-		if (PlayerSide == Side::Blue)
+		if (PlayerSide == ESide::Blue)
 			SetFogOfWarTexture(BlueActors);
 		else
 			SetFogOfWarTexture(RedActors);
 	}
 	else
 	{
-		if (PlayerSide == Side::Blue)
+		if (PlayerSide == ESide::Blue)
 		{
 			TArray<TScriptInterface<IGameElementInterface>> VisibleRedActors;
 			for (int i = 0; i < RedActors.Num(); i++)
@@ -1286,7 +1289,7 @@ void AMousePlayerController::UpdateTextureRegions(UTexture2D* Texture, int32 Mip
 }
 void AMousePlayerController::ApplyZoneEffects(TArray<AMilitaryBuilding*> MilitaryBuildings, TArray<AUnit*> Units)
 {
-	if (Role == ROLE_Authority && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
+	if (Role == ROLE_Authority && GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
 		for (int j(0); j < Units.Num(); j++)
 		{
@@ -1317,7 +1320,7 @@ void AMousePlayerController::Server_AddDestination_Implementation(AUnit *Unit, F
 }
 bool AMousePlayerController::Server_AddDestination_Validate(AUnit *Unit, FVector Destination, FRotator Rotation)
 {
-	return Unit != NULL && Unit->GetSide() == Side::Red && !Unit->IsPendingKill();
+	return Unit != NULL && Unit->GetSide() == ESide::Red && !Unit->IsPendingKill();
 }
 void AMousePlayerController::Server_ClearDestinations_Implementation(AUnit *Unit)
 {
@@ -1325,7 +1328,7 @@ void AMousePlayerController::Server_ClearDestinations_Implementation(AUnit *Unit
 }
 bool AMousePlayerController::Server_ClearDestinations_Validate(AUnit *Unit)
 {
-	return Unit != NULL && Unit->GetSide() == Side::Red && !Unit->IsPendingKill();
+	return Unit != NULL && Unit->GetSide() == ESide::Red && !Unit->IsPendingKill();
 }
 
 void AMousePlayerController::Server_AddSpecialTargets_Implementation(AUnit *Unit)
@@ -1334,7 +1337,7 @@ void AMousePlayerController::Server_AddSpecialTargets_Implementation(AUnit *Unit
 }
 bool AMousePlayerController::Server_AddSpecialTargets_Validate(AUnit *Unit)
 {
-	return Unit != NULL && Unit->GetSide() == Side::Red && !Unit->IsPendingKill();
+	return Unit != NULL && Unit->GetSide() == ESide::Red && !Unit->IsPendingKill();
 }
 void AMousePlayerController::Server_SetBoxSpecialTargets_Implementation(AUnit *Unit, const TArray<AActor*> &NewTargets)
 {
@@ -1352,7 +1355,7 @@ void AMousePlayerController::Server_SetBoxSpecialTargets_Implementation(AUnit *U
 }
 bool AMousePlayerController::Server_SetBoxSpecialTargets_Validate(AUnit *Unit, const TArray<AActor*> &NewTargets)
 {
-	return Unit != NULL && Unit->GetSide() == Side::Red && !Unit->IsPendingKill();
+	return Unit != NULL && Unit->GetSide() == ESide::Red && !Unit->IsPendingKill();
 }
 void AMousePlayerController::Server_ClearSpecialTargets_Implementation(AUnit *Unit)
 {
@@ -1360,7 +1363,7 @@ void AMousePlayerController::Server_ClearSpecialTargets_Implementation(AUnit *Un
 }
 bool AMousePlayerController::Server_ClearSpecialTargets_Validate(AUnit *Unit)
 {
-	return Unit != NULL && Unit->GetSide() == Side::Red && !Unit->IsPendingKill();
+	return Unit != NULL && Unit->GetSide() == ESide::Red && !Unit->IsPendingKill();
 }
 
 //Costing functions
@@ -1437,8 +1440,8 @@ bool AMousePlayerController::Server_SpawnUnit_Validate(AMilitaryBuilding* Spawne
 	return true;
 }
 
-//Modes
-void AMousePlayerController::SetMode(Modes Mode)
+//EModes
+void AMousePlayerController::SetMode(EModes Mode)
 {
 	if (ActorsSelected[0].GetObject()->IsA(AUnit::StaticClass()))
 	{
@@ -1450,34 +1453,34 @@ void AMousePlayerController::SetMode(Modes Mode)
 		}
 	}
 }
-void AMousePlayerController::Server_ChangeMode_Implementation(AUnit* Unit, Modes Mode)
+void AMousePlayerController::Server_ChangeMode_Implementation(AUnit* Unit, EModes Mode)
 {
 	Unit->ChangeMode(Mode);
 }
-bool AMousePlayerController::Server_ChangeMode_Validate(AUnit* Unit, Modes Mode)
+bool AMousePlayerController::Server_ChangeMode_Validate(AUnit* Unit, EModes Mode)
 {
 	return true;
 }
 
 void AMousePlayerController::SetModeToAttack()
 {
-	SetMode(Modes::Attack);
+	SetMode(EModes::Attack);
 }
 void AMousePlayerController::SetModeToDefense()
 {
-	SetMode(Modes::Defense);
+	SetMode(EModes::Defense);
 }
 void AMousePlayerController::SetModeToSpeed()
 {
-	SetMode(Modes::Movement);
+	SetMode(EModes::Movement);
 }
 void AMousePlayerController::SetModeToSight()
 {
-	SetMode(Modes::Alert);
+	SetMode(EModes::Alert);
 }
 void AMousePlayerController::SetModeToInvisible()
 {
-	SetMode(Modes::Invisible);
+	SetMode(EModes::Invisible);
 }
 
 //LevelUp
@@ -1490,15 +1493,15 @@ void AMousePlayerController::LevelUp()
 		Server_LevelUpBuilding(Building);
 	}
 }
-void AMousePlayerController::Server_LevelUpZone_Implementation(AMilitaryBuilding* MilitaryBuilding, bool IsPlayer, bool IsLife, bool IsEffect)
+void AMousePlayerController::Server_LevelUpZone_Implementation(AMilitaryBuilding* MilitaryBuilding, bool bIsPlayer, bool bIsLife, bool bIsEffect)
 {
 	if (MilitaryBuilding->GetPoints() > 0)
 	{
-		if (IsPlayer)
+		if (bIsPlayer)
 		{
-			if (IsLife)
+			if (bIsLife)
 			{
-				if (IsEffect)
+				if (bIsEffect)
 				{
 					if (MilitaryBuilding->GetPlayerLifeZone()->GetCurrentEffectLevel() < MilitaryBuilding->GetPlayerLifeZone()->GetMaxEffectLevel())
 					{
@@ -1517,7 +1520,7 @@ void AMousePlayerController::Server_LevelUpZone_Implementation(AMilitaryBuilding
 			}
 			else
 			{
-				if (IsEffect)
+				if (bIsEffect)
 				{
 					if (MilitaryBuilding->GetPlayerSpeedZone()->GetCurrentEffectLevel() < MilitaryBuilding->GetPlayerSpeedZone()->GetMaxEffectLevel())
 					{
@@ -1537,9 +1540,9 @@ void AMousePlayerController::Server_LevelUpZone_Implementation(AMilitaryBuilding
 		}
 		else
 		{
-			if (IsLife)
+			if (bIsLife)
 			{
-				if (IsEffect)
+				if (bIsEffect)
 				{
 					if (MilitaryBuilding->GetOpponentLifeZone()->GetCurrentEffectLevel() < MilitaryBuilding->GetOpponentLifeZone()->GetMaxEffectLevel())
 					{
@@ -1558,7 +1561,7 @@ void AMousePlayerController::Server_LevelUpZone_Implementation(AMilitaryBuilding
 			}
 			else
 			{
-				if (IsEffect)
+				if (bIsEffect)
 				{
 					if (MilitaryBuilding->GetOpponentSpeedZone()->GetCurrentEffectLevel() < MilitaryBuilding->GetOpponentSpeedZone()->GetMaxEffectLevel())
 					{
@@ -1585,13 +1588,13 @@ bool AMousePlayerController::Server_LevelUpZone_Validate(AMilitaryBuilding* Mili
 	else
 		return false;
 }
-void AMousePlayerController::LevelUpZone(bool IsPlayer, bool IsLife, bool IsEffect)
+void AMousePlayerController::LevelUpZone(bool bIsPlayer, bool bIsLife, bool bIsEffect)
 {
 	if (ActorsSelected[0] && ActorsSelected[0].GetObject()->IsA(AMilitaryBuilding::StaticClass()))
 	{
 		AMilitaryBuilding* MilitaryBuilding = Cast<AMilitaryBuilding>(ActorsSelected[0].GetObject());
 
-		Server_LevelUpZone(MilitaryBuilding, IsPlayer, IsLife, IsEffect);
+		Server_LevelUpZone(MilitaryBuilding, bIsPlayer, bIsLife, bIsEffect);
 	}
 }
 
@@ -1637,7 +1640,7 @@ void AMousePlayerController::Server_GiveIn_Implementation()
 	for (Building; Building; ++Building)
 	{
 		if (Building->GetSide() == GetSide())
-			Building->SetSide(Side::Neutral);
+			Building->SetSide(ESide::Neutral);
 	}
 }
 bool AMousePlayerController::Server_GiveIn_Validate()
@@ -1646,7 +1649,7 @@ bool AMousePlayerController::Server_GiveIn_Validate()
 }
 void AMousePlayerController::Destroyed()
 {
-	if (Role == ROLE_Authority && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
+	if (Role == ROLE_Authority && GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 		Server_GiveIn();
 
 	Super::Destroyed();

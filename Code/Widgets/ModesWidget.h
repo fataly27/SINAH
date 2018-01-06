@@ -16,8 +16,8 @@ class SINAH_API UModesWidget : public UUserWidget
 	
 	public:
 		void SetModesVisibility(ESlateVisibility Unit);
-		void SetAllButtonsEnabled(bool All);
-		void SetInvisibleButtonEnabled(bool Invisible);
+		void SetAllButtonsEnabled(bool bAll);
+		void SetInvisibleButtonEnabled(bool bInvisible);
 
 		UFUNCTION(BlueprintImplementableEvent, Category = "Invisible")
 			void SetInvisibleButtonProgress(const float Progress);
@@ -28,11 +28,11 @@ class SINAH_API UModesWidget : public UUserWidget
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
 	
 	protected:
-		UPROPERTY(BlueprintReadWrite, Category = "Modes")
+		UPROPERTY(BlueprintReadWrite, Category = "EModes")
 			ESlateVisibility ModesVisibility;
 
 		UPROPERTY(BlueprintReadWrite, Category = "Invisible")
 			bool InvisibleButtonEnabled;
-		UPROPERTY(BlueprintReadWrite, Category = "Modes")
+		UPROPERTY(BlueprintReadWrite, Category = "EModes")
 			bool OtherButtonsEnabled;
 };

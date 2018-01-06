@@ -40,7 +40,7 @@ class SINAH_API AMousePlayerController : public APlayerController
 
 		virtual void SetPawn(APawn* InPawn) override;
 
-		Side GetSide();
+		ESide GetSide();
 
 		//Input functions
 		void MoveForward(float AxisValue);
@@ -59,10 +59,10 @@ class SINAH_API AMousePlayerController : public APlayerController
 		//Selection functions
 		void ClearSelection();
 		void UpdateBoxSelection(TArray<TScriptInterface<IGameElementInterface>> NewSelection);
-		void UpdateBoxTargeting(TArray<TScriptInterface<IGameElementInterface>> NewTargets, bool IsFinal);
+		void UpdateBoxTargeting(TArray<TScriptInterface<IGameElementInterface>> NewTargets, bool bIsFinal);
 
 		//EnemyView
-		void SetOpponentView(bool Enable);
+		void SetOpponentView(bool bEnable);
 		bool IsOpponentViewEnabled();
 		void EnableOpponentView();
 		void DisableOpponentView();
@@ -105,7 +105,7 @@ class SINAH_API AMousePlayerController : public APlayerController
 		UFUNCTION(BlueprintImplementableEvent)
 			void SetColorToRed();
 
-		//Modes
+		//EModes
 		UFUNCTION(BlueprintCallable)
 			void SetModeToAttack();
 		UFUNCTION(BlueprintCallable)
@@ -116,17 +116,17 @@ class SINAH_API AMousePlayerController : public APlayerController
 			void SetModeToSight();
 		UFUNCTION(BlueprintCallable)
 			void SetModeToInvisible();
-		void SetMode(Modes Mode);
+		void SetMode(EModes Mode);
 		UFUNCTION(Server, Reliable, WithValidation)
-			void Server_ChangeMode(AUnit* Unit, Modes Mode);
+			void Server_ChangeMode(AUnit* Unit, EModes Mode);
 
 		//LevelUp
 		UFUNCTION(BlueprintCallable)
 			void LevelUp();
 		UFUNCTION(BlueprintCallable)
-			void LevelUpZone(bool IsPlayer, bool IsLife, bool IsEffect);
+			void LevelUpZone(bool bIsPlayer, bool bIsLife, bool bIsEffect);
 		UFUNCTION(Server, Reliable, WithValidation)
-			void Server_LevelUpZone(AMilitaryBuilding* MilitaryBuilding, bool IsPlayer, bool IsLife, bool IsEffect);
+			void Server_LevelUpZone(AMilitaryBuilding* MilitaryBuilding, bool bIsPlayer, bool bIsLife, bool bIsEffect);
 
 		//Spawn
 		UFUNCTION(BlueprintCallable)
@@ -148,7 +148,7 @@ class SINAH_API AMousePlayerController : public APlayerController
 
 	protected:
 		float TimeSinceLastHarvest;
-		bool OpponentView;
+		bool bOpponentView;
 
 		AMainCamera* MyPawn;
 		TArray<TScriptInterface<IGameElementInterface>> ActorsSelected;
@@ -157,10 +157,10 @@ class SINAH_API AMousePlayerController : public APlayerController
 		APlayerHUD* HUD;
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum)
-			TypeBox BoxDisplayed;
+			ETypeBox BoxDisplayed;
 
 		UPROPERTY(Replicated)
-			Side PlayerSide;
+			ESide PlayerSide;
 
 		//Fog Of War
 		UPROPERTY()
@@ -181,8 +181,8 @@ class SINAH_API AMousePlayerController : public APlayerController
 		UPROPERTY(BlueprintReadWrite, Category = "GameStartWidget")
 			FString String;
 		FString OldString;
-		bool IsThrobberEnabled;
-		bool IsExitEnabled;
+		bool bThrobberEnabled;
+		bool bExitEnabled;
 
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TopInterface")

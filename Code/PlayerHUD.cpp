@@ -8,7 +8,7 @@
 #include "PlayerHUD.h"
 
 
-APlayerHUD::APlayerHUD() : StartMousePos(0.f, 0.f), CurrentMousePos(0.f, 0.f), BoxDisplayed(TypeBox::None)
+APlayerHUD::APlayerHUD() : StartMousePos(0.f, 0.f), CurrentMousePos(0.f, 0.f), BoxDisplayed(ETypeBox::None)
 {
 	static ConstructorHelpers::FObjectFinder<UTexture> TheBlueDestination(TEXT("Texture'/Game/Textures/BlueDestination.BlueDestination'"));
 	static ConstructorHelpers::FObjectFinder<UTexture> TheRedDestination(TEXT("Texture'/Game/Textures/RedDestination.RedDestination'"));
@@ -29,14 +29,14 @@ void APlayerHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetPlayerSide(Side::Blue);
+	SetPlayerSide(ESide::Blue);
 }
 
 void APlayerHUD::DrawHUD()
 {
-	if (BoxDisplayed == TypeBox::Select)
+	if (BoxDisplayed == ETypeBox::Select)
 	{
-		if (PlayerSide == Side::Blue)
+		if (PlayerSide == ESide::Blue)
 		{
 			DrawLine(StartMousePos.X, StartMousePos.Y, StartMousePos.X, CurrentMousePos.Y, FColor(80, 80, 255));
 			DrawLine(StartMousePos.X, StartMousePos.Y, CurrentMousePos.X, StartMousePos.Y, FColor(80, 80, 255));
@@ -45,7 +45,7 @@ void APlayerHUD::DrawHUD()
 
 			DrawRect(FLinearColor(0, 0, 1, 0.15f), StartMousePos.X, StartMousePos.Y, CurrentMousePos.X - StartMousePos.X, CurrentMousePos.Y - StartMousePos.Y);
 		}
-		else if (PlayerSide == Side::Red)
+		else if (PlayerSide == ESide::Red)
 		{
 			DrawLine(StartMousePos.X, StartMousePos.Y, StartMousePos.X, CurrentMousePos.Y, FColor(255, 80, 80));
 			DrawLine(StartMousePos.X, StartMousePos.Y, CurrentMousePos.X, StartMousePos.Y, FColor(255, 80, 80));
@@ -67,16 +67,16 @@ void APlayerHUD::DrawHUD()
 		for (int i = 0; i < Buildings.Num(); i++)
 			ActorsBeingSelected.Add(TScriptInterface<IGameElementInterface>(Buildings[i]));
 	}
-	else if (BoxDisplayed == TypeBox::Target)
+	else if (BoxDisplayed == ETypeBox::Target)
 	{
-		if (PlayerSide == Side::Blue)
+		if (PlayerSide == ESide::Blue)
 		{
 			DrawLine(StartMousePos.X, StartMousePos.Y, StartMousePos.X, CurrentMousePos.Y, FColor(150, 150, 255), 2.f);
 			DrawLine(StartMousePos.X, StartMousePos.Y, CurrentMousePos.X, StartMousePos.Y, FColor(150, 150, 255), 2.f);
 			DrawLine(CurrentMousePos.X, CurrentMousePos.Y, CurrentMousePos.X, StartMousePos.Y, FColor(150, 150, 255), 2.f);
 			DrawLine(CurrentMousePos.X, CurrentMousePos.Y, StartMousePos.X, CurrentMousePos.Y, FColor(150, 150, 255), 2.f);
 		}
-		else if (PlayerSide == Side::Red)
+		else if (PlayerSide == ESide::Red)
 		{
 			DrawLine(StartMousePos.X, StartMousePos.Y, StartMousePos.X, CurrentMousePos.Y, FColor(255, 150, 150), 2.f);
 			DrawLine(StartMousePos.X, StartMousePos.Y, CurrentMousePos.X, StartMousePos.Y, FColor(255, 150, 150), 2.f);
@@ -107,12 +107,12 @@ void APlayerHUD::DrawHUD()
 			float WidthOfRect = ActorsSelected[i]->GetLifeBarWidth() / CurrentZoom;
 			float Offset = 100.f / CurrentZoom + 2.f;
 
-			if (ActorsSelected[i]->GetSide() == Side::Blue)
+			if (ActorsSelected[i]->GetSide() == ESide::Blue)
 			{
 				DrawRect(FLinearColor(0, 0, 1, 0.25f), TopPosition.X - WidthOfRect / 2, TopPosition.Y - Offset - HeightOfRects, WidthOfRect, HeightOfRects);
 				DrawRect(FLinearColor(0, 0, 1, 0.75f), TopPosition.X - WidthOfRect / 2, TopPosition.Y - Offset - HeightOfRects, WidthOfRect * Percent, HeightOfRects);
 			}
-			else if (ActorsSelected[i]->GetSide() == Side::Red)
+			else if (ActorsSelected[i]->GetSide() == ESide::Red)
 			{
 				DrawRect(FLinearColor(1, 0, 0, 0.25f), TopPosition.X - WidthOfRect / 2, TopPosition.Y - Offset - HeightOfRects, WidthOfRect, HeightOfRects);
 				DrawRect(FLinearColor(1, 0, 0, 0.75f), TopPosition.X - WidthOfRect / 2, TopPosition.Y - Offset - HeightOfRects, WidthOfRect * Percent, HeightOfRects);
@@ -130,15 +130,15 @@ void APlayerHUD::DrawHUD()
 		for (int i(0); i < ActorsSelected.Num(); i++)
 		{
 			AUnit* CurrentUnit = Cast<AUnit>(ActorsSelected[i].GetObject());
-			if (CurrentUnit->GetSide() == PlayerSide && CurrentUnit->GetMode() != Modes::Defense)
+			if (CurrentUnit->GetSide() == PlayerSide && CurrentUnit->GetMode() != EModes::Defense)
 			{
 				TArray<FVector> Destinations = CurrentUnit->GetDestinations();
 				for (int j(0); j < Destinations.Num(); j++)
 				{
 					FVector2D PositionOnScreen(Project(Destinations[j]));
-					if (PlayerSide == Side::Blue)
+					if (PlayerSide == ESide::Blue)
 						DrawTextureSimple(BlueDestinationTexture, PositionOnScreen.X - BlueDestinationTexture->GetSurfaceWidth() / 2, PositionOnScreen.Y - BlueDestinationTexture->GetSurfaceHeight() / 2);
-					else if (PlayerSide == Side::Red)
+					else if (PlayerSide == ESide::Red)
 						DrawTextureSimple(RedDestinationTexture, PositionOnScreen.X - RedDestinationTexture->GetSurfaceWidth() / 2, PositionOnScreen.Y - RedDestinationTexture->GetSurfaceHeight() / 2);
 				}
 			}
@@ -169,16 +169,16 @@ void APlayerHUD::DrawHUD()
 			float Offset = 100.f / CurrentZoom + 2.f;
 			if (NumberOfOccurences[i] == ActorsSelected.Num())
 			{
-				if (PlayerSide == Side::Blue)
+				if (PlayerSide == ESide::Blue)
 					DrawTextureSimple(BlueTargetTexture, TopPosition.X - BlueTargetTexture->GetSurfaceWidth() * Scale / 2, TopPosition.Y - Offset - BlueTargetTexture->GetSurfaceHeight() * Scale / 2, Scale);
-				else if (PlayerSide == Side::Red)
+				else if (PlayerSide == ESide::Red)
 					DrawTextureSimple(RedTargetTexture, TopPosition.X - RedTargetTexture->GetSurfaceWidth() * Scale / 2, TopPosition.Y - Offset - RedTargetTexture->GetSurfaceHeight() * Scale / 2, Scale);
 			}
 			else
 			{
-				if (PlayerSide == Side::Blue)
+				if (PlayerSide == ESide::Blue)
 					DrawTextureSimple(BlueTargetTextureLight, TopPosition.X - BlueTargetTextureLight->GetSurfaceWidth() * Scale / 2, TopPosition.Y - Offset - BlueTargetTextureLight->GetSurfaceHeight() * Scale / 2, Scale);
-				else if (PlayerSide == Side::Red)
+				else if (PlayerSide == ESide::Red)
 					DrawTextureSimple(RedTargetTextureLight, TopPosition.X - RedTargetTextureLight->GetSurfaceWidth() * Scale / 2, TopPosition.Y - Offset - RedTargetTextureLight->GetSurfaceHeight() * Scale / 2, Scale);
 			}
 		}
@@ -193,11 +193,11 @@ void APlayerHUD::SetCurrentMousePos(FVector2D Pos)
 {
 	CurrentMousePos = Pos;
 }
-void APlayerHUD::ShouldDisplayBox(TypeBox Display)
+void APlayerHUD::ShouldDisplayBox(ETypeBox Display)
 {
 	BoxDisplayed = Display;
 }
-void APlayerHUD::SetPlayerSide(Side NewSide)
+void APlayerHUD::SetPlayerSide(ESide NewSide)
 {
 	PlayerSide = NewSide;
 }

@@ -24,14 +24,14 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		virtual void Unselect() override;
 		virtual bool IsSelected() override;
 
-		//Side
-		virtual Side GetSide() override;
-		virtual void SetSide(Side NewSide) override;
+		//ESide
+		virtual ESide GetSide() override;
+		virtual void SetSide(ESide NewSide) override;
 		UFUNCTION(NetMulticast, Reliable)
-			void Multicast_SetSide(Side NewSide);
+			void Multicast_SetSide(ESide NewSide);
 
 		//Attack
-		virtual void ReceiveDamages(int Physic, int Magic, Side AttackingSide) override;
+		virtual void ReceiveDamages(int Physic, int Magic, ESide AttackingSide) override;
 
 		//Heal
 		void Heal();
@@ -79,10 +79,10 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		unsigned int LevelMax;
 		UPROPERTY(Replicated)
 			unsigned int CurrentLevel;
-		TArray<int> COST_IN_FOOD;
-		TArray<int> COST_IN_CELLS;
-		TArray<int> COST_IN_METAL;
-		TArray<int> COST_IN_CRISTALS;
+		TArray<int> CostInFood;
+		TArray<int> CostInCells;
+		TArray<int> CostInMetal;
+		TArray<int> CostInCristals;
 
 		//Statistics
 		UPROPERTY(Replicated)
@@ -103,13 +103,13 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 			float ActualFieldOfSight;
 
 		UPROPERTY(Replicated)
-			bool IsVisibleForOpponent;
+			bool bVisibleForOpponent;
 
 		float TimeSinceLastAttack;
 		float TimeSinceLastHeal;
 
 		//Selection
-		bool Selected;
+		bool bSelected;
 		UPROPERTY(EditAnywhere)
-			Side MySide;
+			ESide MySide;
 };

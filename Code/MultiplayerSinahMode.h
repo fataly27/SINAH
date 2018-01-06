@@ -19,7 +19,7 @@ class SINAH_API AMultiplayerSinahMode : public AGameMode
 
 		void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
 
-		Side GetPlayerSide(int ID);
+		ESide GetPlayerSide(int ID);
 
 	private:
 		TArray<int> PlayersIDs;

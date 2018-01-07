@@ -186,6 +186,11 @@ void AMousePlayerController::Tick(float DeltaTime)
 			DisableLoading();
 			bThrobberEnabled = false;
 		}
+		if (GetWorld()->GetGameState<AMultiplayerGameState>()->GetStatusInfo() == "Waiting for your opponent" && !bThrobberEnabled)
+		{
+			EnableLoading();
+			bThrobberEnabled = true;
+		}
 
 		if ((GetWorld()->GetGameState<AMultiplayerGameState>()->GetStatusInfo() == "Blue player has won !" || GetWorld()->GetGameState<AMultiplayerGameState>()->GetStatusInfo() == "Red player has won !") && !bExitEnabled)
 		{
@@ -344,6 +349,8 @@ void AMousePlayerController::Tick(float DeltaTime)
 			MyTopInterface->SetCristalsChange(State->GetCristalsChange());
 
 			MyTopInterface->SetTime(GetWorld()->GetGameState<AMultiplayerGameState>()->GetTime());
+
+			MyTopInterface->SetMatchActive(GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive());
 		}
 
 		if (MyStatInterface)
@@ -555,29 +562,30 @@ void AMousePlayerController::Tick(float DeltaTime)
 
 							if (MySpawnInterface)
 							{
-								MySpawnInterface->SetBuildingLevel(MilitaryBuilding->GetLevel());
-								MySpawnInterface->SetColor(Color);
-								MySpawnInterface->SetSpawnDetailsEnabled(State->GetAmountOfFood(), State->GetAmountOfCells(), State->GetAmountOfMetal(), State->GetAmountOfCristals());
-
-								for (int i(0); i < SpawnEntityWidgets.Num(); i++)
+								if (Building->GetSide() == GetSide())
 								{
-									SpawnEntityWidgets[i]->SetEntityIsEnabled(MilitaryBuilding->GetLevel(), State->GetAmountOfFood(), State->GetAmountOfCells(), State->GetAmountOfMetal(), State->GetAmountOfCristals());
+									MySpawnInterface->SetSpawnVisibility(true);
+									
+									MySpawnInterface->SetBuildingLevel(MilitaryBuilding->GetLevel());
+									MySpawnInterface->SetColor(Color);
+									MySpawnInterface->SetSpawnDetailsEnabled(State->GetAmountOfFood(), State->GetAmountOfCells(), State->GetAmountOfMetal(), State->GetAmountOfCristals());
+
+									for (int i(0); i < SpawnEntityWidgets.Num(); i++)
+									{
+										SpawnEntityWidgets[i]->SetEntityIsEnabled(MilitaryBuilding->GetLevel(), State->GetAmountOfFood(), State->GetAmountOfCells(), State->GetAmountOfMetal(), State->GetAmountOfCristals());
+									}
 								}
+								else
+									MySpawnInterface->SetSpawnVisibility(false);
 							}
 						}
 
-						if (MySpawnInterface && LevelInterface)
+						if (LevelInterface)
 						{
 							if (Building->GetSide() == GetSide())
-							{
-								MySpawnInterface->SetSpawnVisibility(true);
 								LevelInterface->SetAreDetailsVisible(true);
-							}
 							else
-							{
-								MySpawnInterface->SetSpawnVisibility(false);
 								LevelInterface->SetAreDetailsVisible(false);
-							}
 						}
 
 						if (Building->GetSide() == ESide::Blue)
@@ -1653,6 +1661,25 @@ void AMousePlayerController::Destroyed()
 		Server_GiveIn();
 
 	Super::Destroyed();
+}
+
+//Exit
+void AMousePlayerController::Exit()
+{
+	if (GetWorld()->GetGameState<AMultiplayerGameState>() && !GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
+	{
+		Server_Exit();
+		ExitSession();
+	}
+}
+
+void AMousePlayerController::Server_Exit_Implementation()
+{
+	GetWorld()->GetGameState<AMultiplayerGameState>()->CancelPreBeginGame();
+}
+bool AMousePlayerController::Server_Exit_Validate()
+{
+	return GetWorld()->GetGameState<AMultiplayerGameState>() && !GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive() && !GetWorld()->GetGameState<AMultiplayerGameState>()->HasMatchEnded();
 }
 
 //Replication

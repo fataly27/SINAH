@@ -73,6 +73,14 @@ void UUpWidget::SetTime(int BaseSeconds)
 	TheTimer = MinutesString.Append(SecondsString);
 }
 
+void UUpWidget::SetMatchActive(bool bActive)
+{
+	if(bActive)
+		ButtonText = "Surrender";
+	else
+		ButtonText = "Exit";
+}
+
 void UUpWidget::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

@@ -86,6 +86,12 @@ void AMultiplayerGameState::PreBeginGame()
 	CountDown = 5.f;
 }
 
+void AMultiplayerGameState::CancelPreBeginGame()
+{
+	CountDown = -1.f;
+	StateInfo = "Waiting for your opponent";
+}
+
 void AMultiplayerGameState::BeginGame()
 {
 	bGameActive = true;

@@ -96,6 +96,8 @@ class SINAH_API AMousePlayerController : public APlayerController
 		UFUNCTION(BlueprintImplementableEvent)
 			void DisableLoading();
 		UFUNCTION(BlueprintImplementableEvent)
+			void EnableLoading();
+		UFUNCTION(BlueprintImplementableEvent)
 			void SetText();
 		UFUNCTION(BlueprintImplementableEvent)
 			void EnableExit();
@@ -139,6 +141,14 @@ class SINAH_API AMousePlayerController : public APlayerController
 		UFUNCTION(Server, Reliable, WithValidation)
 			void Server_GiveIn();
 		virtual void Destroyed() override;
+
+		//Exit
+		UFUNCTION(BlueprintCallable)
+			void Exit();
+		UFUNCTION(Server, Reliable, WithValidation)
+			void Server_Exit();
+		UFUNCTION(BlueprintImplementableEvent)
+			void ExitSession();
 
 		UTexture* UnselectedTexture;
 		UTexture* SelectedTexture;

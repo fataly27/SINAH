@@ -21,6 +21,7 @@ class SINAH_API AMultiplayerGameState : public AGameState
 
 		bool IsGameActive();
 		void PreBeginGame();
+		void CancelPreBeginGame();
 		void BeginGame();
 
 		FString GetStatusInfo();

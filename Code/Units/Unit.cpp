@@ -48,6 +48,14 @@ AUnit::AUnit() : MySide(ESide::Neutral), bSelected(false), CurrentAction(EAction
 
 	GetMesh()->bReceivesDecals = false;
 	GetMesh()->SetRenderCustomDepth(false);
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> BlueSparkAsset(TEXT("/Game/Particles/Sparks_Blue.Sparks_Blue"));
+	BlueSpark = BlueSparkAsset.Object;
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> RedSparkAsset(TEXT("/Game/Particles/Sparks_Red.Sparks_Red"));
+	RedSpark = RedSparkAsset.Object;
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> ExplosionAsset(TEXT("/Game/Particles/Explosion.Explosion"));
+	Explosion = ExplosionAsset.Object;
 }
 
 // Called when the game starts or when spawned
@@ -385,12 +393,33 @@ void AUnit::ClearOpponentsInSight()
 void AUnit::Attack(const TScriptInterface<IGameElementInterface>& Target)
 {
 	if (Role == ROLE_Authority && (CurrentMode == EModes::Attack || CurrentMode == EModes::Defense) && Target->GetOpponentVisibility())
+	{
+		if (FMath::RandRange(1, 10) == 1)
+		{
+			if(MySide == ESide::Blue)
+				Multicast_Spark(BlueSpark);
+			else if (MySide == ESide::Red)
+				Multicast_Spark(RedSpark);
+		}
+
 		Target->ReceiveDamages(GetPhysicAttack(), GetMagicAttack(), MySide);
+	}
+}
+void AUnit::Multicast_Spark_Implementation(UParticleSystem* Particle)
+{
+	UParticleSystemComponent* NewParticle = UGameplayStatics::SpawnEmitterAttached(Particle, GetMesh(), NAME_None, FVector(0.f, 60.f, 120.f), FRotator(0.f, 0.f, 90.f), EAttachLocation::KeepRelativeOffset, true);
+}
+void AUnit::Multicast_Explosion_Implementation()
+{
+	UParticleSystemComponent* NewParticle = UGameplayStatics::SpawnEmitterAttached(Explosion, GetMesh(), NAME_None, FVector(0.f, 0.f, 0.f), FRotator(0.f, 0.f, 0.f), EAttachLocation::KeepRelativeOffset, true);
 }
 void AUnit::ReceiveDamages(int Physic, int Magic, ESide AttackingSide)
 {
 	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
+		if (FMath::RandRange(1, 10) == 1)
+			Multicast_Explosion();
+
 		int PhysicDamage = Physic - GetPhysicDefense();
 		int MagicDamage = Magic - GetMagicDefense();
 

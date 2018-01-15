@@ -34,6 +34,9 @@ ABuilding::ABuilding() : bVisibleForOpponent(true), MySide(ESide::Neutral), bSel
 	BuildingMesh->SetupAttachment(RootComponent);
 	BuildingMesh->bReceivesDecals = false;
 	BuildingMesh->SetRenderCustomDepth(false);
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> ExplosionAsset(TEXT("/Game/Particles/Explosion.Explosion"));
+	Explosion = ExplosionAsset.Object;
 }
 
 // Called when the game starts or when spawned
@@ -117,6 +120,9 @@ void ABuilding::ReceiveDamages(int Physic, int Magic, ESide AttackingSide)
 {
 	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
+		if (FMath::RandRange(1, 10) == 1)
+			Multicast_ShowParticle(Explosion);
+
 		int Damages = Physic + Magic;
 		TimeSinceLastAttack = 0.f;
 
@@ -128,6 +134,10 @@ void ABuilding::ReceiveDamages(int Physic, int Magic, ESide AttackingSide)
 		else
 			CurrentLife -= Damages;
 	}
+}
+void ABuilding::Multicast_ShowParticle_Implementation(UParticleSystem* Particle)
+{
+	UParticleSystemComponent* NewParticle = UGameplayStatics::SpawnEmitterAttached(Particle, BuildingMesh, NAME_None, FVector(0.f, 0.f, 0.f), FRotator(0.f, 0.f, 0.f), FVector(6.f, 6.f, 6.f), EAttachLocation::KeepRelativeOffset, true);
 }
 
 //Heal

@@ -32,6 +32,8 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 
 		//Attack
 		virtual void ReceiveDamages(int Physic, int Magic, ESide AttackingSide) override;
+		UFUNCTION(NetMulticast, Unreliable)
+			void Multicast_ShowParticle(UParticleSystem* Particle);
 
 		//Heal
 		void Heal();
@@ -112,4 +114,7 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		bool bSelected;
 		UPROPERTY(EditAnywhere)
 			ESide MySide;
+
+		//Particle
+		UParticleSystem* Explosion;
 };

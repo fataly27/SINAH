@@ -40,8 +40,8 @@ void AMilitaryBuilding::BeginPlay()
 //Zones
 void AMilitaryBuilding::ChangeDecals(bool bNormal)
 {
-	bool IsPlayer(Cast<AMousePlayerController>(GetWorld()->GetFirstPlayerController())->GetSide() == GetSide());
-	bool Reverse(Cast<AMousePlayerController>(GetWorld()->GetFirstPlayerController())->IsOpponentViewEnabled());
+	bool IsPlayer(Cast<AMousePlayerController>(GetWorld()->GetFirstPlayerController()) && Cast<AMousePlayerController>(GetWorld()->GetFirstPlayerController())->GetSide() == GetSide());
+	bool Reverse(Cast<AMousePlayerController>(GetWorld()->GetFirstPlayerController()) && Cast<AMousePlayerController>(GetWorld()->GetFirstPlayerController())->IsOpponentViewEnabled());
 
 	if ((IsPlayer && !Reverse) || (!IsPlayer && Reverse))
 	{

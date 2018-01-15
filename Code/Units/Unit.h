@@ -74,6 +74,10 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		//Attack and heal
 		void Attack(const TScriptInterface<IGameElementInterface>& Target);
 		virtual void ReceiveDamages(int Physic, int Magic, ESide AttackingSide) override;
+		UFUNCTION(NetMulticast, Unreliable)
+			void Multicast_Spark(UParticleSystem* Particle);
+		UFUNCTION(NetMulticast, Unreliable)
+			void Multicast_Explosion();
 		void Heal(int Heal);
 
 		//Dying
@@ -228,4 +232,9 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		UAnimationAsset* VictoryAnimation;
 
 		UAnimationAsset* CurrentAnimation;
+
+		//Particles
+		UParticleSystem* BlueSpark;
+		UParticleSystem* RedSpark;
+		UParticleSystem* Explosion;
 };

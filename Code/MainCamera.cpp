@@ -5,7 +5,7 @@
 
 
 // Sets default values
-AMainCamera::AMainCamera() : ZoomMin(15.f), ZoomMax(45.f), XMin(-60.f), XMax(50.f), YMin(-55.f), YMax(55.f), DefaultZoom(33.f), Angle(40.f), MoveScale(250.f), ZoomScale(100.f), CurrentLocation(0.f, 0.f, 0.f), Right(0.f, 0.f, 0.f), Forward(0.f, 0.f, 0.f)
+AMainCamera::AMainCamera() : ZoomMin(20.f), ZoomMax(65.f), XMin(-60.f), XMax(50.f), YMin(-55.f), YMax(55.f), DefaultZoom(35.f), Angle(40.f), MoveScale(250.f), ZoomScale(160.f), CurrentLocation(0.f, 0.f, 0.f), Right(0.f, 0.f, 0.f), Forward(0.f, 0.f, 0.f)
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;

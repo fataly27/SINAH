@@ -11,6 +11,9 @@
 #include "Buildings/Zones/SpeedZone.h"
 #include "Buildings/Zones/LifeZone.h"
 
+#include "Buildings/SmallMilitaryBuilding.h"
+#include "Buildings/GreatMilitaryBuilding.h"
+
 #include "Buildings/FoodEconomicBuilding.h"
 #include "Buildings/CristalsEconomicBuilding.h"
 #include "Buildings/CellsEconomicBuilding.h"
@@ -67,8 +70,13 @@ void AMousePlayerController::BeginPlay()
 
 		FogOfWarTexture = UTexture2D::CreateTransient(MidTextureSize * 2, MidTextureSize * 2);
 		FogOfWarTexture->UpdateResource();
-		TextureRegions = new FUpdateTextureRegion2D(0, 0, 0, 0, MidTextureSize * 2, MidTextureSize * 2);
-		TextureData.Init(FColor(0, 0, 0, 255), MidTextureSize * MidTextureSize * 4);
+		FogTextureRegions = new FUpdateTextureRegion2D(0, 0, 0, 0, MidTextureSize * 2, MidTextureSize * 2);
+		FogTextureData.Init(FColor(0, 0, 0, 255), MidTextureSize * MidTextureSize * 4);
+
+		MapTexture = UTexture2D::CreateTransient(MidTextureSize * 2, MidTextureSize * 2);
+		MapTexture->UpdateResource();
+		MapTextureRegions = new FUpdateTextureRegion2D(0, 0, 0, 0, MidTextureSize * 2, MidTextureSize * 2);
+		MapTextureData.Init(FColor(0, 0, 0, 0), MidTextureSize * MidTextureSize * 4);
 
 		DynFOWMaterial = UMaterialInstanceDynamic::Create(FogOfWarMaterial, this);
 
@@ -154,7 +162,11 @@ void AMousePlayerController::BeginPlay()
 		if (GetSide() == ESide::Blue)
 			SetColorToBlue();
 		if (GetSide() == ESide::Red)
+		{
 			SetColorToRed();
+			//On tourne la minimap de 180°
+			MyMapInterface->Rotate();
+		}
 	}
 
 	Super::BeginPlay();
@@ -1045,7 +1057,18 @@ void AMousePlayerController::FogOfWar()
 			NeutralActors.Add(TScriptInterface<IGameElementInterface>(*BuildingItr));
 
 		if (BuildingItr->IsA(AMilitaryBuilding::StaticClass()))
-			MilitaryBuildings.Add(Cast<AMilitaryBuilding>(*BuildingItr));
+		{
+			AMilitaryBuilding* MilitaryBuilding(Cast<AMilitaryBuilding>(*BuildingItr));
+
+			MilitaryBuildings.Add(MilitaryBuilding);
+
+			if (BuildingItr->GetSide() == ESide::Blue)
+				MyMapInterface->SetColorForIndex(MilitaryBuilding->GetIndex(), "Blue");
+			else if (BuildingItr->GetSide() == ESide::Red)
+				MyMapInterface->SetColorForIndex(MilitaryBuilding->GetIndex(), "Red");
+			else
+				MyMapInterface->SetColorForIndex(MilitaryBuilding->GetIndex(), "Grey");
+		}
 	}
 
 
@@ -1075,7 +1098,7 @@ void AMousePlayerController::FogOfWar()
 				}
 				for (int j = 0; j < NeutralActors.Num(); j++)
 				{
-					if (FVector(NeutralActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= BlueActors[i]->GetFieldOfSight() * 100.f && BlueUnit->GetMode() != EModes::Invisible)
+					if (FVector(NeutralActors[j]->GetLocation() - BlueActors[i]->GetLocation()).Size() <= BlueActors[i]->GetFieldOfSight() * 100.f)
 						OpponentsInSight.Add(NeutralActors[j]);
 				}
 
@@ -1105,7 +1128,7 @@ void AMousePlayerController::FogOfWar()
 				}
 				for (int j = 0; j < NeutralActors.Num(); j++)
 				{
-					if (FVector(NeutralActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= RedActors[i]->GetFieldOfSight() * 100.f && RedUnit->GetMode() != EModes::Invisible)
+					if (FVector(NeutralActors[j]->GetLocation() - RedActors[i]->GetLocation()).Size() <= RedActors[i]->GetFieldOfSight() * 100.f)
 						OpponentsInSight.Add(NeutralActors[j]);
 				}
 
@@ -1114,6 +1137,25 @@ void AMousePlayerController::FogOfWar()
 				RedUnit->SetOpponentsInSight(OpponentsInSight);
 			}
 		}
+	}
+
+	TArray<TScriptInterface<IGameElementInterface>> VisibleRedActors;
+	for (int i = 0; i < RedActors.Num(); i++)
+	{
+		if (RedActors[i]->GetOpponentVisibility())
+			VisibleRedActors.Add(RedActors[i]);
+	}
+	TArray<TScriptInterface<IGameElementInterface>> VisibleBlueActors;
+	for (int i = 0; i < BlueActors.Num(); i++)
+	{
+		if (BlueActors[i]->GetOpponentVisibility())
+			VisibleBlueActors.Add(BlueActors[i]);
+	}
+	TArray<TScriptInterface<IGameElementInterface>> VisibleNeutralActors;
+	for (int i = 0; i < NeutralActors.Num(); i++)
+	{
+		if (NeutralActors[i]->GetOpponentVisibility())
+			VisibleNeutralActors.Add(NeutralActors[i]);
 	}
 
 	if (!IsOpponentViewEnabled())
@@ -1126,32 +1168,30 @@ void AMousePlayerController::FogOfWar()
 	else
 	{
 		if (PlayerSide == ESide::Blue)
-		{
-			TArray<TScriptInterface<IGameElementInterface>> VisibleRedActors;
-			for (int i = 0; i < RedActors.Num(); i++)
-			{
-				if (RedActors[i]->GetOpponentVisibility())
-					VisibleRedActors.Add(RedActors[i]);
-			}
 			SetFogOfWarTexture(VisibleRedActors);
-		}
 		else
-		{
-			TArray<TScriptInterface<IGameElementInterface>> VisibleBlueActors;
-			for (int i = 0; i < BlueActors.Num(); i++)
-			{
-				if (BlueActors[i]->GetOpponentVisibility())
-					VisibleBlueActors.Add(BlueActors[i]);
-			}
 			SetFogOfWarTexture(VisibleBlueActors);
-		}
+	}
+	if (PlayerSide == ESide::Blue)
+	{
+		BlueActors.Append(VisibleRedActors);
+		BlueActors.Append(VisibleNeutralActors);
+		SetMapTexture(BlueActors);
+	}
+	else
+	{
+		RedActors.Append(VisibleBlueActors);
+		RedActors.Append(VisibleNeutralActors);
+		SetMapTexture(RedActors);
 	}
 }
 void AMousePlayerController::SetFogOfWarTexture(TArray<TScriptInterface<IGameElementInterface>> Actors)
 {
 	if (FogOfWarTexture)
 	{
-		int Width, Height;
+		float PixelRatio = MidTerrainSize / MidTextureSize;
+
+		/*int Width, Height;
 		GetViewportSize(Width, Height);
 		FVector WorldLocation, WorldDirection;
 		float NumberOfDirectionToAdd;
@@ -1174,11 +1214,10 @@ void AMousePlayerController::SetFogOfWarTexture(TArray<TScriptInterface<IGameEle
 		NumberOfDirectionToAdd = -WorldLocation.Z / WorldDirection.Z;
 		BottomRight = FVector(WorldLocation.X + WorldDirection.X * NumberOfDirectionToAdd, WorldLocation.Y + WorldDirection.Y * NumberOfDirectionToAdd, 0.f);
 
-		float PixelRatio = MidTerrainSize / MidTextureSize;
-		float MinX = std::min({ TopLeft.X , TopRight.X, BottomLeft.X, BottomRight.X });(TopLeft.X <= BottomRight.X);
-		float MaxX = std::max({ TopLeft.X , TopRight.X, BottomLeft.X, BottomRight.X });(TopLeft.X >= BottomRight.X);
-		float MinY = std::min({ TopLeft.Y , TopRight.Y, BottomLeft.Y, BottomRight.Y });(TopLeft.Y <= BottomRight.Y);
-		float MaxY = std::max({ TopLeft.Y , TopRight.Y, BottomLeft.Y, BottomRight.Y });(TopLeft.Y >= BottomRight.Y);
+		float MinX = std::min({ TopLeft.X , TopRight.X, BottomLeft.X, BottomRight.X });
+		float MaxX = std::max({ TopLeft.X , TopRight.X, BottomLeft.X, BottomRight.X });
+		float MinY = std::min({ TopLeft.Y , TopRight.Y, BottomLeft.Y, BottomRight.Y });
+		float MaxY = std::max({ TopLeft.Y , TopRight.Y, BottomLeft.Y, BottomRight.Y });
 
 		int PixelMinX = MinX / PixelRatio;
 		int PixelMaxX = MaxX / PixelRatio;
@@ -1197,7 +1236,7 @@ void AMousePlayerController::SetFogOfWarTexture(TArray<TScriptInterface<IGameEle
 		if (PixelMinY < -MidTextureSize)
 			PixelMinY = -MidTextureSize;
 		if (PixelMaxY > MidTextureSize)
-			PixelMaxY = MidTextureSize;
+			PixelMaxY = MidTextureSize;*/
 
 		TArray<FVector> UnitsPosition;
 		TArray<float> UnitsSight;
@@ -1211,9 +1250,9 @@ void AMousePlayerController::SetFogOfWarTexture(TArray<TScriptInterface<IGameEle
 
 		int NumUnits = UnitsPosition.Num();
 
-		for (int y(PixelMinY); y < PixelMaxY; y++)
+		for (int y(-MidTextureSize); y < MidTextureSize; y++)
 		{
-			for (int x(PixelMinX); x < PixelMaxX; x++)
+			for (int x(-MidTextureSize); x < MidTextureSize; x++)
 			{
 				FVector PositionPixel(x * PixelRatio, y * PixelRatio, 0.f);
 
@@ -1232,12 +1271,89 @@ void AMousePlayerController::SetFogOfWarTexture(TArray<TScriptInterface<IGameEle
 							Alpha = 255 - Difference;
 					}
 				}
-				TextureData[(y + MidTextureSize) * MidTextureSize * 2 + x + MidTextureSize] = FColor(0, 0, 0, Alpha);
+				FogTextureData[(y + MidTextureSize) * MidTextureSize * 2 + x + MidTextureSize] = FColor(0, 0, 0, Alpha);
 			}
 		}
 
-		UpdateTextureRegions(FogOfWarTexture, (int32)0, (uint32)1, TextureRegions, (uint32)(4 * MidTextureSize * 2), (uint32)4, (uint8*)TextureData.GetData(), false);
+		UpdateTextureRegions(FogOfWarTexture, (int32)0, (uint32)1, FogTextureRegions, (uint32)(4 * MidTextureSize * 2), (uint32)4, (uint8*)FogTextureData.GetData(), false);
 		DynFOWMaterial->SetTextureParameterValue("TextureParameter", FogOfWarTexture);
+		MyMapInterface->SetFogForMap(FogOfWarTexture);
+	}
+}
+void AMousePlayerController::SetMapTexture(TArray<TScriptInterface<IGameElementInterface>> AllVisibleActors)
+{
+	if (MapTexture)
+	{
+		float PixelRatio = MidTerrainSize / MidTextureSize;
+
+		for (int y(-MidTextureSize); y < MidTextureSize; y++)
+		{
+			for (int x(-MidTextureSize); x < MidTextureSize; x++)
+			{
+				MapTextureData[(y + MidTextureSize) * MidTextureSize * 2 + x + MidTextureSize] = FColor(0, 0, 0, 0);
+			}
+		}
+
+		for (int i(0); i < AllVisibleActors.Num(); i++)
+		{
+			FColor Color;
+			if (AllVisibleActors[i]->GetSide() == ESide::Blue)
+				Color = FColor(70, 70, 255, 255);
+			else if (AllVisibleActors[i]->GetSide() == ESide::Red)
+				Color = FColor(255, 70, 70, 255);
+			else
+				Color = FColor(132, 132, 132, 255);
+
+			FVector TempPosition = AllVisibleActors[i]->GetLocation();
+			FVector PositionPixel(FMath::RoundHalfFromZero(TempPosition.X / PixelRatio), FMath::RoundHalfFromZero(TempPosition.Y / PixelRatio), 0.f);
+			if (AllVisibleActors[i].GetObject()->IsA(AGreatMilitaryBuilding::StaticClass()))
+			{
+				for (int x(-22); x <= 22; x++)
+				{
+					for (int y(-22); y <= 22; y++)
+					{
+						if (x * x + y * y <= 484 && 0 <= (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize && (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize <= 4 * MidTextureSize * MidTextureSize)
+							MapTextureData[(PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize] = Color;
+					}
+				}
+			}
+			if (AllVisibleActors[i].GetObject()->IsA(ASmallMilitaryBuilding::StaticClass()))
+			{
+				for (int x(-12); x <= 12; x++)
+				{
+					for (int y(-12); y <= 12; y++)
+					{
+						if (x * x + y * y <= 144 && 0 <= (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize && (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize <= 4 * MidTextureSize * MidTextureSize)
+							MapTextureData[(PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize] = Color;
+					}
+				}
+			}
+			if (AllVisibleActors[i].GetObject()->IsA(AEconomicBuilding::StaticClass()))
+			{
+				for (int x(-7); x <= 7; x++)
+				{
+					for (int y(-7); y <= 7; y++)
+					{
+						if (0 <= (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize && (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize <= 4 * MidTextureSize * MidTextureSize)
+							MapTextureData[(PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize] = Color;
+					}
+				}
+			}
+			if (AllVisibleActors[i].GetObject()->IsA(AUnit::StaticClass()))
+			{
+				for (int x(-5); x <= 5; x++)
+				{
+					for (int y(-5); y <= 5; y++)
+					{
+						if (x * x + y * y <= 25 && 0 <= (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize && (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize <= 4 * MidTextureSize * MidTextureSize)
+							MapTextureData[(PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize] = Color;
+					}
+				}
+			}
+		}
+
+		UpdateTextureRegions(MapTexture, (int32)0, (uint32)1, MapTextureRegions, (uint32)(4 * MidTextureSize * 2), (uint32)4, (uint8*)MapTextureData.GetData(), false);
+		MyMapInterface->SetMapForMap(MapTexture);
 	}
 }
 void AMousePlayerController::UpdateTextureRegions(UTexture2D* Texture, int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData)

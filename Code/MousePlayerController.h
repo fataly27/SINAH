@@ -8,7 +8,12 @@
 #include "MousePlayerController.generated.h"
 
 class AMainCamera;
+
 class AMilitaryBuilding;
+class AGreatMilitaryBuilding;
+class ASmallMilitaryBuilding;
+class AEconomicBuilding;
+
 class UMapWidget;
 class UStatWidget;
 class UUpWidget;
@@ -67,9 +72,10 @@ class SINAH_API AMousePlayerController : public APlayerController
 		void EnableOpponentView();
 		void DisableOpponentView();
 
-		//Fog Of War functions
+		//Fog Of War and map functions
 		void FogOfWar();
 		void SetFogOfWarTexture(TArray<TScriptInterface<IGameElementInterface>> Actors);
+		void SetMapTexture(TArray<TScriptInterface<IGameElementInterface>> AllVisibleActors);
 		void UpdateTextureRegions(UTexture2D* Texture, int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData);
 
 		void ApplyZoneEffects(TArray<AMilitaryBuilding*> MilitaryBuildings, TArray<AUnit*> Units);
@@ -172,15 +178,19 @@ class SINAH_API AMousePlayerController : public APlayerController
 		UPROPERTY(Replicated)
 			ESide PlayerSide;
 
-		//Fog Of War
+		//Fog Of War and mao
 		UPROPERTY()
 			UTexture2D* FogOfWarTexture;
+		UPROPERTY()
+			UTexture2D* MapTexture;
 		UMaterial* FogOfWarMaterial;
 		UMaterialInstanceDynamic* DynFOWMaterial;
-		FUpdateTextureRegion2D* TextureRegions;
-		TArray<FColor> TextureData;
-		const int32 MidTextureSize = 512;
-		const float MidTerrainSize = 31700.f;
+		FUpdateTextureRegion2D* FogTextureRegions;
+		TArray<FColor> FogTextureData;
+		FUpdateTextureRegion2D* MapTextureRegions;
+		TArray<FColor> MapTextureData;
+		const int32 MidTextureSize = 256;
+		const float MidTerrainSize = 15750.f;
 
 		//Widget
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameStartWidget")

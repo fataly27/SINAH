@@ -154,6 +154,12 @@ void AMilitaryBuilding::LevelUp()
 	Super::LevelUp();
 }
 
+//Index
+int AMilitaryBuilding::GetIndex()
+{
+	return MapIndex;
+}
+
 //ESide
 void AMilitaryBuilding::SetSide(ESide NewSide)
 {

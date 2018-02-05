@@ -56,6 +56,9 @@ class SINAH_API AMilitaryBuilding : public ABuilding
 		//Level
 		virtual void LevelUp() override;
 
+		//Index
+		virtual int GetIndex();
+
 		//ESide
 		virtual void SetSide(ESide NewSide) override;
 		UFUNCTION(NetMulticast, Reliable)
@@ -74,4 +77,7 @@ class SINAH_API AMilitaryBuilding : public ABuilding
 
 		UPROPERTY(Replicated)
 			int Points;
+
+		UPROPERTY(EditAnywhere)
+			int MapIndex;
 };

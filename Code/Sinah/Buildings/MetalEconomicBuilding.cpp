@@ -6,8 +6,8 @@
 
 AMetalEconomicBuilding::AMetalEconomicBuilding() : Super()
 {
-	CostInFood = { 200, 400, 600 };
-	CostInCells = { 600, 1000, 1400 };
-	CostInMetal = { 1000, 2000, 3000 };
-	CostInCristals = { 200, 400, 600 };
+	CostInFood = { 300, 600, 1200 };
+	CostInCells = { 500, 1000, 2000 };
+	CostInMetal = { 100, 200, 400 };
+	CostInCristals = { 400, 800, 1600 };
 }

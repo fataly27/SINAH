@@ -9,9 +9,9 @@ AEconomicBuilding::AEconomicBuilding() : Super(), TimeSinceCounterPlunder(0.f)
 	DefaultOutputInHalfASecond = 4;
 	ActualOutputInHalfASecond = DefaultOutputInHalfASecond;
 
-	DefaultMaxLife = 300;
-	DefaultHeal = 3;
-	DefaultFieldOfSight = 5.f;
+	DefaultMaxLife = 500;
+	DefaultHeal = 4;
+	DefaultFieldOfSight = 9.f;
 
 	ActualMaxLife = DefaultMaxLife;
 	CurrentLife = ActualMaxLife;
@@ -62,7 +62,7 @@ bool AEconomicBuilding::GetIsPlundered()
 }
 int AEconomicBuilding::GetOutputForLevel(unsigned int Level)
 {
-	return DefaultOutputInHalfASecond * FGenericPlatformMath::Sqrt(Level);
+	return DefaultOutputInHalfASecond + DefaultOutputInHalfASecond * (Level - 1) / 2;
 }
 
 

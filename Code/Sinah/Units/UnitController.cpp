@@ -4,10 +4,11 @@
 #include "Unit.h"
 #include "UnitController.h"
 
-AUnitController::AUnitController() : Super(), bLastATarget(false) {}
+AUnitController::AUnitController() : Super(), bLastATarget(false), TimeSinceLastAttack(1.f) {}
 
 void AUnitController::Tick(float DeltaSeconds)
 {
+	TimeSinceLastAttack += DeltaSeconds;
 	EModes UnitMode(Cast<AUnit>(GetPawn())->GetMode());
 
 	if ((Cast<AUnit>(GetPawn())->GetSpecialTargets().IsValidIndex(0) || (Cast<AUnit>(GetPawn())->GetOpponentsInSight().IsValidIndex(0) && !Cast<AUnit>(GetPawn())->GetDestinations().IsValidIndex(0))) && (UnitMode == EModes::Attack || UnitMode == EModes::Defense))
@@ -31,9 +32,13 @@ void AUnitController::Tick(float DeltaSeconds)
 
 		if (Distance <= Cast<AUnit>(GetPawn())->GetRange() * 100 + ClosestTarget->GetSize())
 		{
-			StopMovement();
-			Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(EAction::Attacking);
-			Cast<AUnit>(GetPawn())->Attack(ClosestTarget);
+			if (TimeSinceLastAttack >= 1.f)
+			{
+				StopMovement();
+				Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(EAction::Attacking);
+				Cast<AUnit>(GetPawn())->Attack(ClosestTarget);
+				TimeSinceLastAttack = 0.f;
+			}
 		}
 		else if (ClosestTarget != LastTarget || GetMoveStatus() != EPathFollowingStatus::Moving || !bLastATarget)
 		{

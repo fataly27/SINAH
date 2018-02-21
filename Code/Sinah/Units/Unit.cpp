@@ -225,7 +225,7 @@ int AUnit::GetMagicDefense()
 }
 float AUnit::GetSpeed()
 {
-	return ActualSpeed;
+	return ActualSpeed * SpeedMultiplicator;
 }
 float AUnit::GetFieldOfSight()
 {
@@ -277,7 +277,7 @@ void AUnit::SetSpeedMultiplicator(float Multiplicator)
 {
 	SpeedMultiplicator = Multiplicator;
 
-	GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+	GetCharacterMovement()->MaxWalkSpeed = GetSpeed() * 100;
 }
 
 //Destinations
@@ -394,7 +394,7 @@ void AUnit::Attack(const TScriptInterface<IGameElementInterface>& Target)
 {
 	if (Role == ROLE_Authority && (CurrentMode == EModes::Attack || CurrentMode == EModes::Defense) && Target->GetOpponentVisibility())
 	{
-		if (FMath::RandRange(1, 10) == 1)
+		if (FMath::RandRange(1, 3) == 1)
 		{
 			if(MySide == ESide::Blue)
 				Multicast_Spark(BlueSpark);
@@ -417,7 +417,7 @@ void AUnit::ReceiveDamages(int Physic, int Magic, ESide AttackingSide)
 {
 	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
-		if (FMath::RandRange(1, 10) == 1)
+		if (FMath::RandRange(1, 8) == 1)
 			Multicast_Explosion();
 
 		int PhysicDamage = Physic - GetPhysicDefense();
@@ -475,7 +475,7 @@ void AUnit::SetMode()
 			ActualRange = DefaultRange;
 
 			ActualSpeed = DefaultSpeed;
-			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+			GetCharacterMovement()->MaxWalkSpeed = GetSpeed() * 100;
 
 			CurrentMode = Mode;
 		}
@@ -492,7 +492,7 @@ void AUnit::SetMode()
 			ActualRange = DefaultRange;
 
 			ActualSpeed = 0.f;
-			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+			GetCharacterMovement()->MaxWalkSpeed = GetSpeed() * 100;
 
 			ClearDestinations();
 		}
@@ -512,7 +512,7 @@ void AUnit::SetMode()
 			ActualRange = 0;
 
 			ActualSpeed = DefaultSpeed;
-			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+			GetCharacterMovement()->MaxWalkSpeed = GetSpeed() * 100;
 		}
 		else if (Mode == EModes::Movement)
 		{
@@ -529,7 +529,7 @@ void AUnit::SetMode()
 			ActualFieldOfSight = DefaultFieldOfSight;
 
 			ActualSpeed = DefaultSpeed * 1.6f;
-			GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+			GetCharacterMovement()->MaxWalkSpeed = GetSpeed() * 100;
 
 			CurrentMode = Mode;
 		}
@@ -552,7 +552,7 @@ void AUnit::SetMode()
 				ActualFieldOfSight = DefaultFieldOfSight;
 
 				ActualSpeed = DefaultSpeed;
-				GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+				GetCharacterMovement()->MaxWalkSpeed = GetSpeed() * 100;
 
 				CurrentMode = Mode;
 
@@ -587,7 +587,7 @@ void AUnit::ChangeMode(EModes Mode)
 		ActualRange = 0;
 
 		ActualSpeed = 0.f;
-		GetCharacterMovement()->MaxWalkSpeed = ActualSpeed * SpeedMultiplicator * 100;
+		GetCharacterMovement()->MaxWalkSpeed = GetSpeed() * 100;
 
 		PrepareChangingModeTime = 2.f;
 	}

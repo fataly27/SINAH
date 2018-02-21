@@ -7,16 +7,16 @@ ASmallMilitaryBuilding::ASmallMilitaryBuilding() : Super()
 {
 	DefaultMaxLife = 1000;
 	DefaultHeal = 10;
-	DefaultFieldOfSight = 12.f;
+	DefaultFieldOfSight = 15.f;
 
 	ActualMaxLife = DefaultMaxLife;
 	CurrentLife = ActualMaxLife;
 	ActualHeal = DefaultHeal;
 	ActualFieldOfSight = DefaultFieldOfSight;
 
-	CostInFood = { 150, 300, 1000 };
+	CostInFood = { 150, 300, 700 };
 	CostInCells = { 400, 800, 2000 };
-	CostInMetal = { 1000, 2000, 4000 };
+	CostInMetal = { 1000, 2000, 3000 };
 	CostInCristals = { 50, 250, 1000 };
 
 	SetActorScale3D(FVector(1.f));

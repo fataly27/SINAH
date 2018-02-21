@@ -20,7 +20,7 @@ class SINAH_API UStatWidget : public UUserWidget
 		void SetHeal(int NewHeal);
 		void SetTheAttack(int Physic, int Magic);
 		void SetDefense(int Physic, int Magic);
-		void SetSpeed(int NewSpeed);
+		void SetSpeed(float NewSpeed);
 		void SetFieldOfSight(int NewFieldOfSight);
 		void SetRange(int NewRange);
 		void SetFoodEaten(int NewFoodEaten);

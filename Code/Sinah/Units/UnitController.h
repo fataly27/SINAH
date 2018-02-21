@@ -26,4 +26,5 @@ class SINAH_API AUnitController : public AAIController
 		FVector LastDestination;
 
 		bool bLastATarget;
+		float TimeSinceLastAttack;
 };

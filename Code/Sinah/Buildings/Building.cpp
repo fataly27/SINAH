@@ -170,7 +170,6 @@ void ABuilding::SetLevel(unsigned int Level)
 			CurrentLevel = 1;
 
 		ActualMaxLife = DefaultMaxLife * FGenericPlatformMath::Sqrt(CurrentLevel);
-		CurrentLife = ActualMaxLife;
 		ActualHeal = DefaultHeal * FGenericPlatformMath::Sqrt(CurrentLevel);
 		ActualFieldOfSight = DefaultFieldOfSight * FGenericPlatformMath::Sqrt(CurrentLevel);
 	}

@@ -59,7 +59,7 @@ void UStatWidget::SetDefense(int Physic, int Magic)
 		DefenseVisibility = ESlateVisibility::Visible;
 	}
 }
-void UStatWidget::SetSpeed(int NewSpeed)
+void UStatWidget::SetSpeed(float NewSpeed)
 {
 	if (NewSpeed == 0)
 	{
@@ -68,7 +68,8 @@ void UStatWidget::SetSpeed(int NewSpeed)
 	}
 	else
 	{
-		Speed = FString::FromInt(NewSpeed).Append(" m/s");
+		FString DecimalPart = FString::FromInt((int)(NewSpeed * 10) % 10);
+		Speed = FString::FromInt(NewSpeed).Append(".").Append(DecimalPart).Append(" m/s");
 		SpeedVisibility = ESlateVisibility::Visible;
 	}
 }

@@ -6,7 +6,7 @@
 AGreatMilitaryBuilding::AGreatMilitaryBuilding() : Super()
 {
 	DefaultMaxLife = 3000;
-	DefaultHeal = 40;
+	DefaultHeal = 45;
 	DefaultFieldOfSight = 20.f;
 
 	ActualMaxLife = DefaultMaxLife;
@@ -14,9 +14,9 @@ AGreatMilitaryBuilding::AGreatMilitaryBuilding() : Super()
 	ActualHeal = DefaultHeal;
 	ActualFieldOfSight = DefaultFieldOfSight;
 
-	CostInFood = { 150, 300, 1000, 2000, 5000, 10000};
-	CostInCells = { 400, 800, 2000, 4000, 10000, 20000 };
-	CostInMetal = { 1000, 2000, 4000, 8000, 20000, 40000 };
+	CostInFood = { 150, 300, 700, 1500, 5000, 8000};
+	CostInCells = { 400, 800, 2000, 3000, 5000, 8000 };
+	CostInMetal = { 1000, 2000, 3000, 5000, 9000, 15000 };
 	CostInCristals = { 50, 250, 1000, 2000, 5000, 15000 };
 
 	SetActorRotation(FRotator(0.f, 45.f, 0.f));

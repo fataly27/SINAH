@@ -8,12 +8,12 @@ AKnight::AKnight() : Super()
 	Name = FName(TEXT("Paladin"));
 
 	DefaultMaxLife = 300;
-	DefaultPhysicAttack = 20;
+	DefaultPhysicAttack = 12;
 	DefaultMagicAttack = 0;
-	DefaultPhysicDefense = 12;
+	DefaultPhysicDefense = 5;
 	DefaultMagicDefense = 0;
-	DefaultSpeed = 3.f;
-	DefaultFieldOfSight = 8.f;
+	DefaultSpeed = 2.f;
+	DefaultFieldOfSight = 5.f;
 	DefaultRange = 1.f;
 
 	ActualMaxLife = DefaultMaxLife;

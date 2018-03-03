@@ -17,10 +17,15 @@ class SINAH_API AMultiplayerSinahMode : public AGameMode
 	public:
 		AMultiplayerSinahMode();
 
-		void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
+		// Called every frame
+		virtual void Tick(float DeltaSeconds) override;
 
-		ESide GetPlayerSide(int ID);
+		TArray<FUniqueNetIdRepl> GetPlayersIDs();
+		ESide GetPlayerSide(FUniqueNetIdRepl ID);
+		void SetIsReadyForPlayer(FUniqueNetIdRepl ID, bool Ready);
 
 	private:
-		TArray<int> PlayersIDs;
+		TArray<FUniqueNetIdRepl> PlayersIDs;
+		TMap<FUniqueNetIdRepl, bool> PlayersAreReady;
+		bool DidGameStart;
 };

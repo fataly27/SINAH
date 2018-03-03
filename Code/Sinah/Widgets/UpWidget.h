@@ -26,9 +26,6 @@ class SINAH_API UUpWidget : public UUserWidget
 		void SetCristalsChange(int Cristals);
 
 		void SetTime(int BaseSeconds);
-		void SetMatchActive(bool bActive);
-
-		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
 
 	protected:
 		UPROPERTY(BlueprintReadWrite, Category = "Amounts")
@@ -51,6 +48,4 @@ class SINAH_API UUpWidget : public UUserWidget
 
 		UPROPERTY(BlueprintReadWrite, Category = "Timer")
 			FString TheTimer;
-		UPROPERTY(BlueprintReadWrite, Category = "Button")
-			FString ButtonText;
 };

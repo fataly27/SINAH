@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "GameBeforeStartingWidget.h"
 #include "MapWidget.generated.h"
 
 /**
@@ -23,4 +24,9 @@ class SINAH_API UMapWidget : public UUserWidget
 			void SetColorForIndex(int32 index, const FString& Color);
 		UFUNCTION(BlueprintImplementableEvent)
 			void Rotate();
+
+		UFUNCTION(BlueprintImplementableEvent)
+			void SetPlayerCiv(const ECivs& Civ);
+		UFUNCTION(BlueprintImplementableEvent)
+			void SetOpponentCiv(const ECivs& Civ);
 };

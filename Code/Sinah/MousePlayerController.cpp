@@ -27,13 +27,16 @@
 #include "Widgets/LevelMilitaryWidget.h"
 #include "Widgets/SpawnWidget.h"
 #include "Widgets/SpawnEntityWidget.h"
+#include "Widgets/GameBeforeStartingWidget.h"
+#include "Widgets/GameAfterEndingWidget.h"
+#include "WidgetBlueprintLibrary.h"
 
 #include <cmath>
 #include <algorithm>
 
 #include "MousePlayerController.h"
 
-AMousePlayerController::AMousePlayerController() : TimeSinceLastHarvest(0.f), bOpponentView(false), OldString(""), bThrobberEnabled(true), bExitEnabled(false)
+AMousePlayerController::AMousePlayerController() : Super(), TimeSinceLastHarvest(0.f), bOpponentView(false), OldString(""), bThrobberEnabled(true), bExitEnabled(false)
 {
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;
@@ -56,12 +59,9 @@ AMousePlayerController::AMousePlayerController() : TimeSinceLastHarvest(0.f), bO
 // Called when the game starts or when spawned
 void AMousePlayerController::BeginPlay()
 {
+	Super::BeginPlay();
+
 	HUD = Cast<APlayerHUD>(GetHUD());
-
-	AMultiplayerSinahMode* Mode = Cast<AMultiplayerSinahMode>(GetWorld()->GetAuthGameMode());
-
-	if (Role == ROLE_Authority)
-		PlayerSide = Mode->GetPlayerSide(PlayerState->PlayerId);
 
 	if (HUD)
 	{
@@ -104,6 +104,10 @@ void AMousePlayerController::BeginPlay()
 			MyMilitaryLevelInterface = CreateWidget<ULevelMilitaryWidget>(this, wMilitaryLevelInterface);
 		if (wSpawnInterface)
 			MySpawnInterface = CreateWidget<USpawnWidget>(this, wSpawnInterface);
+		if (wGameBeforeStartingInterface)
+			MyGameBeforeStartingInterface = CreateWidget<UGameBeforeStartingWidget>(this, wGameBeforeStartingInterface);
+		if (wGameAfterEndingInterface)
+			MyGameAfterEndingInterface = CreateWidget<UGameAfterEndingWidget>(this, wGameAfterEndingInterface);
 
 		if (MyTopInterface)
 			MyTopInterface->AddToViewport();
@@ -117,17 +121,31 @@ void AMousePlayerController::BeginPlay()
 			MyEconomicLevelInterface->AddToViewport();
 		if (MyMilitaryLevelInterface)
 			MyMilitaryLevelInterface->AddToViewport();
+		if (MyGameBeforeStartingInterface)
+			MyGameBeforeStartingInterface->AddToViewport();
+		if (MyGameAfterEndingInterface)
+		{
+			MyGameAfterEndingInterface->AddToViewport();
+			MyGameAfterEndingInterface->SetVisibility(ESlateVisibility::Hidden);
+		}
 
 		if (MySpawnInterface && wSpawnEntityInterface)
 		{
 			MySpawnInterface->AddToViewport();
 
 			FLinearColor Color;
+			FLinearColor ButtonColor;
 
 			if (GetSide() == ESide::Blue)
-				Color = FLinearColor(0.5f, 0.5f, 1.f, 1.f);
-			else
+			{
 				Color = FLinearColor(1.f, 0.5f, 0.5f, 1.f);
+				ButtonColor = FLinearColor(0.f, 0.06f, 0.25f, 1.f);
+			}
+			else
+			{
+				Color = FLinearColor(1.f, 0.5f, 0.5f, 1.f);
+				ButtonColor = FLinearColor(0.29f, 0.03f, 0.03f, 1.f);
+			}
 
 			TArray<TSubclassOf<AUnit>> UnitClasses;
 			UnitClasses.Add(AKnight::StaticClass());
@@ -147,7 +165,7 @@ void AMousePlayerController::BeginPlay()
 				for (int i(0); i < UnitClassesByLevel[n].Num(); i++)
 				{
 					USpawnEntityWidget* SpawnEntity = PrepareEntity(UnitClassesByLevel[n][i]);
-					SpawnEntity->SetColor(Color);
+					SpawnEntity->SetColor(Color, ButtonColor);
 					SpawnEntity->SetMainInterface(MySpawnInterface);
 
 					SpawnEntityWidgets.Add(SpawnEntity);
@@ -168,8 +186,6 @@ void AMousePlayerController::BeginPlay()
 			MyMapInterface->Rotate();
 		}
 	}
-
-	Super::BeginPlay();
 }
 
 void AMousePlayerController::SetPawn(APawn* InPawn)
@@ -177,6 +193,13 @@ void AMousePlayerController::SetPawn(APawn* InPawn)
 	Super::SetPawn(InPawn);
 
 	MyPawn = Cast<AMainCamera>(InPawn);
+
+	if (Role == ROLE_Authority && InPawn != nullptr)
+	{
+		AMultiplayerSinahMode* Mode = Cast<AMultiplayerSinahMode>(GetWorld()->GetAuthGameMode());
+
+		PlayerSide = Mode->GetPlayerSide(PlayerState->UniqueId);
+	}
 }
 
 // Called every frame
@@ -218,7 +241,7 @@ void AMousePlayerController::Tick(float DeltaTime)
 			TActorIterator<AUnit> UnitItr(GetWorld());
 			for (UnitItr; UnitItr; ++UnitItr)
 			{
-				//If the game is not active, we delete all the orders taken by units
+				//If the game is not active, we cancel all the orders taken by units
 				UnitItr->ClearDestinations();
 				UnitItr->ClearOpponentsInSight();
 				UnitItr->ClearSpecialTargets();
@@ -346,6 +369,44 @@ void AMousePlayerController::Tick(float DeltaTime)
 		if (MyPawn)
 			HUD->SetZoom(MyPawn->GetZoom());
 
+		if (MyGameBeforeStartingInterface && MyMapInterface)
+		{
+			if (GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameSoonActive() && MyGameBeforeStartingInterface->GetVisibility() != ESlateVisibility::Hidden)
+			{
+				MyGameBeforeStartingInterface->SetVisibility(ESlateVisibility::Hidden);
+				UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this, nullptr, EMouseLockMode::DoNotLock, false);
+				TArray<FCivForPlayerStruct> Civs = GetWorld()->GetGameState<AMultiplayerGameState>()->GetAllCivs();
+
+				for (int i(0); i < Civs.Num(); i++)
+				{
+					if (Civs[i].ID == PlayerState->UniqueId)
+						MyMapInterface->SetPlayerCiv(Civs[i].Civ);
+					else
+						MyMapInterface->SetOpponentCiv(Civs[i].Civ);
+				}
+			}
+		}
+
+		if (MyGameAfterEndingInterface)
+		{
+			if (GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->HasMatchEnded() && MyGameAfterEndingInterface->GetVisibility() == ESlateVisibility::Hidden)
+			{
+				FUniqueNetIdRepl Winner = GetWorld()->GetGameState<AMultiplayerGameState>()->GetWinner();
+				TArray<FCivForPlayerStruct> Civs = GetWorld()->GetGameState<AMultiplayerGameState>()->GetAllCivs();
+
+				for (int i(0); i < Civs.Num(); i++)
+				{
+					if (Civs[i].ID == Winner)
+						MyGameAfterEndingInterface->SetWinCiv(Civs[i].Civ);
+					else
+						MyGameAfterEndingInterface->SetLoseCiv(Civs[i].Civ);
+				}
+				MyGameAfterEndingInterface->SetDidWin(Winner == PlayerState->UniqueId);
+				
+				MyGameAfterEndingInterface->SetVisibility(ESlateVisibility::Visible);
+			}
+		}
+
 		AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
 
 		if (State && MyTopInterface)
@@ -361,8 +422,6 @@ void AMousePlayerController::Tick(float DeltaTime)
 			MyTopInterface->SetCristalsChange(State->GetCristalsChange());
 
 			MyTopInterface->SetTime(GetWorld()->GetGameState<AMultiplayerGameState>()->GetTime());
-
-			MyTopInterface->SetMatchActive(GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive());
 		}
 
 		if (MyStatInterface)
@@ -1062,12 +1121,15 @@ void AMousePlayerController::FogOfWar()
 
 			MilitaryBuildings.Add(MilitaryBuilding);
 
-			if (BuildingItr->GetSide() == ESide::Blue)
-				MyMapInterface->SetColorForIndex(MilitaryBuilding->GetIndex(), "Blue");
-			else if (BuildingItr->GetSide() == ESide::Red)
-				MyMapInterface->SetColorForIndex(MilitaryBuilding->GetIndex(), "Red");
-			else
-				MyMapInterface->SetColorForIndex(MilitaryBuilding->GetIndex(), "Grey");
+			if (MyMapInterface)
+			{
+				if (BuildingItr->GetSide() == ESide::Blue)
+					MyMapInterface->SetColorForIndex(MilitaryBuilding->GetIndex(), "Blue");
+				else if (BuildingItr->GetSide() == ESide::Red)
+					MyMapInterface->SetColorForIndex(MilitaryBuilding->GetIndex(), "Red");
+				else
+					MyMapInterface->SetColorForIndex(MilitaryBuilding->GetIndex(), "Grey");
+			}
 		}
 	}
 
@@ -1296,13 +1358,13 @@ void AMousePlayerController::SetMapTexture(TArray<TScriptInterface<IGameElementI
 
 		for (int i(0); i < AllVisibleActors.Num(); i++)
 		{
-			FColor Color;
+			FLinearColor Color;
 			if (AllVisibleActors[i]->GetSide() == ESide::Blue)
-				Color = FColor(70, 70, 255, 255);
+				Color = FLinearColor(0.f, 0.1f, 0.37f, 1.f);
 			else if (AllVisibleActors[i]->GetSide() == ESide::Red)
-				Color = FColor(255, 70, 70, 255);
+				Color = FLinearColor(0.45f, 0.05f, 0.05f, 1.f);
 			else
-				Color = FColor(132, 132, 132, 255);
+				Color = FLinearColor(0.3f, 0.3f, 0.3f, 1.f);
 
 			FVector TempPosition = AllVisibleActors[i]->GetLocation();
 			FVector PositionPixel(FMath::RoundHalfFromZero(TempPosition.X / PixelRatio), FMath::RoundHalfFromZero(TempPosition.Y / PixelRatio), 0.f);
@@ -1313,7 +1375,7 @@ void AMousePlayerController::SetMapTexture(TArray<TScriptInterface<IGameElementI
 					for (int y(-22); y <= 22; y++)
 					{
 						if (x * x + y * y <= 484 && 0 <= (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize && (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize <= 4 * MidTextureSize * MidTextureSize)
-							MapTextureData[(PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize] = Color;
+							MapTextureData[(PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize] = Color.ToFColor(true);
 					}
 				}
 			}
@@ -1324,7 +1386,7 @@ void AMousePlayerController::SetMapTexture(TArray<TScriptInterface<IGameElementI
 					for (int y(-12); y <= 12; y++)
 					{
 						if (x * x + y * y <= 144 && 0 <= (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize && (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize <= 4 * MidTextureSize * MidTextureSize)
-							MapTextureData[(PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize] = Color;
+							MapTextureData[(PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize] = Color.ToFColor(true);
 					}
 				}
 			}
@@ -1335,7 +1397,7 @@ void AMousePlayerController::SetMapTexture(TArray<TScriptInterface<IGameElementI
 					for (int y(-7); y <= 7; y++)
 					{
 						if (0 <= (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize && (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize <= 4 * MidTextureSize * MidTextureSize)
-							MapTextureData[(PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize] = Color;
+							MapTextureData[(PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize] = Color.ToFColor(true);
 					}
 				}
 			}
@@ -1346,7 +1408,7 @@ void AMousePlayerController::SetMapTexture(TArray<TScriptInterface<IGameElementI
 					for (int y(-5); y <= 5; y++)
 					{
 						if (x * x + y * y <= 25 && 0 <= (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize && (PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize <= 4 * MidTextureSize * MidTextureSize)
-							MapTextureData[(PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize] = Color;
+							MapTextureData[(PositionPixel.Y + MidTextureSize + y) * MidTextureSize * 2 + PositionPixel.X + x + MidTextureSize] = Color.ToFColor(true);
 					}
 				}
 			}
@@ -1773,7 +1835,7 @@ bool AMousePlayerController::Server_GiveIn_Validate()
 }
 void AMousePlayerController::Destroyed()
 {
-	if (Role == ROLE_Authority && GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
+	if (Role == ROLE_Authority && GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameSoonActive())
 		Server_GiveIn();
 
 	Super::Destroyed();
@@ -1782,20 +1844,25 @@ void AMousePlayerController::Destroyed()
 //Exit
 void AMousePlayerController::Exit()
 {
-	if (GetWorld()->GetGameState<AMultiplayerGameState>() && !GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
-	{
-		Server_Exit();
+	if (GetWorld()->GetGameState<AMultiplayerGameState>() && !GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameSoonActive())
 		ExitSession();
-	}
 }
 
-void AMousePlayerController::Server_Exit_Implementation()
+//Ready
+void AMousePlayerController::Server_PlayerIsReady_Implementation(bool Ready, ECivs Civ)
 {
-	GetWorld()->GetGameState<AMultiplayerGameState>()->CancelPreBeginGame();
+	AMultiplayerSinahMode* Mode = Cast<AMultiplayerSinahMode>(GetWorld()->GetAuthGameMode());
+	if (Mode)
+		Mode->SetIsReadyForPlayer(PlayerState->UniqueId, Ready);
+	if (Ready)
+	{
+		Cast<AMultiplayerState>(PlayerState)->SetCivChosen(Civ);
+		GetWorld()->GetGameState<AMultiplayerGameState>()->SetCivForPlayer(PlayerState->UniqueId, Civ);
+	}
 }
-bool AMousePlayerController::Server_Exit_Validate()
+bool AMousePlayerController::Server_PlayerIsReady_Validate(bool Ready, ECivs Civ)
 {
-	return GetWorld()->GetGameState<AMultiplayerGameState>() && !GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive() && !GetWorld()->GetGameState<AMultiplayerGameState>()->HasMatchEnded();
+	return Civ != ECivs::None || !Ready;
 }
 
 //Replication

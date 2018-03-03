@@ -7,7 +7,7 @@
 #include "GameElementInterface.h"
 
 
-AMultiplayerGameState::AMultiplayerGameState() : Super(), bGameActive(false), StateInfo("Waiting for your opponent"), CountDown(-1.f), CurrentTime(0.f), Winner(ESide::Neutral)
+AMultiplayerGameState::AMultiplayerGameState() : Super(), bGameActive(false), bGameSoonActive(false), StateInfo("Waiting for your opponent"), CountDown(-1.f), CurrentTime(0.f)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -58,20 +58,16 @@ void AMultiplayerGameState::Tick(float DeltaTime)
 		if (bGameEnded && CountDown < -1.f)
 		{
 			bGameActive = false;
+			bGameSoonActive = false;
 
 			AMultiplayerSinahMode* Mode = Cast<AMultiplayerSinahMode>(GetWorld()->GetAuthGameMode());
 			Mode->EndMatch();
 
+			TArray<FUniqueNetIdRepl> PlayersIDs = Cast<AMultiplayerSinahMode>(GetWorld()->GetAuthGameMode())->GetPlayersIDs();
 			if (FirstSide == ESide::Blue)
-			{
-				SetStatusInfo("Blue player has won !");
-				Winner = ESide::Blue;
-			}
+				Winner = PlayersIDs[0];
 			else if (FirstSide == ESide::Red)
-			{
-				SetStatusInfo("Red player has won !");
-				Winner = ESide::Red;
-			}
+				Winner = PlayersIDs[1];
 		}
 	}
 }
@@ -81,15 +77,15 @@ bool AMultiplayerGameState::IsGameActive()
 	return bGameActive;
 }
 
-void AMultiplayerGameState::PreBeginGame()
+bool AMultiplayerGameState::IsGameSoonActive()
 {
-	CountDown = 5.f;
+	return bGameSoonActive;
 }
 
-void AMultiplayerGameState::CancelPreBeginGame()
+void AMultiplayerGameState::PreBeginGame()
 {
-	CountDown = -1.f;
-	StateInfo = "Waiting for your opponent";
+	CountDown = 3.f;
+	bGameSoonActive = true;
 }
 
 void AMultiplayerGameState::BeginGame()
@@ -112,12 +108,35 @@ int AMultiplayerGameState::GetTime()
 	return CurrentTime;
 }
 
+FUniqueNetIdRepl AMultiplayerGameState::GetWinner()
+{
+	return Winner;
+}
+void AMultiplayerGameState::SetCivForPlayer(FUniqueNetIdRepl ID, ECivs Civ)
+{
+	if (Role == ROLE_Authority)
+	{
+		FCivForPlayerStruct Struct;
+		Struct.ID = ID;
+		Struct.Civ = Civ;
+		PlayersCiv.Add(Struct);
+	}
+}
+TArray<FCivForPlayerStruct> AMultiplayerGameState::GetAllCivs()
+{
+	return PlayersCiv;
+}
+
 //Replication
 void AMultiplayerGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AMultiplayerGameState, bGameActive);
+	DOREPLIFETIME(AMultiplayerGameState, bGameSoonActive);
+	DOREPLIFETIME(AMultiplayerGameState, Winner);
 	DOREPLIFETIME(AMultiplayerGameState, StateInfo);
 	DOREPLIFETIME(AMultiplayerGameState, CurrentTime);
+
+	DOREPLIFETIME(AMultiplayerGameState, PlayersCiv);
 }

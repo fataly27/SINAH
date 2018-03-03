@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameFramework/PlayerState.h"
+#include "Widgets/GameBeforeStartingWidget.h"
 #include "MultiplayerState.generated.h"
 
 /**
@@ -39,7 +40,10 @@ class SINAH_API AMultiplayerState : public APlayerState
 		void SetCellsChange(int Cells);
 		void SetCristalsChange(int Cristals);
 
+		void SetCivChosen(ECivs Civ);
+
 	protected:
+		//Ressources
 		UPROPERTY(Replicated)
 			int AmountOfFood;
 		UPROPERTY(Replicated)
@@ -57,4 +61,8 @@ class SINAH_API AMultiplayerState : public APlayerState
 			int CellsChange;
 		UPROPERTY(Replicated)
 			int CristalsChange;
+
+		//Start Choices
+		UPROPERTY(Replicated)
+			ECivs CivChosen;
 };

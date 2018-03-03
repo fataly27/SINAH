@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerController.h"
 #include "PlayerHUD.h"
 #include "Units/Unit.h"
+#include "Widgets/GameBeforeStartingWidget.h"
 #include "MousePlayerController.generated.h"
 
 class AMainCamera;
@@ -22,6 +23,7 @@ class ULevelEconomicWidget;
 class ULevelMilitaryWidget;
 class USpawnWidget;
 class USpawnEntityWidget;
+class UGameAfterEndingWidget;
 
 /**
  * 
@@ -151,10 +153,12 @@ class SINAH_API AMousePlayerController : public APlayerController
 		//Exit
 		UFUNCTION(BlueprintCallable)
 			void Exit();
-		UFUNCTION(Server, Reliable, WithValidation)
-			void Server_Exit();
 		UFUNCTION(BlueprintImplementableEvent)
 			void ExitSession();
+
+		//Ready and Start Choices
+		UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+			void Server_PlayerIsReady(bool Ready, ECivs Civ);
 
 		UTexture* UnselectedTexture;
 		UTexture* SelectedTexture;
@@ -244,4 +248,14 @@ class SINAH_API AMousePlayerController : public APlayerController
 			TSubclassOf<class USpawnEntityWidget> wSpawnEntityInterface;
 
 		TArray<USpawnEntityWidget*> SpawnEntityWidgets;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameBeforeStartingInterface")
+			TSubclassOf<class UGameBeforeStartingWidget> wGameBeforeStartingInterface;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "GameBeforeStartingInterface")
+			UGameBeforeStartingWidget* MyGameBeforeStartingInterface;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameAfterEndingInterface")
+			TSubclassOf<class UGameAfterEndingWidget> wGameAfterEndingInterface;
+		UPROPERTY(Replicated, BlueprintReadWrite, Category = "GameAfterEndingInterface")
+			UGameAfterEndingWidget* MyGameAfterEndingInterface;
 };

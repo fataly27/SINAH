@@ -8,7 +8,7 @@
 #include "PlayerHUD.h"
 
 
-APlayerHUD::APlayerHUD() : StartMousePos(0.f, 0.f), CurrentMousePos(0.f, 0.f), BoxDisplayed(ETypeBox::None)
+APlayerHUD::APlayerHUD() : Super(), StartMousePos(0.f, 0.f), CurrentMousePos(0.f, 0.f), BoxDisplayed(ETypeBox::None)
 {
 	static ConstructorHelpers::FObjectFinder<UTexture> TheBlueDestination(TEXT("Texture'/Game/Textures/BlueDestination.BlueDestination'"));
 	static ConstructorHelpers::FObjectFinder<UTexture> TheRedDestination(TEXT("Texture'/Game/Textures/RedDestination.RedDestination'"));

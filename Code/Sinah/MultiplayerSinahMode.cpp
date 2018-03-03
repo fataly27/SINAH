@@ -8,7 +8,7 @@
 #include "MultiplayerSinahMode.h"
 #include "MultiplayerGameState.h"
 
-AMultiplayerSinahMode::AMultiplayerSinahMode()
+AMultiplayerSinahMode::AMultiplayerSinahMode() : Super(), DidGameStart(false)
 {
 	PlayerControllerClass = AMousePlayerController::StaticClass();
 	DefaultPawnClass = AMainCamera::StaticClass();
@@ -17,15 +17,28 @@ AMultiplayerSinahMode::AMultiplayerSinahMode()
 	GameStateClass = AMultiplayerGameState::StaticClass();
 }
 
-void AMultiplayerSinahMode::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
+void AMultiplayerSinahMode::Tick(float DeltaSeconds)
 {
-	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
+	Super::Tick(DeltaSeconds);
 
-	if (NumPlayers == 2 && !HasMatchEnded() && GetMatchState() != "Aborted")
-		GetGameState<AMultiplayerGameState>()->PreBeginGame();
+	if (NumPlayers == 2 && PlayersIDs.Num() == 2 && !DidGameStart)
+	{
+		bool IsEveryPlayerReady(true);
+		for (int i(0); i < PlayersIDs.Num(); i++)
+		{
+			if (!PlayersAreReady.Contains(PlayersIDs[i]) || !PlayersAreReady[PlayersIDs[i]])
+				IsEveryPlayerReady = false;
+		}
+
+		if (IsEveryPlayerReady)
+		{
+			GetGameState<AMultiplayerGameState>()->PreBeginGame();
+			DidGameStart = true;
+		}
+	}
 }
 
-ESide AMultiplayerSinahMode::GetPlayerSide(int ID)
+ESide AMultiplayerSinahMode::GetPlayerSide(FUniqueNetIdRepl ID)
 {
 	PlayersIDs.AddUnique(ID);
 
@@ -37,4 +50,14 @@ ESide AMultiplayerSinahMode::GetPlayerSide(int ID)
 		return ESide::Red;
 	else
 		return ESide::Neutral;
+}
+
+TArray<FUniqueNetIdRepl> AMultiplayerSinahMode::GetPlayersIDs()
+{
+	return PlayersIDs;
+}
+
+void AMultiplayerSinahMode::SetIsReadyForPlayer(FUniqueNetIdRepl ID, bool Ready)
+{
+	PlayersAreReady.Add(ID, Ready);
 }

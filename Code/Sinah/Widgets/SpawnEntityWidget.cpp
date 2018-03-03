@@ -4,9 +4,10 @@
 #include "SpawnWidget.h"
 #include "SpawnEntityWidget.h"
 
-void USpawnEntityWidget::SetColor(FLinearColor NewColor)
+void USpawnEntityWidget::SetColor(FLinearColor NewColor, FLinearColor NewButtonColor)
 {
 	Color = NewColor;
+	ButtonColor = NewButtonColor;
 }
 void USpawnEntityWidget::SetUnit(TSubclassOf<AUnit> Class, FName Name, UTexture* Image)
 {

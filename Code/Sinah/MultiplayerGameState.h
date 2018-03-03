@@ -4,7 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
+#include "Widgets/GameBeforeStartingWidget.h"
 #include "MultiplayerGameState.generated.h"
+
+
+USTRUCT()
+struct FCivForPlayerStruct
+{
+	GENERATED_BODY()
+
+	public:
+		UPROPERTY()
+			FUniqueNetIdRepl ID;
+		UPROPERTY()
+			ECivs Civ;
+};
+
 
 /**
  * 
@@ -20,14 +35,18 @@ class SINAH_API AMultiplayerGameState : public AGameState
 		void Tick(float DeltaTime) override;
 
 		bool IsGameActive();
+		bool IsGameSoonActive();
 		void PreBeginGame();
-		void CancelPreBeginGame();
 		void BeginGame();
 
 		FString GetStatusInfo();
 		void SetStatusInfo(FString Text);
 
 		int GetTime();
+
+		FUniqueNetIdRepl GetWinner();
+		void SetCivForPlayer(FUniqueNetIdRepl ID, ECivs Civ);
+		TArray<FCivForPlayerStruct> GetAllCivs();
 
 		//Replication
 		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
@@ -36,10 +55,15 @@ class SINAH_API AMultiplayerGameState : public AGameState
 		UPROPERTY(Replicated)
 			bool bGameActive;
 		UPROPERTY(Replicated)
-			ESide Winner;
+			bool bGameSoonActive;
+		UPROPERTY(Replicated)
+			FUniqueNetIdRepl Winner;
 		UPROPERTY(Replicated)
 			FString StateInfo;
 		UPROPERTY(Replicated)
 			float CurrentTime;
 		float CountDown;
+		
+		UPROPERTY(Replicated)
+			TArray<FCivForPlayerStruct> PlayersCiv;
 };

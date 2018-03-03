@@ -3,7 +3,7 @@
 #include "Sinah.h"
 #include "MultiplayerState.h"
 
-AMultiplayerState::AMultiplayerState()
+AMultiplayerState::AMultiplayerState() : Super()
 {
 	AmountOfFood = 0;
 	AmountOfMetal = 0;
@@ -115,6 +115,12 @@ void AMultiplayerState::SetCristalsChange(int Cristals)
 		CristalsChange = Cristals;
 }
 
+void AMultiplayerState::SetCivChosen(ECivs Civ)
+{
+	if(Role == ROLE_Authority)
+		CivChosen = Civ;
+}
+
 //Replication
 void AMultiplayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
@@ -129,4 +135,6 @@ void AMultiplayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &
 	DOREPLIFETIME(AMultiplayerState, MetalChange);
 	DOREPLIFETIME(AMultiplayerState, CellsChange);
 	DOREPLIFETIME(AMultiplayerState, CristalsChange);
+
+	DOREPLIFETIME(AMultiplayerState, CivChosen);
 }

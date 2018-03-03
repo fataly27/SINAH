@@ -18,7 +18,7 @@ class SINAH_API USpawnEntityWidget : public UUserWidget
 	GENERATED_BODY()
 
 	public:
-		void SetColor(FLinearColor NewColor);
+		void SetColor(FLinearColor NewColor, FLinearColor NewButtonColor);
 		void SetUnit(TSubclassOf<AUnit> Class, FName Name, UTexture* Image);
 		void SetMainInterface(USpawnWidget* Interface);
 		void SetRessourcesRequired(int NewFood, int NewCells, int NewMetal, int NewCristals);
@@ -43,6 +43,8 @@ class SINAH_API USpawnEntityWidget : public UUserWidget
 	protected:
 		UPROPERTY(BlueprintReadWrite, Category = "SpawnColor")
 			FLinearColor Color;
+		UPROPERTY(BlueprintReadWrite, Category = "SpawnColor")
+			FLinearColor ButtonColor;
 		UPROPERTY(BlueprintReadWrite, Category = "SpawnClass")
 			TSubclassOf<AUnit> UnitClass;
 		UPROPERTY(BlueprintReadWrite, Category = "SpawnClass")

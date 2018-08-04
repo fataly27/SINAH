@@ -6,6 +6,8 @@
 #include "Widgets/GameBeforeStartingWidget.h"
 #include "MultiplayerState.generated.h"
 
+class ASkillsTree;
+
 /**
  * 
  */
@@ -17,8 +19,7 @@ class SINAH_API AMultiplayerState : public APlayerState
 	public:
 		AMultiplayerState();
 
-		//Replication
-		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
+		virtual void BeginPlay() override;
 
 		int GetAmountOfFood();
 		int GetAmountOfMetal();
@@ -42,6 +43,11 @@ class SINAH_API AMultiplayerState : public APlayerState
 
 		void SetCivChosen(ECivs Civ);
 
+		ASkillsTree* GetSkillsTree();
+
+		//Replication
+		virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const;
+
 	protected:
 		//Ressources
 		UPROPERTY(Replicated)
@@ -62,7 +68,11 @@ class SINAH_API AMultiplayerState : public APlayerState
 		UPROPERTY(Replicated)
 			int CristalsChange;
 
-		//Start Choices
+		//Civilisation
 		UPROPERTY(Replicated)
 			ECivs CivChosen;
+
+		//Skills Tree
+		UPROPERTY(Replicated)
+			ASkillsTree* SkillsTree;
 };

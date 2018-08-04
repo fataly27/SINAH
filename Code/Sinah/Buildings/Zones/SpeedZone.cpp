@@ -15,9 +15,9 @@ USpeedZone::USpeedZone()
 void USpeedZone::Init(bool bPlayer)
 {
 	if(bPlayer)
-		Super::Init(bPlayer, 18.f);
+		Super::Init(bPlayer, 24.f);
 	else
-		Super::Init(bPlayer, 9.f);
+		Super::Init(bPlayer, 12.f);
 	BaseSpeedMultiplicator = 1.f;
 }
 

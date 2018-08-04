@@ -52,6 +52,29 @@ void UUpWidget::SetCristalsChange(int Cristals)
 	CristalsChange = FString("+").Append(FString::FromInt(Cristals));
 }
 
+void UUpWidget::SetMusicTitle(FString Info)
+{
+	Title = Info;
+}
+void UUpWidget::SetMusicCivs(TArray<ECivs> CivsArray)
+{
+	Civs = "";
+	for (int i(0); i < CivsArray.Num(); i++)
+	{
+		if (i != 0)
+			Civs += " - ";
+
+		if (CivsArray[i] == ECivs::Amuh)
+			Civs += "Amuh";
+		else if (CivsArray[i] == ECivs::Lorthemid)
+			Civs += "Lorthemid";
+		else if (CivsArray[i] == ECivs::Zhark)
+			Civs += "Zhark";
+		else if (CivsArray[i] == ECivs::Hovanion)
+			Civs += "Hovanion";
+	}
+}
+
 void UUpWidget::SetTime(int BaseSeconds)
 {
 	int Minutes = BaseSeconds / 60;
@@ -71,4 +94,9 @@ void UUpWidget::SetTime(int BaseSeconds)
 		SecondsString = FString::FromInt(Seconds);
 
 	TheTimer = MinutesString.Append(SecondsString);
+}
+
+void UUpWidget::SetPoints(int Pts)
+{
+	Points = Pts;
 }

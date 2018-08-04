@@ -33,6 +33,8 @@ class SINAH_API USpawnWidget : public UUserWidget
 		void SetRange(int NewRange);
 		void SetFoodEaten(int NewFoodEaten);
 
+		void SetUnitName(FName Name);
+
 		UFUNCTION(BlueprintImplementableEvent)
 			void AddEntity(const USpawnEntityWidget* Entity, const int LevelRequired, const int Line);
 		UFUNCTION(BlueprintImplementableEvent)
@@ -52,10 +54,6 @@ class SINAH_API USpawnWidget : public UUserWidget
 			bool FourEnabled;
 		UPROPERTY(BlueprintReadWrite, Category = "SpawnLevel")
 			bool FiveEnabled;
-		UPROPERTY(BlueprintReadWrite, Category = "SpawnLevel")
-			bool SixEnabled;
-		UPROPERTY(BlueprintReadWrite, Category = "SpawnLevel")
-			bool SevenEnabled;
 
 		UPROPERTY(BlueprintReadWrite, Category = "SpawnVisibility")
 			ESlateVisibility ListVisibility;
@@ -94,4 +92,6 @@ class SINAH_API USpawnWidget : public UUserWidget
 			FString Range;
 		UPROPERTY(BlueprintReadWrite, Category = "SpawnContent")
 			FString FoodEaten;
+		UPROPERTY(BlueprintReadWrite, Category = "SpawnContent")
+			FName UnitSelectedName;
 };

@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Sinah.h"
+#include "SkillsTree.h"
 #include "MultiplayerState.h"
 
 AMultiplayerState::AMultiplayerState() : Super()
@@ -16,6 +17,13 @@ AMultiplayerState::AMultiplayerState() : Super()
 	CristalsChange = 0;
 
 	bReplicates = true;
+}
+void AMultiplayerState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if(Role == ROLE_Authority)
+		SkillsTree = GetWorld()->SpawnActor<ASkillsTree>();
 }
 
 int AMultiplayerState::GetAmountOfFood()
@@ -117,8 +125,13 @@ void AMultiplayerState::SetCristalsChange(int Cristals)
 
 void AMultiplayerState::SetCivChosen(ECivs Civ)
 {
-	if(Role == ROLE_Authority)
+	if (Role == ROLE_Authority)
 		CivChosen = Civ;
+}
+
+ASkillsTree* AMultiplayerState::GetSkillsTree()
+{
+	return SkillsTree;
 }
 
 //Replication
@@ -137,4 +150,5 @@ void AMultiplayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &
 	DOREPLIFETIME(AMultiplayerState, CristalsChange);
 
 	DOREPLIFETIME(AMultiplayerState, CivChosen);
+	DOREPLIFETIME(AMultiplayerState, SkillsTree);
 }

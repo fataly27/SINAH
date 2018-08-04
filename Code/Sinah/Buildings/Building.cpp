@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Sinah.h"
+#include "../MultiplayerState.h"
+#include "../SkillsTree.h"
 #include "Building.h"
 
 
@@ -9,6 +11,7 @@ ABuilding::ABuilding() : bVisibleForOpponent(true), MySide(ESide::Neutral), bSel
 {
 	bReplicates = true;
 	bAlwaysRelevant = true;
+	NetUpdateFrequency = 2;
 
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -45,7 +48,7 @@ void ABuilding::BeginPlay()
 	Super::BeginPlay();
 
 	Unselect();
-	SetSide(MySide);
+	SetSide(MySide, nullptr);
 }
 
 // Called every frame
@@ -58,6 +61,12 @@ void ABuilding::Tick(float DeltaTime)
 
 	if (TimeSinceLastAttack >= 10.f && TimeSinceLastHeal >= 0.5f && Role == ROLE_Authority)
 		Heal();
+}
+
+//Player
+AMultiplayerState* ABuilding::GetPlayer()
+{
+	return Player;
 }
 
 //Selection
@@ -77,14 +86,15 @@ bool ABuilding::IsSelected()
 }
 
 //ESide
-void ABuilding::SetSide(ESide NewSide)
+void ABuilding::SetSide(ESide NewSide, AMultiplayerState* NewPlayer)
 {
-	Multicast_SetSide(NewSide);
+	Multicast_SetSide(NewSide, NewPlayer);
 }
-void ABuilding::Multicast_SetSide_Implementation(ESide NewSide)
+void ABuilding::Multicast_SetSide_Implementation(ESide NewSide, AMultiplayerState* NewPlayer)
 {
 	Unselect();
 	MySide = NewSide;
+	Player = NewPlayer;
 
 	if (MySide == ESide::Blue)
 	{
@@ -116,7 +126,7 @@ ESide ABuilding::GetSide()
 }
 
 //Attack
-void ABuilding::ReceiveDamages(int Physic, int Magic, ESide AttackingSide)
+void ABuilding::ReceiveDamages(int Physic, int Magic, ESide AttackingSide, AMultiplayerState* AttackingPlayer)
 {
 	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
@@ -128,8 +138,23 @@ void ABuilding::ReceiveDamages(int Physic, int Magic, ESide AttackingSide)
 
 		if (CurrentLife <= Damages)
 		{
-			SetSide(AttackingSide);
-			SetLevel(1);
+			SetSide(AttackingSide, AttackingPlayer);
+			if (Player && Player->GetSkillsTree())
+			{
+				int ChancesToKeepHigherLevel = Player->GetSkillsTree()->GetConversionModifier();
+				unsigned int LevelReset = 1;
+
+				while (ChancesToKeepHigherLevel > 0)
+				{
+					if (FMath::RandRange(1, 100) <= ChancesToKeepHigherLevel)
+						LevelReset++;
+					ChancesToKeepHigherLevel -= 100;
+				}
+
+				SetLevel((LevelReset <= CurrentLevel) ? LevelReset : CurrentLevel);
+			}
+			else
+				SetLevel(1);
 		}
 		else
 			CurrentLife -= Damages;
@@ -145,7 +170,7 @@ void ABuilding::Heal()
 {
 	if (Role == ROLE_Authority)
 	{
-		CurrentLife += ActualHeal;
+		CurrentLife += GetHeal();
 
 		if (CurrentLife > ActualMaxLife)
 			CurrentLife = ActualMaxLife;
@@ -192,7 +217,10 @@ int ABuilding::GetCurrentLife()
 }
 float ABuilding::GetFieldOfSight()
 {
-	return ActualFieldOfSight;
+	if (Player && Player->GetSkillsTree())
+		return ActualFieldOfSight * Player->GetSkillsTree()->GetBuildingSightModifier();
+	else
+		return ActualFieldOfSight;
 }
 float ABuilding::GetHalfHeight()
 {
@@ -204,7 +232,10 @@ unsigned int ABuilding::GetLifeBarWidth()
 }
 float ABuilding::GetHeal()
 {
-	return ActualHeal;
+	if (Player && Player->GetSkillsTree())
+		return ActualHeal * Player->GetSkillsTree()->GetBuildingHealModifier();
+	else
+		return ActualHeal;
 }
 float ABuilding::GetSize()
 {
@@ -262,6 +293,8 @@ FVector ABuilding::GetLocation()
 void ABuilding::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABuilding, Player);
 
 	DOREPLIFETIME(ABuilding, CurrentLife);
 	DOREPLIFETIME(ABuilding, ActualMaxLife);

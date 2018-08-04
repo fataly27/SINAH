@@ -16,6 +16,28 @@ UENUM(BlueprintType)
 		None
 	};
 
+
+USTRUCT()
+struct FMyPlane : public FPlane
+{
+	GENERATED_BODY()
+
+	public:
+		FMyPlane();
+		FMyPlane(FVector A, FVector B, FVector C);
+
+		void FixX(float x);
+		void FixY(float y);
+		void FixZ(float z);
+
+		float GetXValue();
+		float GetYValue();
+		float GetZValue();
+};
+
+/**
+*
+*/
 UCLASS()
 class SINAH_API APlayerHUD : public AHUD
 {
@@ -32,6 +54,11 @@ class SINAH_API APlayerHUD : public AHUD
 		void ShouldDisplayBox(ETypeBox Display);
 		void SetPlayerSide(ESide NewSide);
 		bool IsBoxTiny();
+
+		bool GetIsInSelection(FVector2D Start, FVector2D End, FVector ActorLocation, FVector ActorBoxExtent);
+		AActor* GetSingleSelection(FVector2D ScreenPosition);
+		TArray<AUnit*> GetUnitsInRectangle(FVector2D Start, FVector2D End);
+		TArray<ABuilding*> GetBuildingsInRectangle(FVector2D Start, FVector2D End);
 
 		void SetActorsSelected(TArray<TScriptInterface<IGameElementInterface>> Units);
 		TArray<TScriptInterface<IGameElementInterface>> GetActorsBeingSelected();

@@ -161,9 +161,9 @@ int AMilitaryBuilding::GetIndex()
 }
 
 //ESide
-void AMilitaryBuilding::SetSide(ESide NewSide)
+void AMilitaryBuilding::SetSide(ESide NewSide, AMultiplayerState* NewPlayer)
 {
-	Super::SetSide(NewSide);
+	Super::SetSide(NewSide, NewPlayer);
 
 	Points = 2;
 

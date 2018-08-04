@@ -10,8 +10,6 @@ void USpawnWidget::SetBuildingLevel(int Level)
 	ThreeEnabled = Level >= 3;
 	FourEnabled = Level >= 4;
 	FiveEnabled = Level >= 5;
-	SixEnabled = Level >= 6;
-	SevenEnabled = Level >= 7;
 }
 void USpawnWidget::SetColor(FLinearColor NewColor)
 {
@@ -79,4 +77,8 @@ void USpawnWidget::SetRange(int NewRange)
 void USpawnWidget::SetFoodEaten(int NewFoodEaten)
 {
 	FoodEaten = FString::FromInt(NewFoodEaten).Append(" /s");
+}
+void USpawnWidget::SetUnitName(FName Name)
+{
+	UnitSelectedName = Name;
 }

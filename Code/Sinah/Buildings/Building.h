@@ -6,6 +6,8 @@
 #include "../GameElementInterface.h"
 #include "Building.generated.h"
 
+class AMultiplayerState;
+
 UCLASS(abstract)
 class SINAH_API ABuilding : public AActor, public IGameElementInterface
 {
@@ -19,6 +21,9 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		// Called every frame
 		virtual void Tick(float DeltaTime) override;
 
+		//Player
+		virtual AMultiplayerState* GetPlayer();
+
 		//Selection
 		virtual void Select() override;
 		virtual void Unselect() override;
@@ -26,12 +31,12 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 
 		//ESide
 		virtual ESide GetSide() override;
-		virtual void SetSide(ESide NewSide) override;
+		virtual void SetSide(ESide NewSide, AMultiplayerState* NewPlayer) override;
 		UFUNCTION(NetMulticast, Reliable)
-			void Multicast_SetSide(ESide NewSide);
+			void Multicast_SetSide(ESide NewSide, AMultiplayerState* NewPlayer);
 
 		//Attack
-		virtual void ReceiveDamages(int Physic, int Magic, ESide AttackingSide) override;
+		virtual void ReceiveDamages(int Physic, int Magic, ESide AttackingSide, AMultiplayerState* AttackingPlayer) override;
 		UFUNCTION(NetMulticast, Unreliable)
 			void Multicast_ShowParticle(UParticleSystem* Particle);
 
@@ -76,6 +81,10 @@ class SINAH_API ABuilding : public AActor, public IGameElementInterface
 		UMaterial* BuildingBlueMaterial;
 		UMaterial* BuildingRedMaterial;
 		UMaterial* BuildingNeutralMaterial;
+
+		//Player
+		UPROPERTY(Replicated)
+			AMultiplayerState* Player;
 
 		//Level
 		unsigned int LevelMax;

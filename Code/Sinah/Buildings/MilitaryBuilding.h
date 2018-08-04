@@ -60,7 +60,7 @@ class SINAH_API AMilitaryBuilding : public ABuilding
 		virtual int GetIndex();
 
 		//ESide
-		virtual void SetSide(ESide NewSide) override;
+		virtual void SetSide(ESide NewSide, AMultiplayerState* NewPlayer) override;
 		UFUNCTION(NetMulticast, Reliable)
 			void Multicast_SetMilitarySide();
 		UFUNCTION(NetMulticast, Reliable)

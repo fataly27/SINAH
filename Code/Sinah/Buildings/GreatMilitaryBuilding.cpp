@@ -14,17 +14,16 @@ AGreatMilitaryBuilding::AGreatMilitaryBuilding() : Super()
 	ActualHeal = DefaultHeal;
 	ActualFieldOfSight = DefaultFieldOfSight;
 
-	CostInFood = { 150, 300, 700, 1500, 5000, 8000};
-	CostInCells = { 400, 800, 2000, 3000, 5000, 8000 };
-	CostInMetal = { 1000, 2000, 3000, 5000, 9000, 15000 };
-	CostInCristals = { 50, 250, 1000, 2000, 5000, 15000 };
+	CostInFood = { 150, 300, 700, 1500 };
+	CostInCells = { 400, 800, 2000, 3000 };
+	CostInMetal = { 1000, 2000, 3000, 5000 };
+	CostInCristals = { 50, 250, 1000, 2000 };
 
-	SetActorRotation(FRotator(0.f, 45.f, 0.f));
 	SetActorScale3D(FVector(1.f));
 
-	LevelMax = 7;
+	LevelMax = 5;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshRessource(TEXT("StaticMesh'/Game/Meshes/GreatMilitaryBuilding.GreatMilitaryBuilding'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshRessource(TEXT("StaticMesh'/Game/Meshes/GreatMilitaryBuilding2.GreatMilitaryBuilding2'"));
 	StaticMesh = StaticMeshRessource.Object;
 
 	BuildingMesh->SetStaticMesh(StaticMesh);
@@ -32,11 +31,11 @@ AGreatMilitaryBuilding::AGreatMilitaryBuilding() : Super()
 
 float AGreatMilitaryBuilding::GetSize()
 {
-	return 750.f;
+	return 260.f;
 }
 float AGreatMilitaryBuilding::GetHalfHeight()
 {
-	return 2000.f;
+	return 1400.f;
 }
 unsigned int AGreatMilitaryBuilding::GetLifeBarWidth()
 {

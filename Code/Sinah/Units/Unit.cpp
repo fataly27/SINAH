@@ -3,15 +3,18 @@
 #include "Sinah.h"
 #include "UnitController.h"
 #include "../MousePlayerController.h"
+#include "../MultiplayerState.h"
+#include "../SkillsTree.h"
 #include "Unit.h"
 
 
 // Sets default values
-AUnit::AUnit() : MySide(ESide::Neutral), bSelected(false), CurrentAction(EAction::Idle), bVisibleForOpponent(false)
+AUnit::AUnit() : MySide(ESide::Neutral), bSelected(false), CurrentAction(EAction::Idle), bVisibleForOpponent(false), Civ(ECivs::None)
 {
 	bReplicates = true;
 	bReplicateMovement = true;
 	bAlwaysRelevant = true;
+	NetUpdateFrequency = 2;
 
 	InvisibleLimitedTime = 0.f;
 	InvisibleCoolDown = 0.f;
@@ -37,6 +40,9 @@ AUnit::AUnit() : MySide(ESide::Neutral), bSelected(false), CurrentAction(EAction
 	ActualFieldOfSight = DefaultFieldOfSight;
 	ActualRange = DefaultRange;
 
+	AdaptSpeed = 1.f;
+	AdaptScale = 1.f;
+
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationSingleNode);
 
 	GetMovementComponent()->SetJumpAllowed(false);
@@ -56,6 +62,8 @@ AUnit::AUnit() : MySide(ESide::Neutral), bSelected(false), CurrentAction(EAction
 
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> ExplosionAsset(TEXT("/Game/Particles/Explosion.Explosion"));
 	Explosion = ExplosionAsset.Object;
+
+	SetActorScale3D(FVector(1.5f));
 }
 
 // Called when the game starts or when spawned
@@ -64,7 +72,6 @@ void AUnit::BeginPlay()
 	Super::BeginPlay();
 	Unselect();
 	WantedMode = EModes::Attack;
-	SetSide(MySide);
 
 	SpawnDefaultController();
 
@@ -82,8 +89,21 @@ void AUnit::Tick(float DeltaTime)
 
 	if (Role == ROLE_Authority)
 	{
-		InvisibleCoolDown -= DeltaTime;
-		InvisibleLimitedTime -= DeltaTime;
+		if (Player->GetSkillsTree()->GetInvisibilityEnabled())
+		{
+			if (Player && Player->GetSkillsTree())
+			{
+				InvisibleCoolDown -= DeltaTime * Player->GetSkillsTree()->GetInvisibilityCoolDownModifier();
+				InvisibleLimitedTime -= DeltaTime / Player->GetSkillsTree()->GetInvisibilityTimeModifier();
+			}
+			else
+			{
+				InvisibleCoolDown -= DeltaTime;
+				InvisibleLimitedTime -= DeltaTime;
+			}
+		}
+		else
+			InvisibleCoolDown = 0.f;
 
 		if (InvisibleLimitedTime <= 0.f && CurrentMode == EModes::Invisible)
 		{
@@ -169,14 +189,18 @@ bool AUnit::IsSelected()
 {
 	return bSelected;
 }
-void AUnit::SetSide(ESide NewSide)
+void AUnit::SetSide(ESide NewSide, AMultiplayerState* NewPlayer)
 {
-	Multicast_SetSide(NewSide);
+	Multicast_SetSide(NewSide, NewPlayer);
 }
-void AUnit::Multicast_SetSide_Implementation(ESide NewSide)
+void AUnit::Multicast_SetSide_Implementation(ESide NewSide, AMultiplayerState* NewPlayer)
 {
 	Unselect();
 	MySide = NewSide;
+	Player = NewPlayer;
+
+	if (Player && Player->GetSkillsTree())
+		CurrentLife = ActualMaxLife * Player->GetSkillsTree()->GetSpawnUnityLifeModifier();
 
 	int Color(0);
 
@@ -209,19 +233,31 @@ int AUnit::GetCurrentLife()
 }
 int AUnit::GetPhysicAttack()
 {
-	return ActualPhysicAttack;
+	if (Player && Player->GetSkillsTree())
+		return ActualPhysicAttack * Player->GetSkillsTree()->GetPhysicAttackModifier();
+	else
+		return ActualPhysicAttack;
 }
 int AUnit::GetMagicAttack()
 {
-	return ActualMagicAttack;
+	if (Player && Player->GetSkillsTree())
+		return ActualMagicAttack * Player->GetSkillsTree()->GetMagicAttackModifier();
+	else
+		return ActualMagicAttack;
 }
 int AUnit::GetPhysicDefense()
 {
-	return ActualPhysicDefense;
+	if (Player && Player->GetSkillsTree())
+		return ActualPhysicDefense * Player->GetSkillsTree()->GetPhysicDefenseModifier();
+	else
+		return ActualPhysicDefense;
 }
 int AUnit::GetMagicDefense()
 {
-	return ActualMagicDefense;
+	if (Player && Player->GetSkillsTree())
+		return ActualMagicDefense * Player->GetSkillsTree()->GetMagicDefenseModifier();
+	else
+		return ActualMagicDefense;
 }
 float AUnit::GetSpeed()
 {
@@ -229,7 +265,10 @@ float AUnit::GetSpeed()
 }
 float AUnit::GetFieldOfSight()
 {
-	return ActualFieldOfSight;
+	if (Player && Player->GetSkillsTree())
+		return ActualFieldOfSight * Player->GetSkillsTree()->GetUnitSightModifier();
+	else
+		return ActualFieldOfSight;
 }
 float AUnit::GetRange()
 {
@@ -239,22 +278,22 @@ float AUnit::GetHalfHeight()
 {
 	return GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 }
-unsigned int AUnit::GetLifeBarWidth()
-{
-	return 0;
-}
 float AUnit::GetSize()
 {
-	return 0.f;
+	return GetCapsuleComponent()->GetScaledCapsuleRadius();
+}
+unsigned int AUnit::GetLifeBarWidth()
+{
+	return 500;
 }
 unsigned int AUnit::GetBuildingLevelRequired()
 {
 	return BuildingLevelRequired;
 }
 
-int AUnit::GetFoodEatenInHalfASecond()
+int AUnit::GetFoodEatenInASecond()
 {
-	return FoodEatenInHalfASecond;
+	return FoodEatenInASecond;
 }
 int AUnit::GetCostInFood()
 {
@@ -275,9 +314,14 @@ int AUnit::GetCostInCristals()
 
 void AUnit::SetSpeedMultiplicator(float Multiplicator)
 {
-	SpeedMultiplicator = Multiplicator;
+	if (SpeedMultiplicator != Multiplicator)
+	{
+		SpeedMultiplicator = Multiplicator;
 
-	GetCharacterMovement()->MaxWalkSpeed = GetSpeed() * 100;
+		GetCharacterMovement()->MaxWalkSpeed = GetSpeed() * 100;
+
+		ChangeLoopingAnimation(true);
+	}
 }
 
 //Destinations
@@ -394,26 +438,28 @@ void AUnit::Attack(const TScriptInterface<IGameElementInterface>& Target)
 {
 	if (Role == ROLE_Authority && (CurrentMode == EModes::Attack || CurrentMode == EModes::Defense) && Target->GetOpponentVisibility())
 	{
-		if (FMath::RandRange(1, 3) == 1)
+		float Distance = FVector::Dist(this->GetActorLocation(), Target->GetLocation());
+
+		if (Distance <= this->GetRange() * 100 + Target->GetSize())
 		{
-			if(MySide == ESide::Blue)
+			if (MySide == ESide::Blue)
 				Multicast_Spark(BlueSpark);
 			else if (MySide == ESide::Red)
 				Multicast_Spark(RedSpark);
-		}
 
-		Target->ReceiveDamages(GetPhysicAttack(), GetMagicAttack(), MySide);
+			Target->ReceiveDamages(GetPhysicAttack(), GetMagicAttack(), MySide, Player);
+		}
 	}
 }
 void AUnit::Multicast_Spark_Implementation(UParticleSystem* Particle)
 {
-	UParticleSystemComponent* NewParticle = UGameplayStatics::SpawnEmitterAttached(Particle, GetMesh(), NAME_None, FVector(0.f, 60.f, 120.f), FRotator(0.f, 0.f, 90.f), EAttachLocation::KeepRelativeOffset, true);
+	UParticleSystemComponent* NewParticle = UGameplayStatics::SpawnEmitterAttached(Particle, GetMesh(), NAME_None, FVector(0.f, 60.f / AdaptScale, 120.f / AdaptScale), FRotator(0.f, 0.f, 90.f), EAttachLocation::SnapToTarget, true);
 }
 void AUnit::Multicast_Explosion_Implementation()
 {
-	UParticleSystemComponent* NewParticle = UGameplayStatics::SpawnEmitterAttached(Explosion, GetMesh(), NAME_None, FVector(0.f, 0.f, 0.f), FRotator(0.f, 0.f, 0.f), EAttachLocation::KeepRelativeOffset, true);
+	UParticleSystemComponent* NewParticle = UGameplayStatics::SpawnEmitterAttached(Explosion, GetMesh(), NAME_None, FVector(0.f, 0.f, 0.f), FRotator(0.f, 0.f, 0.f), EAttachLocation::SnapToTarget, true);
 }
-void AUnit::ReceiveDamages(int Physic, int Magic, ESide AttackingSide)
+void AUnit::ReceiveDamages(int Physic, int Magic, ESide AttackingSide, AMultiplayerState* AttackingPlayer)
 {
 	if (Role == ROLE_Authority && MySide != AttackingSide)
 	{
@@ -535,7 +581,7 @@ void AUnit::SetMode()
 		}
 		else if (Mode == EModes::Invisible)
 		{
-			if (InvisibleCoolDown <= 0.f)
+			if (GetInvisibleCoolDown() <= 0.f)
 			{
 				ClearOpponentsInSight();
 				ClearSpecialTargets();
@@ -563,7 +609,7 @@ void AUnit::SetMode()
 }
 void AUnit::ChangeMode(EModes Mode)
 {
-	if ((Mode != EModes::Invisible || InvisibleCoolDown <= 0.f) && CurrentMode != Mode && Role == ROLE_Authority)
+	if ((Mode != EModes::Invisible || GetInvisibleCoolDown() <= 0.f) && CurrentMode != Mode && Role == ROLE_Authority)
 	{
 		if (CurrentMode == EModes::Invisible)
 		{
@@ -589,7 +635,10 @@ void AUnit::ChangeMode(EModes Mode)
 		ActualSpeed = 0.f;
 		GetCharacterMovement()->MaxWalkSpeed = GetSpeed() * 100;
 
-		PrepareChangingModeTime = 2.f;
+		if (Player && Player->GetSkillsTree())
+			PrepareChangingModeTime = 2.f / Player->GetSkillsTree()->GetModeChangeModifier();
+		else
+			PrepareChangingModeTime = 2.f;
 	}
 }
 EModes AUnit::GetMode()
@@ -600,7 +649,7 @@ void AUnit::Multicast_SetIsMoving_Implementation(EAction NewAction)
 {
 	CurrentAction = NewAction;
 }
-void AUnit::ChangeLoopingAnimation()
+void AUnit::ChangeLoopingAnimation(bool OverrideCheck)
 {
 	UAnimationAsset* NewAnimation;
 	if (CurrentAction == EAction::Moving)
@@ -619,19 +668,24 @@ void AUnit::ChangeLoopingAnimation()
 		else
 			NewAnimation = NeutralIdleAnimation;
 	}
-	if (NewAnimation != CurrentAnimation)
+	if (NewAnimation != CurrentAnimation || OverrideCheck)
 	{
 		CurrentAnimation = NewAnimation;
 		GetMesh()->PlayAnimation(CurrentAnimation, true);
 		if (CurrentAnimation == WalkingAnimation || CurrentAnimation == RunningAnimation)
-			GetMesh()->SetPlayRate(ActualSpeed * SpeedMultiplicator);
+		{
+			GetMesh()->SetPlayRate(GetSpeed() * AdaptSpeed);
+		}
 		else
 			GetMesh()->SetPlayRate(1.f);
 	}
 }
 float AUnit::GetInvisibleCoolDown()
 {
-	return InvisibleCoolDown;
+	if (Player->GetSkillsTree()->GetInvisibilityEnabled())
+		return InvisibleCoolDown;
+	else
+		return 180.f;
 }
 float AUnit::GetInvisibleTime()
 {
@@ -667,7 +721,6 @@ FVector AUnit::GetLocation()
 	return GetActorLocation();
 }
 
-
 //Replication
 void AUnit::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
@@ -676,6 +729,8 @@ void AUnit::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetime
 	DOREPLIFETIME_CONDITION(AUnit, SpecialTargetsActors, COND_Custom);
 	DOREPLIFETIME_CONDITION(AUnit, BoxSpecialTargetsActors, COND_Custom);
 	DOREPLIFETIME_CONDITION(AUnit, Destinations, COND_Custom);
+
+	DOREPLIFETIME(AUnit, Player);
 
 	DOREPLIFETIME(AUnit, CurrentLife);
 	DOREPLIFETIME(AUnit, ActualMaxLife);

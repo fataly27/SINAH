@@ -20,9 +20,9 @@ void UZone::Init(bool bPlayer, float Reach)
 
 	BaseReach = Reach;
 
-	MaxReachLevel = 5;
+	MaxReachLevel = 3;
 	SetReachLevel(1);
-	MaxEffectLevel = 4;
+	MaxEffectLevel = 2;
 	SetEffectLevel(0);
 }
 

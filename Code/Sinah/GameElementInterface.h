@@ -4,6 +4,7 @@
 
 #include "GameElementInterface.generated.h"
 
+class AMultiplayerState;
 
 UENUM(BlueprintType)
 	enum class ESide : uint8
@@ -35,11 +36,11 @@ class SINAH_API IGameElementInterface
 		virtual bool IsSelected() = 0;
 
 		//ESide
-		virtual void SetSide(ESide NewSide) = 0;
+		virtual void SetSide(ESide NewSide, AMultiplayerState* NewPlayer) = 0;
 		virtual ESide GetSide() = 0;
 
 		//Attack
-		virtual void ReceiveDamages(int Physic, int Magic, ESide AttackingSide) = 0;
+		virtual void ReceiveDamages(int Physic, int Magic, ESide AttackingSide, AMultiplayerState* AttackingPlayer) = 0;
 		virtual float GetSize() = 0;
 
 		//Statistics Getters

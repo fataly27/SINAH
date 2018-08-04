@@ -16,13 +16,13 @@ void ULifeZone::Init(bool bPlayer)
 {
 	if (bPlayer)
 	{
-		Super::Init(bPlayer, 10.f);
-		BaseLifeModifier = 20;
+		Super::Init(bPlayer, 13.f);
+		BaseLifeModifier = 10;
 	}
 	else
 	{
-		Super::Init(bPlayer, 5.f);
-		BaseLifeModifier = 8;
+		Super::Init(bPlayer, 8.f);
+		BaseLifeModifier = 5;
 	}
 }
 

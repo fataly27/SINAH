@@ -6,8 +6,21 @@
 #include "MultiplayerSinahMode.h"
 #include "MultiplayerGameState.h"
 #include "MultiplayerState.h"
+#include "MusicSelector.h"
 #include "MainCamera.h"
-#include "Units/Knight.h"
+#include "SkillsTree.h"
+
+#include "Units/Mage.h"
+#include "Units/Protector.h"
+#include "Units/PsychicSoldier.h"
+#include "Units/Raider.h"
+#include "Units/Scout.h"
+#include "Units/ShieldCaster.h"
+#include "Units/Sniper.h"
+#include "Units/Soldier.h"
+#include "Units/Tank.h"
+#include "Units/WarMachine.h"
+
 #include "Buildings/Zones/SpeedZone.h"
 #include "Buildings/Zones/LifeZone.h"
 
@@ -66,7 +79,9 @@ void AMousePlayerController::BeginPlay()
 	if (HUD)
 	{
 		FTimerHandle TimerHandle;
+		FTimerHandle TimerHandle2;
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AMousePlayerController::FogOfWar, 0.1f, true);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle2, this, &AMousePlayerController::ApplyZoneEffects, 1.f, true);
 
 		FogOfWarTexture = UTexture2D::CreateTransient(MidTextureSize * 2, MidTextureSize * 2);
 		FogOfWarTexture->UpdateResource();
@@ -109,6 +124,11 @@ void AMousePlayerController::BeginPlay()
 		if (wGameAfterEndingInterface)
 			MyGameAfterEndingInterface = CreateWidget<UGameAfterEndingWidget>(this, wGameAfterEndingInterface);
 
+		MusicSelector = NewObject<UMusicSelector>(this);
+		MusicSelector->RegisterComponent();
+		MusicSelector->SetTopWidget(MyTopInterface);
+		RootComponent = MusicSelector;
+
 		if (MyTopInterface)
 			MyTopInterface->AddToViewport();
 		if (MyStatInterface)
@@ -121,13 +141,6 @@ void AMousePlayerController::BeginPlay()
 			MyEconomicLevelInterface->AddToViewport();
 		if (MyMilitaryLevelInterface)
 			MyMilitaryLevelInterface->AddToViewport();
-		if (MyGameBeforeStartingInterface)
-			MyGameBeforeStartingInterface->AddToViewport();
-		if (MyGameAfterEndingInterface)
-		{
-			MyGameAfterEndingInterface->AddToViewport();
-			MyGameAfterEndingInterface->SetVisibility(ESlateVisibility::Hidden);
-		}
 
 		if (MySpawnInterface && wSpawnEntityInterface)
 		{
@@ -148,8 +161,16 @@ void AMousePlayerController::BeginPlay()
 			}
 
 			TArray<TSubclassOf<AUnit>> UnitClasses;
-			UnitClasses.Add(AKnight::StaticClass());
-			// ...
+			UnitClasses.Add(AMage::StaticClass());
+			UnitClasses.Add(AProtector::StaticClass());
+			UnitClasses.Add(APsychicSoldier::StaticClass());
+			UnitClasses.Add(ARaider::StaticClass());
+			UnitClasses.Add(AScout::StaticClass());
+			UnitClasses.Add(AShieldCaster::StaticClass());
+			UnitClasses.Add(ASniper::StaticClass());
+			UnitClasses.Add(ASoldier::StaticClass());
+			UnitClasses.Add(ATank::StaticClass());
+			UnitClasses.Add(AWarMachine::StaticClass());
 
 			TArray<TArray<TSubclassOf<AUnit>>> UnitClassesByLevel;
 			UnitClassesByLevel.Init(TArray<TSubclassOf<AUnit>>(), 7);
@@ -160,7 +181,7 @@ void AMousePlayerController::BeginPlay()
 				UnitClassesByLevel[Cast<AUnit>(UnitClasses[i]->GetDefaultObject())->GetBuildingLevelRequired() - 1].Add(UnitClasses[i]);
 			}
 
-			for (int n(0); n < 7; n++)
+			for (int n(0); n < 5; n++)
 			{
 				for (int i(0); i < UnitClassesByLevel[n].Num(); i++)
 				{
@@ -175,6 +196,14 @@ void AMousePlayerController::BeginPlay()
 			}
 
 			SpawnEntityWidgets[0]->TransferData();
+		}
+
+		if (MyGameBeforeStartingInterface)
+			MyGameBeforeStartingInterface->AddToViewport();
+		if (MyGameAfterEndingInterface)
+		{
+			MyGameAfterEndingInterface->AddToViewport();
+			MyGameAfterEndingInterface->SetVisibility(ESlateVisibility::Hidden);
 		}
 
 		if (GetSide() == ESide::Blue)
@@ -194,7 +223,7 @@ void AMousePlayerController::SetPawn(APawn* InPawn)
 
 	MyPawn = Cast<AMainCamera>(InPawn);
 
-	if (Role == ROLE_Authority && InPawn != nullptr)
+	if (Role == ROLE_Authority && PlayerState)
 	{
 		AMultiplayerSinahMode* Mode = Cast<AMultiplayerSinahMode>(GetWorld()->GetAuthGameMode());
 
@@ -251,16 +280,16 @@ void AMousePlayerController::Tick(float DeltaTime)
 		{
 			TimeSinceLastHarvest += DeltaTime;
 
-			if (TimeSinceLastHarvest >= 0.5f)
+			if (TimeSinceLastHarvest >= 1.f)
 			{
-				TimeSinceLastHarvest -= 0.5f;
+				TimeSinceLastHarvest -= 1.f;
 
 				TActorIterator<AFoodEconomicBuilding> Food(GetWorld());
 				int AmountOfFoodToAdd(0);
 				for (Food; Food; ++Food)
 				{
 					if (Food->GetSide() == PlayerSide)
-						AmountOfFoodToAdd += Food->GetOutputInHalfASecond();
+						AmountOfFoodToAdd += Food->GetOutputInASecond();
 				}
 
 				TActorIterator<ACristalsEconomicBuilding> Cristals(GetWorld());
@@ -268,7 +297,7 @@ void AMousePlayerController::Tick(float DeltaTime)
 				for (Cristals; Cristals; ++Cristals)
 				{
 					if (Cristals->GetSide() == PlayerSide)
-						AmountOfCristalsToAdd += Cristals->GetOutputInHalfASecond();
+						AmountOfCristalsToAdd += Cristals->GetOutputInASecond();
 				}
 
 				TActorIterator<ACellsEconomicBuilding> Cells(GetWorld());
@@ -276,7 +305,7 @@ void AMousePlayerController::Tick(float DeltaTime)
 				for (Cells; Cells; ++Cells)
 				{
 					if (Cells->GetSide() == PlayerSide)
-						AmountOfCellsToAdd += Cells->GetOutputInHalfASecond();
+						AmountOfCellsToAdd += Cells->GetOutputInASecond();
 				}
 
 				TActorIterator<AMetalEconomicBuilding> Metal(GetWorld());
@@ -284,7 +313,7 @@ void AMousePlayerController::Tick(float DeltaTime)
 				for (Metal; Metal; ++Metal)
 				{
 					if (Metal->GetSide() == PlayerSide)
-						AmountOfMetalToAdd += Metal->GetOutputInHalfASecond();
+						AmountOfMetalToAdd += Metal->GetOutputInASecond();
 				}
 
 				AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
@@ -305,12 +334,12 @@ void AMousePlayerController::Tick(float DeltaTime)
 					{
 						if (UnitItr->GetSide() == GetSide())
 						{
-							int FoodNeededByUnit(UnitItr->GetFoodEatenInHalfASecond());
+							int FoodNeededByUnit(UnitItr->GetFoodEatenInASecond());
 
 							if (CurrentFood - NeededFood - FoodNeededByUnit >= 0)
 								NeededFood += FoodNeededByUnit;
 							else
-								UnitItr->Heal(-2 * FoodNeededByUnit);
+								UnitItr->Heal(-FoodNeededByUnit);
 
 							GlobalNeededFood += FoodNeededByUnit;
 						}
@@ -318,10 +347,10 @@ void AMousePlayerController::Tick(float DeltaTime)
 
 					State->SetAmountOfFood(CurrentFood - NeededFood);
 
-					State->SetFoodChange(2 * (AmountOfFoodToAdd - GlobalNeededFood));
-					State->SetMetalChange(2 * AmountOfMetalToAdd);
-					State->SetCellsChange(2 * AmountOfCellsToAdd);
-					State->SetCristalsChange(2 * AmountOfCristalsToAdd);
+					State->SetFoodChange(AmountOfFoodToAdd - GlobalNeededFood);
+					State->SetMetalChange(AmountOfMetalToAdd);
+					State->SetCellsChange(AmountOfCellsToAdd);
+					State->SetCristalsChange(AmountOfCristalsToAdd);
 				}
 			}
 		}
@@ -329,6 +358,21 @@ void AMousePlayerController::Tick(float DeltaTime)
 
 	if (HUD)
 	{
+		if (GetWorld()->GetGameState<AMultiplayerGameState>() && PlayerState)
+		{
+			ECivs PlayerCiv(ECivs::None), OpponentCiv(ECivs::None);
+			TArray<FCivForPlayerStruct> Civs = GetWorld()->GetGameState<AMultiplayerGameState>()->GetAllCivs();
+
+			for (int i(0); i < Civs.Num(); i++)
+			{
+				if (Civs[i].ID == PlayerState->UniqueId)
+					PlayerCiv = Civs[i].Civ;
+				else
+					OpponentCiv = Civs[i].Civ;
+			}
+			MusicSelector->InitCivs(PlayerCiv, OpponentCiv);
+		}
+
 		float LocationX;
 		float LocationY;
 		GetMousePosition(LocationX, LocationY);
@@ -369,11 +413,13 @@ void AMousePlayerController::Tick(float DeltaTime)
 		if (MyPawn)
 			HUD->SetZoom(MyPawn->GetZoom());
 
-		if (MyGameBeforeStartingInterface && MyMapInterface)
+		if (PlayerState && MyGameBeforeStartingInterface && MyMapInterface)
 		{
-			if (GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameSoonActive() && MyGameBeforeStartingInterface->GetVisibility() != ESlateVisibility::Hidden)
+			MyGameBeforeStartingInterface->SetSkillTree(Cast<AMultiplayerState>(PlayerState)->GetSkillsTree());
+			if (GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameSoonActive() && MyGameBeforeStartingInterface->GetVisibility() != ESlateVisibility::Hidden && !MyGameBeforeStartingInterface->HasGameBeenLaunched())
 			{
 				MyGameBeforeStartingInterface->SetVisibility(ESlateVisibility::Hidden);
+				MyGameBeforeStartingInterface->LaunchGame();
 				UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this, nullptr, EMouseLockMode::DoNotLock, false);
 				TArray<FCivForPlayerStruct> Civs = GetWorld()->GetGameState<AMultiplayerGameState>()->GetAllCivs();
 
@@ -422,6 +468,8 @@ void AMousePlayerController::Tick(float DeltaTime)
 			MyTopInterface->SetCristalsChange(State->GetCristalsChange());
 
 			MyTopInterface->SetTime(GetWorld()->GetGameState<AMultiplayerGameState>()->GetTime());
+			if (IsValid(State->GetSkillsTree()) && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameSoonActive())
+				MyTopInterface->SetPoints(State->GetSkillsTree()->SetSkills(State->GetSkillsTree()->GetSkills()));
 		}
 
 		if (MyStatInterface)
@@ -438,7 +486,7 @@ void AMousePlayerController::Tick(float DeltaTime)
 			int FinalMagicDefense(0);
 			float FinalSpeed(0.f);
 			float FinalRange(0.f);
-			int FinalFoodEatenInHalfASecond(0);
+			int FinalFoodEatenInASecond(0);
 
 			if (AllActorsSelected.IsValidIndex(0))
 			{
@@ -543,7 +591,7 @@ void AMousePlayerController::Tick(float DeltaTime)
 						FinalMagicAttack += Unit->GetMagicAttack();
 						FinalPhysicDefense += Unit->GetPhysicDefense();
 						FinalMagicDefense += Unit->GetMagicDefense();
-						FinalFoodEatenInHalfASecond += Unit->GetFoodEatenInHalfASecond();
+						FinalFoodEatenInASecond += Unit->GetFoodEatenInASecond();
 
 						if (Unit->GetSpeed() < FinalSpeed || FinalSpeed == 0.f)
 							FinalSpeed = Unit->GetSpeed();
@@ -583,7 +631,7 @@ void AMousePlayerController::Tick(float DeltaTime)
 
 							LevelInterface = MyEconomicLevelInterface;
 
-							int NextOutput = EconomicBuilding->GetOutputInHalfASecond();
+							int NextOutput = EconomicBuilding->GetOutputInASecond();
 
 							MyEconomicLevelInterface->SetIsPlundered(EconomicBuilding->GetIsPlundered());
 							if (EconomicBuilding->GetIsPlundered())
@@ -591,9 +639,9 @@ void AMousePlayerController::Tick(float DeltaTime)
 							else if (EconomicBuilding->GetLevel() < EconomicBuilding->GetMaxLevel())
 								NextOutput = EconomicBuilding->GetOutputForLevel(EconomicBuilding->GetLevel() + 1);
 
-							MyEconomicLevelInterface->SetOutput(EconomicBuilding->GetOutputInHalfASecond() * 2, NextOutput * 2);
+							MyEconomicLevelInterface->SetOutput(EconomicBuilding->GetOutputInASecond(), NextOutput);
 
-							float RelativeCurrent = (float)EconomicBuilding->GetOutputInHalfASecond() / (float)EconomicBuilding->GetOutputForLevel(EconomicBuilding->GetMaxLevel());
+							float RelativeCurrent = (float)EconomicBuilding->GetOutputInASecond() / (float)EconomicBuilding->GetOutputForLevel(EconomicBuilding->GetMaxLevel());
 							float RelativeNext = (float)NextOutput / (float)EconomicBuilding->GetOutputForLevel(EconomicBuilding->GetMaxLevel());
 
 							MyEconomicLevelInterface->SetRelativeOutput(RelativeCurrent + 0.0001f, RelativeNext + 0.0001f);
@@ -709,7 +757,7 @@ void AMousePlayerController::Tick(float DeltaTime)
 			MyStatInterface->SetSpeed(FinalSpeed);
 			MyStatInterface->SetFieldOfSight(FinalFieldOfSight);
 			MyStatInterface->SetRange(FinalRange);
-			MyStatInterface->SetFoodEaten(FinalFoodEatenInHalfASecond * 2);
+			MyStatInterface->SetFoodEaten(FinalFoodEatenInASecond);
 
 			MyStatInterface->SetColor(Color);
 		}
@@ -901,7 +949,7 @@ void AMousePlayerController::AddDirect()
 						NumberLines++;
 					int NumberColumns = FMath::DivideAndRoundUp(NumberUnits, NumberLines);
 
-					float MidWidth = 250.f * (NumberColumns - 1) / 2;
+					float MidWidth = FORMATION_SPACING * (NumberColumns - 1) / 2;
 
 					FVector2D Position(0.f, MidWidth);
 					int k = 0;
@@ -910,7 +958,7 @@ void AMousePlayerController::AddDirect()
 						if (i == (NumberLines - 1) && NumberUnits % NumberLines != 0)
 						{
 							NumberColumns = NumberUnits % NumberColumns;
-							MidWidth = 250.f * (NumberColumns - 1) / 2;
+							MidWidth = FORMATION_SPACING * (NumberColumns - 1) / 2;
 						}
 						Position.Y = MidWidth;
 
@@ -921,11 +969,11 @@ void AMousePlayerController::AddDirect()
 							else if (PlayerSide == ESide::Red)
 								Server_AddDestination(Units[k], HitResult.ImpactPoint + FVector(Position.GetRotated(Rotation.Yaw), 0.f), Rotation);
 
-							Position.Y -= 250.f;
+							Position.Y -= FORMATION_SPACING;
 							k++;
 						}
 
-						Position.X -= 250.f;
+						Position.X -= FORMATION_SPACING;
 					}
 				}
 			}
@@ -1137,8 +1185,6 @@ void AMousePlayerController::FogOfWar()
 	bool ShouldBeVisible(false);
 	if (Role == ROLE_Authority && GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
-		ApplyZoneEffects(MilitaryBuildings, Units);
-
 		for (int i = 0; i < BlueActors.Num(); i++)
 		{
 			if (BlueActors[i].GetObject()->IsA(AUnit::StaticClass()))
@@ -1473,10 +1519,21 @@ void AMousePlayerController::UpdateTextureRegions(UTexture2D* Texture, int32 Mip
 			});
 	}
 }
-void AMousePlayerController::ApplyZoneEffects(TArray<AMilitaryBuilding*> MilitaryBuildings, TArray<AUnit*> Units)
+void AMousePlayerController::ApplyZoneEffects()
 {
 	if (Role == ROLE_Authority && GetWorld()->GetGameState<AMultiplayerGameState>() && GetWorld()->GetGameState<AMultiplayerGameState>()->IsGameActive())
 	{
+		TArray<AMilitaryBuilding*> MilitaryBuildings;
+		TArray<AUnit*> Units;
+
+		TActorIterator<AUnit> UnitItr(GetWorld());
+		for (UnitItr; UnitItr; ++UnitItr)
+			Units.Add(*UnitItr);
+
+		TActorIterator<AMilitaryBuilding> MilitaryBuildingItr(GetWorld());
+		for (MilitaryBuildingItr; MilitaryBuildingItr; ++MilitaryBuildingItr)
+			MilitaryBuildings.Add(*MilitaryBuildingItr);
+
 		for (int j(0); j < Units.Num(); j++)
 		{
 			float Multiplicator = 1.f;
@@ -1495,7 +1552,7 @@ void AMousePlayerController::ApplyZoneEffects(TArray<AMilitaryBuilding*> Militar
 				}
 			}
 			Units[j]->SetSpeedMultiplicator(Multiplicator);
-			Units[j]->Heal(Heal * 0.1);
+			Units[j]->Heal(Heal);
 		}
 	}
 }
@@ -1552,6 +1609,12 @@ bool AMousePlayerController::Server_ClearSpecialTargets_Validate(AUnit *Unit)
 	return Unit != NULL && Unit->GetSide() == ESide::Red && !Unit->IsPendingKill();
 }
 
+//Widgets
+void AMousePlayerController::SkipMusic()
+{
+	MusicSelector->Skip();
+}
+
 //Costing functions
 void AMousePlayerController::Server_LevelUpBuilding_Implementation(ABuilding* Building)
 {
@@ -1564,7 +1627,7 @@ void AMousePlayerController::Server_LevelUpBuilding_Implementation(ABuilding* Bu
 
 		AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
 
-		if (State->GetAmountOfCells() >= CostInCells && State->GetAmountOfMetal() >= CostInMetal && State->GetAmountOfFood() >= CostInFood && State->GetAmountOfCristals() >= CostInCristals)
+		if (State && State->GetAmountOfCells() >= CostInCells && State->GetAmountOfMetal() >= CostInMetal && State->GetAmountOfFood() >= CostInFood && State->GetAmountOfCristals() >= CostInCristals)
 		{
 			Building->LevelUp();
 
@@ -1590,7 +1653,7 @@ void AMousePlayerController::Server_SpawnUnit_Implementation(AMilitaryBuilding* 
 
 		AMultiplayerState* State = Cast<AMultiplayerState>(PlayerState);
 
-		if (State->GetAmountOfCells() >= CostInCells && State->GetAmountOfMetal() >= CostInMetal && State->GetAmountOfFood() >= CostInFood && State->GetAmountOfCristals() >= CostInCristals)
+		if (State && State->GetAmountOfCells() >= CostInCells && State->GetAmountOfMetal() >= CostInMetal && State->GetAmountOfFood() >= CostInFood && State->GetAmountOfCristals() >= CostInCristals)
 		{
 			AUnit* NewUnit = NULL;
 
@@ -1609,7 +1672,7 @@ void AMousePlayerController::Server_SpawnUnit_Implementation(AMilitaryBuilding* 
 					NewUnit = GetWorld()->SpawnActor<AUnit>(Unit, Position, Rotation);
 					if (NewUnit)
 					{
-						NewUnit->SetSide(PlayerSide);
+						NewUnit->SetSide(PlayerSide, State);
 
 						State->SetAmountOfCells(State->GetAmountOfCells() - CostInCells);
 						State->SetAmountOfMetal(State->GetAmountOfMetal() - CostInMetal);
@@ -1809,7 +1872,7 @@ USpawnEntityWidget* AMousePlayerController::PrepareEntity(TSubclassOf<AUnit> Uni
 	SpawnEntity->SetSpeed(UnitDefaultObject->GetSpeed());
 	SpawnEntity->SetFieldOfSight(UnitDefaultObject->GetFieldOfSight());
 	SpawnEntity->SetRange(UnitDefaultObject->GetRange());
-	SpawnEntity->SetFoodEaten(UnitDefaultObject->GetFoodEatenInHalfASecond());
+	SpawnEntity->SetFoodEaten(UnitDefaultObject->GetFoodEatenInASecond());
 
 	return SpawnEntity;
 }
@@ -1826,7 +1889,7 @@ void AMousePlayerController::Server_GiveIn_Implementation()
 	for (Building; Building; ++Building)
 	{
 		if (Building->GetSide() == GetSide())
-			Building->SetSide(ESide::Neutral);
+			Building->SetSide(ESide::Neutral, nullptr);
 	}
 }
 bool AMousePlayerController::Server_GiveIn_Validate()
@@ -1863,6 +1926,65 @@ void AMousePlayerController::Server_PlayerIsReady_Implementation(bool Ready, ECi
 bool AMousePlayerController::Server_PlayerIsReady_Validate(bool Ready, ECivs Civ)
 {
 	return Civ != ECivs::None || !Ready;
+}
+
+//UpdateSkillTree
+void AMousePlayerController::UpdateSkillTree(TArray<ASkill*> SkillsChange)
+{
+	Cast<AMultiplayerState>(PlayerState)->GetSkillsTree()->SetSkills(SkillsChange);
+
+	if (Role != ROLE_Authority)
+	{
+		TArray<bool> Change;
+
+		for (int i(0); i < SkillsChange.Num(); i++)
+		{
+			Change.Add(SkillsChange[i]->Skill);
+		}
+
+		Server_UpdateSkillTree(Change);
+	}
+}
+void AMousePlayerController::Server_UpdateSkillTree_Implementation(const TArray<bool> &SkillsChange)
+{
+	Cast<AMultiplayerState>(PlayerState)->GetSkillsTree()->SetSkills(SkillsChange);
+}
+bool AMousePlayerController::Server_UpdateSkillTree_Validate(const TArray<bool> &SkillsChange)
+{
+	return true;
+}
+
+//Epicness and Victory Points
+int AMousePlayerController::GetEpicnessPercents()
+{
+	int Points = 0;
+
+	if (GetWorld()->GetGameState<AMultiplayerGameState>() && PlayerState)
+	{
+		TArray<FPointsForPlayerStruct> PlayersPoints = Cast<AMultiplayerGameState>(GetWorld()->GetGameState<AMultiplayerGameState>())->GetPlayersPoints();
+		for (int i(0); i < PlayersPoints.Num(); i++)
+		{
+			Points += PlayersPoints[i].EpicnessPoints;
+		}
+	}
+
+	return 100 * Points / 300;
+}
+int AMousePlayerController::GetVictoryPercents()
+{
+	int Points = 0;
+
+	if (GetWorld()->GetGameState<AMultiplayerGameState>() && PlayerState)
+	{
+		TArray<FPointsForPlayerStruct> PlayersPoints = Cast<AMultiplayerGameState>(GetWorld()->GetGameState<AMultiplayerGameState>())->GetPlayersPoints();
+		for (int i(0); i < PlayersPoints.Num(); i++)
+		{
+			if(PlayersPoints[i].ID == PlayerState->UniqueId)
+				Points += PlayersPoints[i].VictoryPoints;
+		}
+	}
+
+	return 100 * Points / 1000;
 }
 
 //Replication

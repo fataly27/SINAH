@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class SinahEditorTarget : TargetRules
 {
-	public SinahEditorTarget(TargetInfo Target)
+	public SinahEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
 		ExtraModuleNames.AddRange( new string[] { "Sinah" } );

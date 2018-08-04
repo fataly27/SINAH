@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "GameBeforeStartingWidget.h"
 #include "UpWidget.generated.h"
 
 /**
@@ -25,7 +26,11 @@ class SINAH_API UUpWidget : public UUserWidget
 		void SetCellsChange(int Cells);
 		void SetCristalsChange(int Cristals);
 
+		void SetMusicTitle(FString Info);
+		void SetMusicCivs(TArray<ECivs> CivsArray);
+
 		void SetTime(int BaseSeconds);
+		void SetPoints(int Pts);
 
 	protected:
 		UPROPERTY(BlueprintReadWrite, Category = "Amounts")
@@ -46,6 +51,14 @@ class SINAH_API UUpWidget : public UUserWidget
 		UPROPERTY(BlueprintReadWrite, Category = "Changes")
 			FString CristalsChange;
 
+		UPROPERTY(BlueprintReadWrite, Category = "Music")
+			FString Title;
+		UPROPERTY(BlueprintReadWrite, Category = "Music")
+			FString Civs;
+
 		UPROPERTY(BlueprintReadWrite, Category = "Timer")
 			FString TheTimer;
+
+		UPROPERTY(BlueprintReadWrite, Category = "Timer")
+			int Points;
 };

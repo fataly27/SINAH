@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class SinahTarget : TargetRules
 {
-	public SinahTarget(TargetInfo Target)
+	public SinahTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
 		ExtraModuleNames.AddRange( new string[] { "Sinah" } );

@@ -76,6 +76,7 @@ void USpawnEntityWidget::TransferData()
 	MainInterface->SetFoodEaten(FoodEaten);
 
 	MainInterface->SetDetailsImage(UnitImage);
+	MainInterface->SetUnitName(UnitName);
 }
 
 void USpawnEntityWidget::SetEntityIsEnabled(int BuildingLevel, int CurrentFood, int CurrentCells, int CurrentMetal, int CurrentCristals)

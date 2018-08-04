@@ -19,6 +19,19 @@ struct FCivForPlayerStruct
 		UPROPERTY()
 			ECivs Civ;
 };
+USTRUCT()
+struct FPointsForPlayerStruct
+{
+	GENERATED_BODY()
+
+	public:
+		UPROPERTY()
+			FUniqueNetIdRepl ID;
+		UPROPERTY()
+			int VictoryPoints;
+		UPROPERTY()
+			int EpicnessPoints;
+};
 
 
 /**
@@ -44,7 +57,10 @@ class SINAH_API AMultiplayerGameState : public AGameState
 
 		int GetTime();
 
+		TArray<FPointsForPlayerStruct> GetPlayersPoints();
+
 		FUniqueNetIdRepl GetWinner();
+		FUniqueNetIdRepl GetIdBySide(ESide Side);
 		void SetCivForPlayer(FUniqueNetIdRepl ID, ECivs Civ);
 		TArray<FCivForPlayerStruct> GetAllCivs();
 
@@ -63,6 +79,9 @@ class SINAH_API AMultiplayerGameState : public AGameState
 		UPROPERTY(Replicated)
 			float CurrentTime;
 		float CountDown;
+
+		UPROPERTY(Replicated)
+			TArray<FPointsForPlayerStruct> PlayersPoints;
 		
 		UPROPERTY(Replicated)
 			TArray<FCivForPlayerStruct> PlayersCiv;

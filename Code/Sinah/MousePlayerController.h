@@ -8,7 +8,10 @@
 #include "Widgets/GameBeforeStartingWidget.h"
 #include "MousePlayerController.generated.h"
 
+#define FORMATION_SPACING 350.f
+
 class AMainCamera;
+class UMusicSelector;
 
 class AMilitaryBuilding;
 class AGreatMilitaryBuilding;
@@ -24,6 +27,8 @@ class ULevelMilitaryWidget;
 class USpawnWidget;
 class USpawnEntityWidget;
 class UGameAfterEndingWidget;
+
+class ASkill;
 
 /**
  * 
@@ -80,7 +85,7 @@ class SINAH_API AMousePlayerController : public APlayerController
 		void SetMapTexture(TArray<TScriptInterface<IGameElementInterface>> AllVisibleActors);
 		void UpdateTextureRegions(UTexture2D* Texture, int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData);
 
-		void ApplyZoneEffects(TArray<AMilitaryBuilding*> MilitaryBuildings, TArray<AUnit*> Units);
+		void ApplyZoneEffects();
 
 		//Costing functions
 		UFUNCTION(Server, Reliable, WithValidation)
@@ -114,6 +119,9 @@ class SINAH_API AMousePlayerController : public APlayerController
 			void SetColorToBlue();
 		UFUNCTION(BlueprintImplementableEvent)
 			void SetColorToRed();
+
+		UFUNCTION(BlueprintCallable)
+			void SkipMusic();
 
 		//EModes
 		UFUNCTION(BlueprintCallable)
@@ -159,6 +167,15 @@ class SINAH_API AMousePlayerController : public APlayerController
 		//Ready and Start Choices
 		UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
 			void Server_PlayerIsReady(bool Ready, ECivs Civ);
+
+		//UpdateSkillTree
+		void UpdateSkillTree(TArray<ASkill*> SkillsChange);
+		UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+			void Server_UpdateSkillTree(const TArray<bool> &SkillsChange);
+
+		//Epicness and Victory Points
+		int GetEpicnessPercents();
+		int GetVictoryPercents();
 
 		UTexture* UnselectedTexture;
 		UTexture* SelectedTexture;
@@ -207,6 +224,10 @@ class SINAH_API AMousePlayerController : public APlayerController
 		FString OldString;
 		bool bThrobberEnabled;
 		bool bExitEnabled;
+
+		//Music
+		UPROPERTY()
+			UMusicSelector* MusicSelector;
 
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TopInterface")

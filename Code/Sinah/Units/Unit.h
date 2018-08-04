@@ -4,7 +4,10 @@
 
 #include "GameFramework/Character.h"
 #include "../GameElementInterface.h"
+#include "../Widgets/GameBeforeStartingWidget.h"
 #include "Unit.generated.h"
+
+class AMultiplayerState;
 
 UENUM(BlueprintType)
 	enum class EModes : uint8
@@ -50,9 +53,9 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 
 		//ESide
 		virtual ESide GetSide() override;
-		virtual void SetSide(ESide NewSide) override;
+		virtual void SetSide(ESide NewSide, AMultiplayerState* NewPlayer) override;
 		UFUNCTION(NetMulticast, Reliable)
-			void Multicast_SetSide(ESide NewSide);
+			void Multicast_SetSide(ESide NewSide, AMultiplayerState* NewPlayer);
 
 		//Destinations
 		void AddDestination(FVector Destination, FRotator Rotation);
@@ -73,7 +76,7 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 
 		//Attack and heal
 		void Attack(const TScriptInterface<IGameElementInterface>& Target);
-		virtual void ReceiveDamages(int Physic, int Magic, ESide AttackingSide) override;
+		virtual void ReceiveDamages(int Physic, int Magic, ESide AttackingSide, AMultiplayerState* AttackingPlayer) override;
 		UFUNCTION(NetMulticast, Unreliable)
 			void Multicast_Spark(UParticleSystem* Particle);
 		UFUNCTION(NetMulticast, Unreliable)
@@ -98,7 +101,7 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		float GetRange();
 		unsigned int GetBuildingLevelRequired();
 
-		int GetFoodEatenInHalfASecond();
+		int GetFoodEatenInASecond();
 		int GetCostInFood();
 		int GetCostInCells();
 		int GetCostInMetal();
@@ -112,7 +115,7 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		EModes GetMode();
 		UFUNCTION(NetMulticast, Reliable)
 			void Multicast_SetIsMoving(EAction NewAction);
-		void ChangeLoopingAnimation();
+		void ChangeLoopingAnimation(bool OverrideCheck = false);
 
 		float GetInvisibleCoolDown();
 		float GetInvisibleTime();
@@ -132,7 +135,10 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 	protected:
 		//Unit
 		FName Name;
+		ECivs Civ;
 		UTexture* UnitImage;
+		float AdaptSpeed;
+		float AdaptScale;
 
 		//Statistics
 		UPROPERTY(Replicated)
@@ -178,12 +184,16 @@ class SINAH_API AUnit : public ACharacter, public IGameElementInterface
 		UPROPERTY(EditAnywhere)
 			float DefaultRange;
 
-		int FoodEatenInHalfASecond;
+		int FoodEatenInASecond;
 
 		int CostInFood;
 		int CostInCells;
 		int CostInMetal;
 		int CostInCristal;
+
+		//Player
+		UPROPERTY(Replicated)
+			AMultiplayerState* Player;
 
 		//Selection
 		UPROPERTY(EditAnywhere, Replicated)

@@ -16,6 +16,11 @@ AUnit::AUnit() : MySide(ESide::Neutral), bSelected(false), CurrentAction(EAction
 	bAlwaysRelevant = true;
 	NetUpdateFrequency = 2;
 
+	GetCharacterMovement()->bUseRVOAvoidance = false;
+	GetCharacterMovement()->bCanWalkOffLedges = false;
+	GetCharacterMovement()->NetworkSmoothingMode = ENetworkSmoothingMode::Linear;
+	GetCharacterMovement()->SetJumpAllowed(false);
+
 	InvisibleLimitedTime = 0.f;
 	InvisibleCoolDown = 0.f;
 	PrepareChangingModeTime = 0.f;
@@ -44,8 +49,6 @@ AUnit::AUnit() : MySide(ESide::Neutral), bSelected(false), CurrentAction(EAction
 	AdaptScale = 1.f;
 
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationSingleNode);
-
-	GetMovementComponent()->SetJumpAllowed(false);
 
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -440,7 +443,7 @@ void AUnit::Attack(const TScriptInterface<IGameElementInterface>& Target)
 	{
 		float Distance = FVector::Dist(this->GetActorLocation(), Target->GetLocation());
 
-		if (Distance <= this->GetRange() * 100 + Target->GetSize())
+		if (Distance <= this->GetRange() * 100 + Target->GetSize() + GetSize())
 		{
 			if (MySide == ESide::Blue)
 				Multicast_Spark(BlueSpark);

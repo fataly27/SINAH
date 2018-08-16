@@ -2,6 +2,7 @@
 
 #include "Sinah.h"
 #include "Unit.h"
+#include "Navigation/CrowdFollowingComponent.h"
 #include "UnitController.h"
 
 AUnitController::AUnitController() : Super(), bLastATarget(false), TimeSinceLastAttack(1.f) {}
@@ -30,7 +31,7 @@ void AUnitController::Tick(float DeltaSeconds)
 			}
 		}
 
-		if (Distance <= Cast<AUnit>(GetPawn())->GetRange() * 100 + ClosestTarget->GetSize())
+		if (Distance <= Cast<AUnit>(GetPawn())->GetRange() * 100 + ClosestTarget->GetSize() + Cast<AUnit>(GetPawn())->GetSize())
 		{
 			if (TimeSinceLastAttack >= 1.f)
 			{
@@ -52,30 +53,21 @@ void AUnitController::Tick(float DeltaSeconds)
 				TScriptInterface<IGameElementInterface> TargetInterface;
 				TargetInterface.SetInterface(Cast<IGameElementInterface>(Target));
 				TargetInterface.SetObject(Target);
-				FVector TargetPosition = Target->GetActorLocation();
+				FVector TargetPosition = TargetInterface->GetLocation();
 
-				FVector PawnPosition = Cast<AUnit>(GetPawn())->GetActorLocation();
+				/*FVector PawnPosition = Cast<AUnit>(GetPawn())->GetActorLocation();
 
 				float Scale = TargetInterface->GetSize() / FVector::Dist2D(TargetPosition, PawnPosition);
 				float XOffset = Scale * (PawnPosition.X - TargetPosition.X);
 				float YOffset = Scale * (PawnPosition.Y - TargetPosition.Y);
 
-				FVector NewDestination(TargetPosition.X + XOffset, TargetPosition.Y + YOffset, TargetPosition.Z);
+				FVector NewDestination(TargetPosition.X + XOffset, TargetPosition.Y + YOffset, TargetPosition.Z);*/
 
-				FNavLocation ReachableDestination;
-
-				if (GetWorld()->GetNavigationSystem()->ProjectPointToNavigation(NewDestination, ReachableDestination, FVector(Cast<AUnit>(GetPawn())->GetRange() * 100 * FGenericPlatformMath::Sqrt(2), Cast<AUnit>(GetPawn())->GetRange() * 100 * FGenericPlatformMath::Sqrt(2), 500.f)))
-				{
-					MoveToLocation(ReachableDestination.Location, 20.f, false, true, false);
-					Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(EAction::Moving);
-				}
+				MoveToActor(Target, Cast<AUnit>(GetPawn())->GetRange() * 100 + TargetInterface->GetSize(), false, true, false);
+				Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(EAction::Moving);
 			}
-			else
-			{
-				StopMovement();
-				Cast<AUnit>(GetPawn())->Rotate();
-				Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(EAction::Idle);
-			}
+			else if (GetMoveStatus() != EPathFollowingStatus::Idle)
+				Stop();
 		}
 		LastTarget = ClosestTarget;
 	}
@@ -83,17 +75,14 @@ void AUnitController::Tick(float DeltaSeconds)
 	{
 		if (Cast<AUnit>(GetPawn())->GetDestinations()[0] != LastDestination || GetMoveStatus() != EPathFollowingStatus::Moving || bLastATarget)
 		{
+			LastDestination = Cast<AUnit>(GetPawn())->GetDestinations()[0];
 			bLastATarget = false;
-			MoveToLocation(Cast<AUnit>(GetPawn())->GetDestinations()[0], 10.f, false, true, true, false);
+			MoveToLocation(Cast<AUnit>(GetPawn())->GetDestinations()[0], 30.f, false, true, true, false);
 			Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(EAction::Moving);
 		}
 	}
-	else
-	{
-		StopMovement();
-		Cast<AUnit>(GetPawn())->Rotate();
-		Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(EAction::Idle);
-	}
+	else if (GetMoveStatus() != EPathFollowingStatus::Idle)
+		Stop();
 }
 
 void AUnitController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult & Result)
@@ -104,6 +93,21 @@ void AUnitController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowi
 		{
 			if (Cast<AUnit>(GetPawn())->GetDestinations().IsValidIndex(0))
 				Cast<AUnit>(GetPawn())->ClearOneDestination();
+
+			if (!Cast<AUnit>(GetPawn())->GetDestinations().IsValidIndex(1))
+				Stop();
+		}
+		else
+		{
+			if (!Cast<AUnit>(GetPawn())->GetSpecialTargets().IsValidIndex(1))
+				Stop();
 		}
 	}
+}
+
+void AUnitController::Stop()
+{
+	StopMovement();
+	Cast<AUnit>(GetPawn())->Rotate();
+	Cast<AUnit>(GetPawn())->Multicast_SetIsMoving(EAction::Idle);
 }

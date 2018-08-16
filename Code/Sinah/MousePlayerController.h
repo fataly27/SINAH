@@ -8,7 +8,7 @@
 #include "Widgets/GameBeforeStartingWidget.h"
 #include "MousePlayerController.generated.h"
 
-#define FORMATION_SPACING 350.f
+#define FORMATION_SPACING 450.f
 
 class AMainCamera;
 class UMusicSelector;
